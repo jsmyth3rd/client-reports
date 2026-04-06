@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Susan Shaw — April 2025 Sales Overview</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #ffffff;
+    --bg-secondary: #f5f4f1;
+    --text-primary: #1a1a18;
+    --text-secondary: #6b6a66;
+    --border: rgba(0,0,0,0.1);
+    --border-strong: rgba(0,0,0,0.18);
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --blue: #378ADD;
+    --blue-light: #B5D4F4;
+    --coral: #D85A30;
+    --teal: #1D9E75;
+    --red: #E24B4A;
+    --red-light: #F09595;
+    --amber: #BA7517;
+    --green-bg: #EAF3DE;
+    --green-text: #3B6D11;
+    --amber-bg: #FAEEDA;
+    --amber-text: #854F0B;
+    --red-bg: #FCEBEB;
+    --red-text: #A32D2D;
+  }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  /* Header */
+  .header { border-bottom: 1.5px solid var(--text-primary); padding-bottom: 1rem; margin-bottom: 2rem; }
+  .header-top { display: flex; justify-content: space-between; align-items: baseline; }
+  .brand { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-secondary); }
+  .title { font-size: 26px; font-weight: normal; letter-spacing: -0.02em; margin: 0.4rem 0 0.2rem; }
+  .subtitle { font-size: 12px; color: var(--text-secondary); letter-spacing: 0.04em; }
+
+  /* Tabs */
+  .tab-nav { display: flex; gap: 0; border-bottom: 0.5px solid var(--border-strong); margin-bottom: 1.75rem; }
+  .tab-btn {
+    padding: 8px 18px; font-size: 12px; letter-spacing: 0.04em; cursor: pointer;
+    border: none; background: none; color: var(--text-secondary);
+    border-bottom: 2px solid transparent; margin-bottom: -1px;
+    font-family: 'Georgia', serif; transition: color 0.15s;
+  }
+  .tab-btn:hover { color: var(--text-primary); }
+  .tab-btn.active { color: var(--text-primary); border-bottom-color: var(--text-primary); }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* Sections */
+  .sec { margin-bottom: 2.25rem; }
+  .sec-label {
+    font-size: 10px; font-weight: normal; color: var(--text-secondary);
+    text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 12px;
+    font-family: 'Georgia', serif;
+  }
+
+  /* Metric grid */
+  .mgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 1rem; }
+  .mc { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 14px 16px; }
+  .ml { font-size: 11px; color: var(--text-secondary); margin-bottom: 4px; letter-spacing: 0.01em; }
+  .mv { font-size: 22px; font-weight: normal; color: var(--text-primary); line-height: 1.15; letter-spacing: -0.02em; }
+  .ms { font-size: 11px; color: var(--text-secondary); margin-top: 3px; }
+  .mw { font-size: 11px; color: var(--amber); margin-top: 3px; }
+
+  /* Cards */
+  .card { background: var(--bg); border: 0.5px solid var(--border-strong); border-radius: var(--radius-lg); padding: 16px; }
+
+  /* Two / three column */
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .three { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+  /* Goal bar */
+  .goal-track { width: 100%; height: 10px; background: var(--bg-secondary); border-radius: 5px; overflow: hidden; }
+  .goal-fill { height: 100%; border-radius: 5px; background: var(--blue); }
+  .goal-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-secondary); margin-top: 5px; }
+
+  /* Period grid */
+  .period-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .pc { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 14px 16px; }
+  .pt { font-size: 11px; color: var(--text-secondary); margin-bottom: 6px; letter-spacing: 0.02em; }
+  .pb { font-size: 20px; font-weight: normal; color: var(--text-primary); letter-spacing: -0.02em; }
+  .pd { font-size: 11px; color: var(--text-secondary); margin-top: 4px; }
+
+  /* Bar rows */
+  .bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .bar-l { width: 140px; font-size: 12px; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-shrink: 0; }
+  .bar-t { flex: 1; height: 7px; background: var(--bg-secondary); border-radius: 4px; overflow: hidden; }
+  .bar-f { height: 100%; border-radius: 4px; }
+  .bar-n { width: 68px; text-align: right; font-size: 11px; font-weight: normal; color: var(--text-primary); white-space: nowrap; }
+
+  /* Table rows */
+  .ptrow {
+    display: grid; grid-template-columns: 1fr 76px 44px 52px;
+    gap: 4px; padding: 5px 0;
+    border-bottom: 0.5px solid var(--border);
+    font-size: 12px; align-items: center;
+  }
+  .ptrow:last-child { border-bottom: none; }
+  .tbl-header {
+    display: grid; grid-template-columns: 1fr 76px 44px 52px;
+    gap: 4px; font-size: 10px; letter-spacing: 0.07em; text-transform: uppercase;
+    color: var(--text-secondary); padding-bottom: 7px;
+    border-bottom: 0.5px solid var(--border-strong); margin-bottom: 3px;
+  }
+
+  /* Badge */
+  .badge { display: inline-block; font-size: 10px; padding: 2px 7px; border-radius: 4px; letter-spacing: 0.02em; }
+  .badge-ok { background: var(--green-bg); color: var(--green-text); }
+  .badge-warn { background: var(--amber-bg); color: var(--amber-text); }
+  .badge-bad { background: var(--red-bg); color: var(--red-text); }
+
+  /* Return rows */
+  .br { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 0.5px solid var(--border); font-size: 12px; }
+  .br:last-child { border-bottom: none; }
+  .brl { color: var(--text-primary); flex: 1; }
+
+  /* Flag blocks */
+  .ret-highlight {
+    background: var(--bg-secondary);
+    border-left: 2.5px solid var(--red);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    padding: 11px 15px; margin-bottom: 10px;
+  }
+  .ret-hl-title { font-size: 13px; color: var(--text-primary); margin-bottom: 4px; }
+  .ret-hl-sub { font-size: 12px; color: var(--text-secondary); line-height: 1.55; }
+
+  /* Chart legend */
+  .legend { display: flex; gap: 18px; margin-top: 8px; font-size: 11px; color: var(--text-secondary); }
+  .legend span { display: flex; align-items: center; gap: 5px; }
+  .legend-swatch { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+
+  /* Footer */
+  .footer { margin-top: 3rem; padding-top: 1rem; border-top: 0.5px solid var(--border); font-size: 11px; color: var(--text-secondary); display: flex; justify-content: space-between; }
+
+  @media (max-width: 640px) {
+    .two { grid-template-columns: 1fr; }
+    .three { grid-template-columns: 1fr; }
+    .mgrid { grid-template-columns: repeat(2, 1fr); }
+    .bar-l { width: 100px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <span class="brand">Susan Shaw Jewelry</span>
+    <span class="brand">Page 3 Consulting</span>
+  </div>
+  <h1 class="title">April 2025 — Sales Overview</h1>
+  <p class="subtitle">Returns excluded from order and customer counts &nbsp;·&nbsp; Spring Sale: Mar 20 – Apr 17 &nbsp;·&nbsp; Southern Living feature: early April</p>
+</div>
+
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('summary', this)">Summary</button>
+  <button class="tab-btn" onclick="switchTab('products', this)">Top 25 products</button>
+  <button class="tab-btn" onclick="switchTab('returns', this)">Return patterns</button>
+</div>
+
+<!-- ══ SUMMARY ══ -->
+<div id="tab-summary" class="tab-panel active">
+
+  <div class="sec">
+    <div class="sec-label">Month totals — returns excluded</div>
+    <div class="mgrid">
+      <div class="mc"><div class="ml">Net sales</div><div class="mv">$932,718</div><div class="mw">vs $1,147,000 goal (2026)</div></div>
+      <div class="mc"><div class="ml">Gross sales</div><div class="mv">$1,165,941</div><div class="ms">before discounts &amp; returns</div></div>
+      <div class="mc"><div class="ml">Total orders</div><div class="mv">6,858</div><div class="ms">↓439 after return cleanup</div></div>
+      <div class="mc"><div class="ml">Unique customers</div><div class="mv">6,128</div><div class="ms">↓331 after return cleanup</div></div>
+      <div class="mc"><div class="ml">Avg order value</div><div class="mv">$140.76</div><div class="ms">net; ↑$12.94 after cleanup</div></div>
+      <div class="mc"><div class="ml">Items per order</div><div class="mv">1.76</div><div class="ms">median: 2</div></div>
+      <div class="mc"><div class="ml">Discounts given</div><div class="mv">$193,502</div><div class="mw">16.6% of gross</div></div>
+      <div class="mc"><div class="ml">Returns processed</div><div class="mv">$40,254</div><div class="ms">4.3% of gross</div></div>
+    </div>
+    <div class="card" style="padding: 14px 16px;">
+      <div class="ml" style="margin-bottom:7px;">Progress vs 2026 goal: $1,147,000</div>
+      <div class="goal-track"><div class="goal-fill" style="width:81.3%;"></div></div>
+      <div class="goal-labels">
+        <span>$932,718 actual (2025)</span>
+        <span style="color: var(--text-primary);">81.3% — $214,282 gap</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-label">Sale period vs. post-sale</div>
+    <div class="period-grid">
+      <div class="pc">
+        <div class="pt">Spring Sale (Apr 1–17)</div>
+        <div class="pb">$701,316</div>
+        <div class="pd">4,905 orders &nbsp;·&nbsp; $147 avg order</div>
+        <div class="pd">$167,719 in discounts</div>
+      </div>
+      <div class="pc">
+        <div class="pt">Post-sale (Apr 18–30)</div>
+        <div class="pb">$231,403</div>
+        <div class="pd">1,962 orders &nbsp;·&nbsp; $125 avg order</div>
+        <div class="pd">$25,783 in discounts</div>
+      </div>
+    </div>
+    <p style="margin-top:8px; font-size:11px; color:var(--text-secondary);">75% of revenue in the first 17 days. Apr 10–11 and Apr 17 were the three biggest single days ($62–78K each).</p>
+  </div>
+
+  <div class="sec">
+    <div class="sec-label">Daily net sales</div>
+    <div style="position:relative; width:100%; height:200px;"><canvas id="dailyChart"></canvas></div>
+    <div class="legend">
+      <span><span class="legend-swatch" style="background:#378ADD;"></span>Sale period (Apr 1–17)</span>
+      <span><span class="legend-swatch" style="background:#B5D4F4;"></span>Post-sale (Apr 18–30)</span>
+    </div>
+  </div>
+
+  <div class="sec two">
+    <div>
+      <div class="sec-label">Top states by net sales</div>
+      <div class="card">
+        <div class="bar-row"><div class="bar-l">Texas</div><div class="bar-t"><div class="bar-f" style="width:100%;background:var(--blue);"></div></div><div class="bar-n">$164,125</div></div>
+        <div class="bar-row"><div class="bar-l">Georgia</div><div class="bar-t"><div class="bar-f" style="width:57%;background:var(--blue);"></div></div><div class="bar-n">$93,852</div></div>
+        <div class="bar-row"><div class="bar-l">North Carolina</div><div class="bar-t"><div class="bar-f" style="width:49%;background:var(--blue);"></div></div><div class="bar-n">$80,315</div></div>
+        <div class="bar-row"><div class="bar-l">South Carolina</div><div class="bar-t"><div class="bar-f" style="width:35%;background:var(--blue);"></div></div><div class="bar-n">$56,785</div></div>
+        <div class="bar-row"><div class="bar-l">Florida</div><div class="bar-t"><div class="bar-f" style="width:33%;background:var(--blue);"></div></div><div class="bar-n">$54,045</div></div>
+        <div class="bar-row"><div class="bar-l">Tennessee</div><div class="bar-t"><div class="bar-f" style="width:29%;background:var(--blue);"></div></div><div class="bar-n">$47,397</div></div>
+        <div class="bar-row"><div class="bar-l">Alabama</div><div class="bar-t"><div class="bar-f" style="width:28%;background:var(--blue);"></div></div><div class="bar-n">$46,565</div></div>
+        <div class="bar-row"><div class="bar-l">Louisiana</div><div class="bar-t"><div class="bar-f" style="width:26%;background:var(--blue);"></div></div><div class="bar-n">$42,093</div></div>
+        <div class="bar-row"><div class="bar-l">Virginia</div><div class="bar-t"><div class="bar-f" style="width:22%;background:var(--blue);"></div></div><div class="bar-n">$36,241</div></div>
+        <div class="bar-row"><div class="bar-l">Arkansas</div><div class="bar-t"><div class="bar-f" style="width:22%;background:var(--blue);"></div></div><div class="bar-n">$35,894</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="sec-label">Traffic sources by net sales</div>
+      <div class="card">
+        <div class="bar-row"><div class="bar-l">Google organic</div><div class="bar-t"><div class="bar-f" style="width:100%;background:var(--coral);"></div></div><div class="bar-n">$179,667</div></div>
+        <div class="bar-row"><div class="bar-l">Direct / susanshaw.com</div><div class="bar-t"><div class="bar-f" style="width:70%;background:var(--coral);"></div></div><div class="bar-n">$125,201</div></div>
+        <div class="bar-row"><div class="bar-l">Facebook (mobile)</div><div class="bar-t"><div class="bar-f" style="width:56%;background:var(--coral);"></div></div><div class="bar-n">$100,249</div></div>
+        <div class="bar-row"><div class="bar-l">Instagram</div><div class="bar-t"><div class="bar-f" style="width:43%;background:var(--coral);"></div></div><div class="bar-n">$77,343</div></div>
+        <div class="bar-row"><div class="bar-l">ShareASale</div><div class="bar-t"><div class="bar-f" style="width:15%;background:var(--coral);"></div></div><div class="bar-n">$26,501</div></div>
+        <div class="bar-row"><div class="bar-l">Bing</div><div class="bar-t"><div class="bar-f" style="width:8%;background:var(--coral);"></div></div><div class="bar-n">$14,198</div></div>
+        <div class="bar-row"><div class="bar-l">Cap. One Shopping</div><div class="bar-t"><div class="bar-f" style="width:6%;background:var(--coral);"></div></div><div class="bar-n">$10,476</div></div>
+        <div class="bar-row"><div class="bar-l">l.facebook.com</div><div class="bar-t"><div class="bar-f" style="width:5%;background:var(--coral);"></div></div><div class="bar-n">$9,485</div></div>
+        <div class="bar-row"><div class="bar-l">DuckDuckGo</div><div class="bar-t"><div class="bar-f" style="width:4%;background:var(--coral);"></div></div><div class="bar-n">$6,521</div></div>
+        <div class="bar-row"><div class="bar-l">Yahoo Search</div><div class="bar-t"><div class="bar-f" style="width:3%;background:var(--coral);"></div></div><div class="bar-n">$5,474</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec two">
+    <div>
+      <div class="sec-label">Category breakdown</div>
+      <div class="card">
+        <div class="bar-row"><div class="bar-l">Necklace</div><div class="bar-t"><div class="bar-f" style="width:100%;background:var(--teal);"></div></div><div class="bar-n">$497,570</div></div>
+        <div class="bar-row"><div class="bar-l">Earring</div><div class="bar-t"><div class="bar-f" style="width:36%;background:var(--teal);"></div></div><div class="bar-n">$180,104</div></div>
+        <div class="bar-row"><div class="bar-l">Bracelet</div><div class="bar-t"><div class="bar-f" style="width:36%;background:var(--teal);"></div></div><div class="bar-n">$178,375</div></div>
+        <div class="bar-row"><div class="bar-l">Ring</div><div class="bar-t"><div class="bar-f" style="width:8%;background:var(--teal);"></div></div><div class="bar-n">$37,602</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="sec-label">Sales by day of week</div>
+      <div style="position:relative; width:100%; height:175px;"><canvas id="dowChart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-label">Customer profile</div>
+    <div class="mgrid" style="grid-template-columns: repeat(3,1fr);">
+      <div class="mc"><div class="ml">Single-order customers</div><div class="mv">5,506</div><div class="ms">90% of 6,128 unique</div></div>
+      <div class="mc"><div class="ml">Repeat customers</div><div class="mv">622</div><div class="ms">10% — purchased 2+ times</div></div>
+      <div class="mc"><div class="ml">Orders per customer</div><div class="mv">1.12</div><div class="ms">avg during month</div></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══ PRODUCTS ══ -->
+<div id="tab-products" class="tab-panel">
+  <div class="sec-label">Top 25 products by net sales — returns excluded</div>
+  <div class="card">
+    <div class="tbl-header">
+      <span>Product</span><span style="text-align:right;">Net sales</span><span style="text-align:right;">Units</span><span style="text-align:right;">Orders</span>
+    </div>
+    <div id="productList"></div>
+  </div>
+</div>
+
+<!-- ══ RETURNS ══ -->
+<div id="tab-returns" class="tab-panel">
+
+  <div class="sec">
+    <div class="sec-label">Return overview</div>
+    <div class="mgrid" style="grid-template-columns: repeat(4,1fr);">
+      <div class="mc"><div class="ml">Fully returned orders</div><div class="mv">439</div><div class="ms">6.0% of 7,297 raw orders</div></div>
+      <div class="mc"><div class="ml">Customers removed</div><div class="mv">331</div><div class="ms">from unique customer count</div></div>
+      <div class="mc"><div class="ml">Return value</div><div class="mv">$40,254</div><div class="ms">4.3% of gross sales</div></div>
+      <div class="mc"><div class="ml">AOV impact</div><div class="mv">+$12.94</div><div class="ms">AOV rose after cleanup</div></div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-label">Returns by sale phase</div>
+    <div class="three">
+      <div class="pc"><div class="pt">Apr 1–9 (pre-peak)</div><div class="pb">$9,709</div><div class="pd">110 return rows</div></div>
+      <div class="pc" style="border-left: 2.5px solid var(--red); border-radius: 0 var(--radius-md) var(--radius-md) 0;">
+        <div class="pt">Apr 10–17 (peak sale)</div><div class="pb">$19,038</div><div class="pd">242 return rows — highest volume</div>
+      </div>
+      <div class="pc"><div class="pt">Apr 18–30 (post-sale)</div><div class="pb">$13,867</div><div class="pd">162 return rows</div></div>
+    </div>
+    <p style="margin-top:8px; font-size:11px; color:var(--text-secondary);">167 of 439 fully-returned orders originated during the sale period; 90 post-sale. The peak sale days also generated the most returns — discount-driven volume likely includes some over-buying.</p>
+  </div>
+
+  <div class="sec">
+    <div class="sec-label">Returns by category</div>
+    <div style="position:relative; width:100%; height:170px;"><canvas id="retCatChart"></canvas></div>
+  </div>
+
+  <div class="sec two">
+    <div>
+      <div class="sec-label">Products by total return value</div>
+      <div class="card">
+        <div class="bar-row"><div class="bar-l">Rectangle Ring</div><div class="bar-t"><div class="bar-f" style="width:100%;background:var(--red);"></div></div><div class="bar-n">$2,393</div></div>
+        <div class="bar-row"><div class="bar-l">Cross Toggle Necklace</div><div class="bar-t"><div class="bar-f" style="width:83%;background:var(--red);"></div></div><div class="bar-n">$1,987</div></div>
+        <div class="bar-row"><div class="bar-l">Audrey Heart Necklace</div><div class="bar-t"><div class="bar-f" style="width:43%;background:var(--red);"></div></div><div class="bar-n">$1,030</div></div>
+        <div class="bar-row"><div class="bar-l">Stone Heart Toggle</div><div class="bar-t"><div class="bar-f" style="width:39%;background:var(--red);"></div></div><div class="bar-n">$938</div></div>
+        <div class="bar-row"><div class="bar-l">Venetian Glass Bee Neck.</div><div class="bar-t"><div class="bar-f" style="width:37%;background:var(--red);"></div></div><div class="bar-n">$892</div></div>
+        <div class="bar-row"><div class="bar-l">Coin Toggle Necklace</div><div class="bar-t"><div class="bar-f" style="width:37%;background:var(--red);"></div></div><div class="bar-n">$888</div></div>
+        <div class="bar-row"><div class="bar-l">Heart Toggle Necklace</div><div class="bar-t"><div class="bar-f" style="width:36%;background:var(--red);"></div></div><div class="bar-n">$866</div></div>
+        <div class="bar-row"><div class="bar-l">Katie Necklace</div><div class="bar-t"><div class="bar-f" style="width:31%;background:var(--red);"></div></div><div class="bar-n">$736</div></div>
+        <div class="bar-row"><div class="bar-l">Bamboo Initial Bracelet</div><div class="bar-t"><div class="bar-f" style="width:29%;background:var(--red);"></div></div><div class="bar-n">$693</div></div>
+        <div class="bar-row"><div class="bar-l">Double Link Chain Brac.</div><div class="bar-t"><div class="bar-f" style="width:28%;background:var(--red);"></div></div><div class="bar-n">$666</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="sec-label">Products by return rate (min 5 returns)</div>
+      <div class="card">
+        <div class="br"><div class="brl">Compass Studs</div><span class="badge badge-bad">54.5%</span></div>
+        <div class="br"><div class="brl">Golf Toggle Necklace</div><span class="badge badge-bad">40.0%</span></div>
+        <div class="br"><div class="brl">Dogwood Cotton Pearl Earrings</div><span class="badge badge-bad">29.4%</span></div>
+        <div class="br"><div class="brl">Venetian Glass Bee Bracelet</div><span class="badge badge-warn">15.8%</span></div>
+        <div class="br"><div class="brl">Rectangle Ring</div><span class="badge badge-warn">12.6%</span></div>
+        <div class="br"><div class="brl">Venetian Glass Bee Necklace</div><span class="badge badge-warn">11.4%</span></div>
+        <div class="br"><div class="brl">Katie Necklace</div><span class="badge badge-warn">8.6%</span></div>
+        <div class="br"><div class="brl">Stone Heart Toggle Necklace</div><span class="badge badge-warn">8.2%</span></div>
+        <div class="br"><div class="brl">Bamboo Initial Bracelet</div><span class="badge badge-warn">8.0%</span></div>
+        <div class="br"><div class="brl">Bentley Earrings</div><span class="badge badge-ok">6.7%</span></div>
+        <div class="br"><div class="brl">Cross Toggle Necklace</div><span class="badge badge-ok">3.7%</span></div>
+        <div class="br"><div class="brl">Audrey Heart Necklace</div><span class="badge badge-ok">2.1%</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-label">Notable flags</div>
+    <div class="ret-highlight">
+      <div class="ret-hl-title">Rectangle Ring: highest return volume by far</div>
+      <div class="ret-hl-sub">63 units returned across 63 orders — nearly one return per return order. 9.7% of all Rectangle Ring orders were returned. This is the #7 product by revenue but the #1 return by unit count. Likely a fit or expectation issue; worth reviewing product photography and sizing guidance.</div>
+    </div>
+    <div class="ret-highlight">
+      <div class="ret-hl-title">Compass Studs &amp; Golf Toggle: small volume, alarming rates</div>
+      <div class="ret-hl-sub">54.5% and 40.0% return rates respectively. Low absolute volume (5–6 returns each) but the rates suggest a product or presentation problem. Worth a closer look before featuring either in 2026 campaigns.</div>
+    </div>
+    <div class="ret-highlight">
+      <div class="ret-hl-title">Peak sale days generated the most returns</div>
+      <div class="ret-hl-sub">Apr 10–11 had $12,271 in returns processed — the same days as the two biggest sales days. This suggests some immediate buyer's remorse or order errors happening in the sale rush, not just delayed returns.</div>
+    </div>
+    <div class="ret-highlight">
+      <div class="ret-hl-title">Venetian Glass Bee line appears in both return rate lists</div>
+      <div class="ret-hl-sub">Both the necklace (11.4%) and bracelet (15.8%) have elevated return rates. A consistent pattern across a product line suggests a shared product characteristic — worth reviewing whether customers are citing the same reason.</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <span>Susan Shaw Jewelry — April 2025 Sales Data (Shopify)</span>
+  <span>Prepared by Page 3 Consulting</span>
+</div>
+
+<script>
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+
+const products = [
+  ['Cross Toggle Necklace', 51870, 438, 415],
+  ['Audrey Heart Necklace', 46345, 459, 426],
+  ['Alys Necklace', 25709, 495, 341],
+  ['Coin Toggle Necklace', 22914, 223, 217],
+  ['Heart Toggle Necklace', 20414, 196, 182],
+  ['Alys Cross Necklace', 20143, 274, 205],
+  ['Rectangle Ring', 19043, 437, 588],
+  ['Double Link Chain Bracelet', 14532, 141, 138],
+  ['Mini Margaret Necklace', 12510, 118, 105],
+  ['Stone Heart Toggle Necklace', 11186, 89, 84],
+  ['Cross Toggle Bracelet', 10170, 133, 114],
+  ['Compass Toggle Necklace', 10000, 98, 93],
+  ['Mixed Metal Cross Toggle Bracelet', 9900, 100, 91],
+  ['Multi Strand Turquoise + Coin Necklace', 9485, 58, 58],
+  ['Mini Margaret Bracelet', 9202, 123, 103],
+  ['Katie Necklace', 8480, 74, 67],
+  ['Dainty Tall Cross Necklace', 7943, 93, 83],
+  ['Bamboo Initial Bracelet', 7783, 115, 85],
+  ['Ida Paperclip Necklace', 7731, 66, 61],
+  ['Madeline Studs', 7606, 123, 115],
+  ['Open Clover Toggle Necklace', 7470, 75, 74],
+  ['Solid Cross Necklace', 7404, 80, 76],
+  ['Cotton Pearl Toggle Necklace', 7048, 76, 73],
+  ['Bee Intaglio Toggle Necklace', 6745, 66, 65],
+  ['Venetian Glass Bee Necklace', 6587, 39, 37]
+];
+const list = document.getElementById('productList');
+products.forEach(([name, sales, units, orders], i) => {
+  const row = document.createElement('div');
+  row.className = 'ptrow';
+  if (i === 24) row.style.borderBottom = 'none';
+  row.innerHTML = `<span style="color:var(--text-primary);">${i + 1}. ${name}</span><span style="text-align:right;font-weight:normal;">$${sales.toLocaleString()}</span><span style="text-align:right;color:var(--text-secondary);">${units}</span><span style="text-align:right;color:var(--text-secondary);">${orders}</span>`;
+  list.appendChild(row);
+});
+
+const dailyLabels = ['Apr 1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25','26','27','28','29','30'];
+const dailyVals = [28389,28385,24451,19151,23421,33449,27480,26502,35569,62055,64564,54440,58136,38768,44722,54066,77768,19920,12170,16340,14616,17282,16533,16051,15396,17846,15923,18151,27142,24034];
+const dailyColors = dailyVals.map((v, i) => i < 17 ? '#378ADD' : '#B5D4F4');
+
+new Chart(document.getElementById('dailyChart'), {
+  type: 'bar',
+  data: { labels: dailyLabels, datasets: [{ data: dailyVals, backgroundColor: dailyColors, borderRadius: 2, borderSkipped: false }] },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => '$' + ctx.parsed.y.toLocaleString() } } },
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 10 }, maxRotation: 45, autoSkip: true, maxTicksLimit: 15 } },
+      y: { grid: { color: 'rgba(0,0,0,0.06)' }, ticks: { callback: v => '$' + (v / 1000).toFixed(0) + 'k', font: { size: 10 } } }
+    }
+  }
+});
+
+new Chart(document.getElementById('dowChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    datasets: [{ data: [106132, 147994, 160399, 187930, 122310, 109214, 131362], backgroundColor: '#1D9E75', borderRadius: 3 }]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => '$' + ctx.parsed.y.toLocaleString() } } },
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 11 } } },
+      y: { grid: { color: 'rgba(0,0,0,0.06)' }, ticks: { callback: v => '$' + (v / 1000).toFixed(0) + 'k', font: { size: 10 } } }
+    }
+  }
+});
+
+new Chart(document.getElementById('retCatChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Necklace', 'Earring', 'Bracelet', 'Ring'],
+    datasets: [
+      { label: 'Return value', data: [21364, 8286, 7726, 2958], backgroundColor: '#E24B4A', borderRadius: 3, yAxisID: 'y' },
+      { label: 'Units returned', data: [198, 145, 94, 76], backgroundColor: '#F09595', borderRadius: 3, yAxisID: 'y2' }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: { callbacks: { label: ctx => ctx.datasetIndex === 0 ? '$' + ctx.parsed.y.toLocaleString() : ctx.parsed.y + ' units' } }
+    },
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 12 } } },
+      y: { position: 'left', grid: { color: 'rgba(0,0,0,0.06)' }, ticks: { callback: v => '$' + v.toLocaleString(), font: { size: 10 } } },
+      y2: { position: 'right', grid: { display: false }, ticks: { callback: v => v + ' units', font: { size: 10 } } }
+    }
+  }
+});
+</script>
+</body>
+</html>

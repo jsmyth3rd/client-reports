@@ -1,0 +1,3796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vantage CRE — LoopNet Portfolio Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0f1117;
+    --paper: #f8f6f1;
+    --rule: #e2ddd6;
+    --accent: #c8412a;
+    --accent-light: #f5e8e6;
+    --gold: #b8860b;
+    --gold-light: #fdf8ec;
+    --teal: #1a6b6b;
+    --teal-light: #e8f4f4;
+    --muted: #6b6560;
+    --green: #2d6a2d;
+    --green-bg: #eaf3ea;
+    --yellow-bg: #fef9e7;
+    --red-bg: #fdf0ee;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  /* HEADER */
+  .report-header {
+    background: var(--ink);
+    color: white;
+    padding: 48px 60px 40px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 40px;
+  }
+  .report-header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 38px;
+    font-weight: 400;
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+  }
+  .report-header h1 em {
+    font-style: italic;
+    color: #d4c4a0;
+  }
+  .report-meta {
+    text-align: right;
+    opacity: 0.7;
+    font-size: 12px;
+    font-weight: 300;
+    line-height: 1.8;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  /* NAV */
+  .report-nav {
+    background: white;
+    border-bottom: 2px solid var(--ink);
+    padding: 0 60px;
+    display: flex;
+    gap: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .nav-tab {
+    padding: 14px 24px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .nav-tab:hover { color: var(--ink); }
+  .nav-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* SECTIONS */
+  .section { display: none; padding: 48px 60px; max-width: 1400px; margin: 0 auto; }
+  .section.active { display: block; }
+
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 26px;
+    font-weight: 400;
+    margin-bottom: 6px;
+  }
+  .section-sub {
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 32px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  /* SUMMARY TILES */
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+  .tile {
+    background: white;
+    border: 1px solid var(--rule);
+    padding: 24px 20px;
+    border-radius: 4px;
+  }
+  .tile-val {
+    font-family: 'DM Serif Display', serif;
+    font-size: 32px;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .tile-lbl {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .tile.accent { background: var(--ink); color: white; }
+  .tile.accent .tile-lbl { color: #a0a0a0; }
+  .tile.warn { border-left: 4px solid var(--accent); }
+  .tile.good { border-left: 4px solid var(--teal); }
+
+  /* TREND BAR */
+  .trend-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+  .trend-card {
+    background: white;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 20px;
+    text-align: center;
+  }
+  .trend-period {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .trend-views {
+    font-family: 'DM Serif Display', serif;
+    font-size: 24px;
+    color: var(--teal);
+  }
+  .trend-leads {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+  .trend-leads strong { color: var(--ink); font-weight: 600; }
+
+  /* BROKER CARDS */
+  .broker-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+  .broker-card {
+    background: white;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 24px;
+  }
+  .broker-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .broker-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .stat { text-align: center; }
+  .stat-val {
+    display: block;
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    line-height: 1;
+  }
+  .stat-lbl {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 3px;
+  }
+  .broker-flags {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 12px;
+  }
+  .flag-dot { display: flex; align-items: center; gap: 6px; }
+  .flag-dot::before {
+    content: '●';
+    font-size: 8px;
+  }
+  .flag-dot.red::before { color: var(--accent); }
+  .flag-dot.yellow::before { color: var(--gold); }
+  .flag-dot.green::before { color: var(--green); }
+
+  /* TABLES */
+  .table-wrap {
+    background: white;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    overflow: auto;
+    margin-bottom: 32px;
+  }
+  .table-header {
+    padding: 16px 20px 12px;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .table-header h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 17px;
+    font-weight: 400;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  th {
+    text-align: left;
+    padding: 10px 16px;
+    font-size: 10px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: #fafaf8;
+    border-bottom: 1px solid var(--rule);
+    white-space: nowrap;
+  }
+  td {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: middle;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #fafaf8; }
+
+  .prop-name { font-weight: 500; font-size: 13px; }
+  .prop-sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
+  .broker-cell { font-size: 12px; font-weight: 500; }
+  .leads-cell { font-weight: 600; font-size: 15px; }
+
+  /* BADGES */
+  .badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .badge.red { background: var(--red-bg); color: var(--accent); }
+  .badge.yellow { background: var(--yellow-bg); color: var(--gold); }
+  .badge.green { background: var(--green-bg); color: var(--green); }
+  .mom { font-size: 11px; font-weight: 500; }
+  .mom.gaining { color: var(--green); }
+  .mom.losing { color: var(--accent); }
+  .mom.stable { color: var(--muted); }
+
+  .exp-silver { color: var(--gold); font-weight: 600; font-size: 11px; }
+  .exp-basic { color: var(--muted); font-size: 11px; }
+
+  /* TWO COL */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 32px;
+  }
+
+  /* CHART CANVAS */
+  .chart-wrap {
+    background: white;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 32px;
+  }
+  .chart-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 16px;
+    font-weight: 400;
+    margin-bottom: 16px;
+  }
+  canvas { max-width: 100%; }
+
+  /* QUADRANT */
+  .quadrant-wrap {
+    position: relative;
+    height: 400px;
+    background: white;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  /* INSIGHT BOX */
+  .insight {
+    background: var(--ink);
+    color: white;
+    border-radius: 4px;
+    padding: 24px 28px;
+    margin-bottom: 32px;
+  }
+  .insight-label {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #888;
+    margin-bottom: 12px;
+  }
+  .insight-points {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+  }
+  .insight-point {
+    font-size: 13px;
+    line-height: 1.5;
+    padding-left: 12px;
+    border-left: 2px solid #d4c4a0;
+    color: #d0ccc5;
+  }
+  .insight-point strong { color: white; }
+
+  /* BROKER SECTION TABS */
+  .broker-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .broker-tab {
+    padding: 8px 18px;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    background: white;
+    transition: all 0.15s;
+  }
+  .broker-tab:hover { border-color: var(--ink); }
+  .broker-tab.active { background: var(--ink); color: white; border-color: var(--ink); }
+
+  .broker-section { display: none; }
+  .broker-section.active { display: block; }
+
+  /* FILTER BAR */
+  .filter-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .filter-bar select {
+    padding: 7px 12px;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    background: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .filter-bar input {
+    padding: 7px 12px;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    width: 200px;
+  }
+  .filter-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+  }
+
+  @media print {
+    .report-nav { display: none; }
+    .section { display: block !important; padding: 24px; }
+    body { font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="report-header">
+  <div>
+    <h1>Vantage Commercial Real Estate<br><em>LoopNet Portfolio Intelligence Report</em></h1>
+  </div>
+  <div class="report-meta">
+    Generated: May 7, 2026<br>
+    138 Active Listings<br>
+    4 Brokers<br>
+    Data: Trailing 30d / 90d / 180d / 1yr
+  </div>
+</div>
+
+<nav class="report-nav">
+  <div class="nav-tab active" onclick="showSection('overview')">Portfolio Overview</div>
+  <div class="nav-tab" onclick="showSection('trends')">Trends & Markets</div>
+  <div class="nav-tab" onclick="showSection('all-listings')">All Listings</div>
+  <div class="nav-tab" onclick="showSection('brokers')">By Broker</div>
+</nav>
+
+<!-- OVERVIEW -->
+<div class="section active" id="overview">
+  <div class="section-title">Portfolio Overview</div>
+  <div class="section-sub">Trailing 30-day performance snapshot across all 138 active listings</div>
+
+  <div class="tiles">
+    <div class="tile accent">
+      <div class="tile-val">138</div>
+      <div class="tile-lbl">Active Listings</div>
+    </div>
+    <div class="tile">
+      <div class="tile-val">159,447</div>
+      <div class="tile-lbl">Total Views (30d)</div>
+    </div>
+    <div class="tile">
+      <div class="tile-val">47,505</div>
+      <div class="tile-lbl">Unique Viewers (30d)</div>
+    </div>
+    <div class="tile good">
+      <div class="tile-val">60</div>
+      <div class="tile-lbl">Total Leads (30d)</div>
+    </div>
+    <div class="tile warn">
+      <div class="tile-val">39</div>
+      <div class="tile-lbl">Needs Attention</div>
+    </div>
+    <div class="tile warn">
+      <div class="tile-val">66</div>
+      <div class="tile-lbl">Watch (0 leads)</div>
+    </div>
+    <div class="tile good">
+      <div class="tile-val">33</div>
+      <div class="tile-lbl">Generating Leads</div>
+    </div>
+    <div class="tile">
+      <div class="tile-val">0.43</div>
+      <div class="tile-lbl">Avg Leads / Listing</div>
+    </div>
+  </div>
+
+  <div class="insight">
+    <div class="insight-label">Key Insights · Week of May 7, 2026</div>
+    <div class="insight-points">
+      <div class="insight-point"><strong>76% of listings generated zero leads</strong> in the past 30 days. Of these, 39 have low visibility (&lt;50 unique viewers) — a content or placement issue. 66 have solid visibility but no conversion — a pricing or listing quality issue.</div>
+      <div class="insight-point"><strong>Retail is the strongest asset class</strong> at 0.68 leads/listing (30d). Land is the weakest at 0.12. Office Medical is underperforming relative to its view counts — high views, low conversion.</div>
+      <div class="insight-point"><strong>Pennsauken and Magnolia</strong> are the top-performing markets at 2.0 leads/listing. Cherry Hill generates the most total views (23,810) but only 0.42 leads/listing — a conversion gap worth investigating.</div>
+      <div class="insight-point"><strong>27 listings are losing momentum</strong> — leads in the last 30 days are below their 90-day pace. Several are high-visibility listings suggesting market fatigue or competitive pressure rather than a placement problem.</div>
+    </div>
+  </div>
+
+  <div class="section-title" style="font-size:20px;margin-bottom:20px;">Broker Scorecards</div>
+  <div class="broker-cards">
+    <div class="broker-card">
+            <div class="broker-name">Emily Stein</div>
+            <div class="broker-stats">
+                <div class="stat"><span class="stat-val">11</span><span class="stat-lbl">Listings</span></div>
+                <div class="stat"><span class="stat-val">17,388</span><span class="stat-lbl">Views</span></div>
+                <div class="stat"><span class="stat-val">7</span><span class="stat-lbl">Leads</span></div>
+                <div class="stat"><span class="stat-val">0.64</span><span class="stat-lbl">Leads/Listing</span></div>
+            </div>
+            <div class="broker-flags">
+                <span class="flag-dot red">3 Needs Attention</span>
+                <span class="flag-dot yellow">4 Watch</span>
+                <span class="flag-dot green">4 Performing</span>
+            </div>
+        </div><div class="broker-card">
+            <div class="broker-name">Leor Hemo</div>
+            <div class="broker-stats">
+                <div class="stat"><span class="stat-val">107</span><span class="stat-lbl">Listings</span></div>
+                <div class="stat"><span class="stat-val">104,437</span><span class="stat-lbl">Views</span></div>
+                <div class="stat"><span class="stat-val">37</span><span class="stat-lbl">Leads</span></div>
+                <div class="stat"><span class="stat-val">0.35</span><span class="stat-lbl">Leads/Listing</span></div>
+            </div>
+            <div class="broker-flags">
+                <span class="flag-dot red">31 Needs Attention</span>
+                <span class="flag-dot yellow">53 Watch</span>
+                <span class="flag-dot green">23 Performing</span>
+            </div>
+        </div><div class="broker-card">
+            <div class="broker-name">John Doss</div>
+            <div class="broker-stats">
+                <div class="stat"><span class="stat-val">3</span><span class="stat-lbl">Listings</span></div>
+                <div class="stat"><span class="stat-val">9,702</span><span class="stat-lbl">Views</span></div>
+                <div class="stat"><span class="stat-val">5</span><span class="stat-lbl">Leads</span></div>
+                <div class="stat"><span class="stat-val">1.67</span><span class="stat-lbl">Leads/Listing</span></div>
+            </div>
+            <div class="broker-flags">
+                <span class="flag-dot red">0 Needs Attention</span>
+                <span class="flag-dot yellow">0 Watch</span>
+                <span class="flag-dot green">3 Performing</span>
+            </div>
+        </div><div class="broker-card">
+            <div class="broker-name">Ken Richardson</div>
+            <div class="broker-stats">
+                <div class="stat"><span class="stat-val">17</span><span class="stat-lbl">Listings</span></div>
+                <div class="stat"><span class="stat-val">27,920</span><span class="stat-lbl">Views</span></div>
+                <div class="stat"><span class="stat-val">11</span><span class="stat-lbl">Leads</span></div>
+                <div class="stat"><span class="stat-val">0.65</span><span class="stat-lbl">Leads/Listing</span></div>
+            </div>
+            <div class="broker-flags">
+                <span class="flag-dot red">5 Needs Attention</span>
+                <span class="flag-dot yellow">9 Watch</span>
+                <span class="flag-dot green">3 Performing</span>
+            </div>
+        </div>
+  </div>
+
+  <div class="trend-grid">
+    <div class="trend-card">
+      <div class="trend-period">Trailing 30 Days</div>
+      <div class="trend-views">159,447</div>
+      <div class="trend-leads">Views · <strong>60</strong> leads</div>
+    </div>
+    <div class="trend-card">
+      <div class="trend-period">Trailing 3 Months</div>
+      <div class="trend-views">469,837</div>
+      <div class="trend-leads">Views · <strong>162</strong> leads</div>
+    </div>
+    <div class="trend-card">
+      <div class="trend-period">Trailing 6 Months</div>
+      <div class="trend-views">887,404</div>
+      <div class="trend-leads">Views · <strong>302</strong> leads</div>
+    </div>
+    <div class="trend-card">
+      <div class="trend-period">Trailing 1 Year</div>
+      <div class="trend-views">1,553,856</div>
+      <div class="trend-leads">Views · <strong>517</strong> leads</div>
+    </div>
+  </div>
+</div>
+
+<!-- TRENDS -->
+<div class="section" id="trends">
+  <div class="section-title">Trends & Markets</div>
+  <div class="section-sub">Geographic and property type performance patterns across all time windows</div>
+
+  <div class="two-col">
+    <div class="table-wrap">
+      <div class="table-header"><h3>Top Markets by Lead Conversion (30d)</h3></div>
+      <table>
+        <thead><tr>
+          <th>City</th><th>Listings</th><th>Views</th><th>Unique</th><th>Leads</th><th>Leads/Listing</th>
+        </tr></thead>
+        <tbody><tr>
+            <td>Pennsauken</td>
+            <td>6</td>
+            <td>11,582</td>
+            <td>3,400</td>
+            <td class="leads-cell">10</td>
+            <td>1.67</td>
+        </tr><tr>
+            <td>Magnolia</td>
+            <td>3</td>
+            <td>5,227</td>
+            <td>1,491</td>
+            <td class="leads-cell">6</td>
+            <td>2.0</td>
+        </tr><tr>
+            <td>Cherry Hill</td>
+            <td>12</td>
+            <td>23,810</td>
+            <td>6,073</td>
+            <td class="leads-cell">5</td>
+            <td>0.42</td>
+        </tr><tr>
+            <td>Camden</td>
+            <td>5</td>
+            <td>12,441</td>
+            <td>4,407</td>
+            <td class="leads-cell">5</td>
+            <td>1.0</td>
+        </tr><tr>
+            <td>Mount Holly</td>
+            <td>4</td>
+            <td>5,238</td>
+            <td>1,714</td>
+            <td class="leads-cell">4</td>
+            <td>1.0</td>
+        </tr><tr>
+            <td>Egg Harbor City</td>
+            <td>2</td>
+            <td>3,323</td>
+            <td>1,356</td>
+            <td class="leads-cell">4</td>
+            <td>2.0</td>
+        </tr><tr>
+            <td>Vineland</td>
+            <td>4</td>
+            <td>8,004</td>
+            <td>2,565</td>
+            <td class="leads-cell">3</td>
+            <td>0.75</td>
+        </tr><tr>
+            <td>Runnemede</td>
+            <td>3</td>
+            <td>5,207</td>
+            <td>1,566</td>
+            <td class="leads-cell">3</td>
+            <td>1.0</td>
+        </tr><tr>
+            <td>Mount Laurel</td>
+            <td>4</td>
+            <td>4,839</td>
+            <td>1,384</td>
+            <td class="leads-cell">3</td>
+            <td>0.75</td>
+        </tr><tr>
+            <td>Palmyra</td>
+            <td>1</td>
+            <td>526</td>
+            <td>244</td>
+            <td class="leads-cell">2</td>
+            <td>2.0</td>
+        </tr><tr>
+            <td>Medford</td>
+            <td>3</td>
+            <td>2,516</td>
+            <td>776</td>
+            <td class="leads-cell">2</td>
+            <td>0.67</td>
+        </tr><tr>
+            <td>Berlin</td>
+            <td>4</td>
+            <td>3,204</td>
+            <td>675</td>
+            <td class="leads-cell">2</td>
+            <td>0.5</td>
+        </tr><tr>
+            <td>Wenonah</td>
+            <td>1</td>
+            <td>1,347</td>
+            <td>576</td>
+            <td class="leads-cell">2</td>
+            <td>2.0</td>
+        </tr><tr>
+            <td>Swedesboro</td>
+            <td>4</td>
+            <td>5,182</td>
+            <td>1,517</td>
+            <td class="leads-cell">2</td>
+            <td>0.5</td>
+        </tr><tr>
+            <td>Voorhees</td>
+            <td>10</td>
+            <td>8,504</td>
+            <td>2,474</td>
+            <td class="leads-cell">1</td>
+            <td>0.1</td>
+        </tr><tr>
+            <td>Ambler</td>
+            <td>1</td>
+            <td>2,342</td>
+            <td>701</td>
+            <td class="leads-cell">1</td>
+            <td>1.0</td>
+        </tr><tr>
+            <td>Burlington</td>
+            <td>4</td>
+            <td>2,187</td>
+            <td>621</td>
+            <td class="leads-cell">1</td>
+            <td>0.25</td>
+        </tr><tr>
+            <td>Cinnaminson</td>
+            <td>2</td>
+            <td>1,686</td>
+            <td>443</td>
+            <td class="leads-cell">1</td>
+            <td>0.5</td>
+        </tr><tr>
+            <td>Woolwich</td>
+            <td>4</td>
+            <td>2,128</td>
+            <td>551</td>
+            <td class="leads-cell">1</td>
+            <td>0.25</td>
+        </tr><tr>
+            <td>Thorofare</td>
+            <td>1</td>
+            <td>893</td>
+            <td>216</td>
+            <td class="leads-cell">1</td>
+            <td>1.0</td>
+        </tr></tbody>
+      </table>
+    </div>
+    <div class="table-wrap">
+      <div class="table-header"><h3>Property Type Performance (30d)</h3></div>
+      <table>
+        <thead><tr>
+          <th>Type</th><th>Listings</th><th>Total Views</th><th>Leads</th><th>Leads/Listing</th>
+        </tr></thead>
+        <tbody><tr>
+            <td>Retail</td>
+            <td>47</td>
+            <td>63,761</td>
+            <td class="leads-cell">32</td>
+            <td>0.68</td>
+        </tr><tr>
+            <td>Office</td>
+            <td>40</td>
+            <td>46,152</td>
+            <td class="leads-cell">14</td>
+            <td>0.35</td>
+        </tr><tr>
+            <td>Industrial</td>
+            <td>11</td>
+            <td>22,197</td>
+            <td class="leads-cell">5</td>
+            <td>0.45</td>
+        </tr><tr>
+            <td>Office Retail</td>
+            <td>6</td>
+            <td>6,687</td>
+            <td class="leads-cell">4</td>
+            <td>0.67</td>
+        </tr><tr>
+            <td>Land</td>
+            <td>25</td>
+            <td>5,614</td>
+            <td class="leads-cell">3</td>
+            <td>0.12</td>
+        </tr><tr>
+            <td>Office Medical</td>
+            <td>6</td>
+            <td>12,120</td>
+            <td class="leads-cell">1</td>
+            <td>0.17</td>
+        </tr><tr>
+            <td>Flex</td>
+            <td>3</td>
+            <td>2,916</td>
+            <td class="leads-cell">1</td>
+            <td>0.33</td>
+        </tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <div class="table-header"><h3>Momentum Watch — Losing Pace vs. 90-Day Average</h3><span style="font-size:12px;color:#888">High-visibility listings where recent lead rate has slowed</span></div>
+    <table>
+      <thead><tr>
+        <th>Property</th><th>Broker</th><th>Unique Viewers (30d)</th><th>Leads 30d</th><th>Leads 90d</th><th>Flag</th>
+      </tr></thead>
+      <tbody>
+<tr>
+      <td><div class="prop-name">418 Federal St</div><div class="prop-sub">Camden · Retail</div></td>
+      <td class="broker-cell">Leor Hemo</td>
+      <td>1,280</td>
+      <td class="leads-cell">3</td>
+      <td>10</td>
+      <td><span class="badge green">✓ Active</span></td>
+    </tr><tr>
+      <td><div class="prop-name">502 Hillside Ter</div><div class="prop-sub">Pennsauken · Office</div></td>
+      <td class="broker-cell">Ken Richardson</td>
+      <td>1,503</td>
+      <td class="leads-cell">2</td>
+      <td>8</td>
+      <td><span class="badge green">✓ Active</span></td>
+    </tr><tr>
+      <td><div class="prop-name">1793 Springdale Rd</div><div class="prop-sub">Cherry Hill · Retail</div></td>
+      <td class="broker-cell">Emily Stein</td>
+      <td>885</td>
+      <td class="leads-cell">1</td>
+      <td>7</td>
+      <td><span class="badge green">✓ Active</span></td>
+    </tr><tr>
+      <td><div class="prop-name">163 N Rt 130</div><div class="prop-sub">Bordentown · Office Medical</div></td>
+      <td class="broker-cell">Emily Stein</td>
+      <td>398</td>
+      <td class="leads-cell">0</td>
+      <td>6</td>
+      <td><span class="badge yellow">◉ Watch</span></td>
+    </tr><tr>
+      <td><div class="prop-name">5045-5057 Kaighn Ave</div><div class="prop-sub">Pennsauken · Flex</div></td>
+      <td class="broker-cell">Leor Hemo</td>
+      <td>332</td>
+      <td class="leads-cell">1</td>
+      <td>6</td>
+      <td><span class="badge green">✓ Active</span></td>
+    </tr><tr>
+      <td><div class="prop-name">1 W Elizabeth Ave</div><div class="prop-sub">Linden · Retail</div></td>
+      <td class="broker-cell">Leor Hemo</td>
+      <td>868</td>
+      <td class="leads-cell">0</td>
+      <td>5</td>
+      <td><span class="badge yellow">◉ Watch</span></td>
+    </tr><tr>
+      <td><div class="prop-name">1204 Route 130 N</div><div class="prop-sub">Cinnaminson · Retail</div></td>
+      <td class="broker-cell">Leor Hemo</td>
+      <td>383</td>
+      <td class="leads-cell">1</td>
+      <td>5</td>
+      <td><span class="badge green">✓ Active</span></td>
+    </tr><tr>
+      <td><div class="prop-name">853-881 W Butler Pike</div><div class="prop-sub">Ambler · Retail</div></td>
+      <td class="broker-cell">Leor Hemo</td>
+      <td>701</td>
+      <td class="leads-cell">1</td>
+      <td>4</td>
+      <td><span class="badge green">✓ Active</span></td>
+    </tr><tr>
+      <td><div class="prop-name">509 Woodstown Rd</div><div class="prop-sub">Swedesboro · Office</div></td>
+      <td class="broker-cell">Leor Hemo</td>
+      <td>834</td>
+      <td class="leads-cell">1</td>
+      <td>4</td>
+      <td><span class="badge green">✓ Active</span></td>
+    </tr><tr>
+      <td><div class="prop-name">871-897 Mantua Pike</div><div class="prop-sub">Woodbury · Retail</div></td>
+      <td class="broker-cell">Leor Hemo</td>
+      <td>759</td>
+      <td class="leads-cell">1</td>
+      <td>4</td>
+      <td><span class="badge green">✓ Active</span></td>
+    </tr><tr>
+      <td><div class="prop-name">201-203 Kresson-Gibbsboro Rd NE</div><div class="prop-sub">Voorhees · Retail</div></td>
+      <td class="broker-cell">Leor Hemo</td>
+      <td>349</td>
+      <td class="leads-cell">0</td>
+      <td>4</td>
+      <td><span class="badge yellow">◉ Watch</span></td>
+    </tr><tr>
+      <td><div class="prop-name">210 W High St</div><div class="prop-sub">Glassboro · Office Retail</div></td>
+      <td class="broker-cell">Leor Hemo</td>
+      <td>775</td>
+      <td class="leads-cell">0</td>
+      <td>3</td>
+      <td><span class="badge yellow">◉ Watch</span></td>
+    </tr><tr>
+      <td><div class="prop-name">700 Haddonfield Berlin Rd</div><div class="prop-sub">Voorhees · Retail</div></td>
+      <td class="broker-cell">Leor Hemo</td>
+      <td>176</td>
+      <td class="leads-cell">0</td>
+      <td>3</td>
+      <td><span class="badge yellow">◉ Watch</span></td>
+    </tr><tr>
+      <td><div class="prop-name">450 S Fellowship Rd</div><div class="prop-sub">Maple Shade Township · Industrial</div></td>
+      <td class="broker-cell">Leor Hemo</td>
+      <td>1,235</td>
+      <td class="leads-cell">0</td>
+      <td>3</td>
+      <td><span class="badge yellow">◉ Watch</span></td>
+    </tr><tr>
+      <td><div class="prop-name">51 Norman Ave</div><div class="prop-sub">Delran · Industrial</div></td>
+      <td class="broker-cell">Ken Richardson</td>
+      <td>222</td>
+      <td class="leads-cell">0</td>
+      <td>2</td>
+      <td><span class="badge yellow">◉ Watch</span></td>
+    </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="table-wrap">
+    <div class="table-header"><h3>Gaining Momentum — Above 90-Day Pace</h3></div>
+    <table>
+      <thead><tr>
+        <th>Property</th><th>Broker</th><th>Unique Viewers (30d)</th><th>Leads 30d</th><th>Leads 90d</th>
+      </tr></thead>
+      <tbody>
+<tr>
+      <td><div class="prop-name">7007 Route 38</div><div class="prop-sub">Pennsauken · Retail</div></td>
+      <td class="broker-cell">Leor Hemo</td>
+      <td>1,099</td>
+      <td class="leads-cell">7</td>
+      <td>9</td>
+    </tr><tr>
+      <td><div class="prop-name">334 S White Horse Pike</div><div class="prop-sub">Magnolia · Retail</div></td>
+      <td class="broker-cell">Ken Richardson</td>
+      <td>580</td>
+      <td class="leads-cell">6</td>
+      <td>13</td>
+    </tr><tr>
+      <td><div class="prop-name">1649 Route 38</div><div class="prop-sub">Mount Holly · Retail</div></td>
+      <td class="broker-cell">Emily Stein</td>
+      <td>980</td>
+      <td class="leads-cell">3</td>
+      <td>3</td>
+    </tr><tr>
+      <td><div class="prop-name">1200 S West Blvd</div><div class="prop-sub">Vineland · Industrial</div></td>
+      <td class="broker-cell">Ken Richardson</td>
+      <td>2,484</td>
+      <td class="leads-cell">3</td>
+      <td>4</td>
+    </tr><tr>
+      <td><div class="prop-name">1254 NJ-73</div><div class="prop-sub">Palmyra · Land</div></td>
+      <td class="broker-cell">Emily Stein</td>
+      <td>244</td>
+      <td class="leads-cell">2</td>
+      <td>2</td>
+    </tr><tr>
+      <td><div class="prop-name">204 Philadelphia Ave</div><div class="prop-sub">Egg Harbor City · Office Retail</div></td>
+      <td class="broker-cell">John Doss</td>
+      <td>288</td>
+      <td class="leads-cell">2</td>
+      <td>2</td>
+    </tr><tr>
+      <td><div class="prop-name">204 Philadelphia Ave</div><div class="prop-sub">Egg Harbor City · Office</div></td>
+      <td class="broker-cell">John Doss</td>
+      <td>1,068</td>
+      <td class="leads-cell">2</td>
+      <td>2</td>
+    </tr><tr>
+      <td><div class="prop-name">1348 Glassboro Rd</div><div class="prop-sub">Wenonah · Retail</div></td>
+      <td class="broker-cell">Leor Hemo</td>
+      <td>576</td>
+      <td class="leads-cell">2</td>
+      <td>2</td>
+    </tr><tr>
+      <td><div class="prop-name">3701 Church Rd</div><div class="prop-sub">Mount Laurel · Office Retail</div></td>
+      <td class="broker-cell">Leor Hemo</td>
+      <td>508</td>
+      <td class="leads-cell">2</td>
+      <td>4</td>
+    </tr><tr>
+      <td><div class="prop-name">513 N Black Horse Pike</div><div class="prop-sub">Runnemede · Office</div></td>
+      <td class="broker-cell">Leor Hemo</td>
+      <td>499</td>
+      <td class="leads-cell">2</td>
+      <td>4</td>
+    </tr><tr>
+      <td><div class="prop-name">2 S Route 73 Hwy</div><div class="prop-sub">Berlin · Retail</div></td>
+      <td class="broker-cell">Leor Hemo</td>
+      <td>554</td>
+      <td class="leads-cell">2</td>
+      <td>3</td>
+    </tr><tr>
+      <td><div class="prop-name">1873 E Marlton Pike</div><div class="prop-sub">Cherry Hill · Office</div></td>
+      <td class="broker-cell">Leor Hemo</td>
+      <td>575</td>
+      <td class="leads-cell">2</td>
+      <td>5</td>
+    </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ALL LISTINGS -->
+<div class="section" id="all-listings">
+  <div class="section-title">All Listings</div>
+  <div class="section-sub">138 active listings sorted by 30-day lead count, then unique viewers</div>
+
+  <div class="filter-bar">
+    <span class="filter-label">Filter:</span>
+    <select onchange="filterTable(this.value, 'flag-filter')" id="flag-filter">
+      <option value="">All Status</option>
+      <option value="Needs Attention">⚠ Needs Attention</option>
+      <option value="Watch">◉ Watch</option>
+      <option value="Active">✓ Active</option>
+    </select>
+    <select onchange="filterBrokerCol(this.value)" id="broker-filter">
+      <option value="">All Brokers</option>
+      <option>Emily</option>
+      <option>John</option>
+      <option>Ken</option>
+      <option>Leor</option>
+    </select>
+    <input type="text" id="search-input" placeholder="Search address or city..." oninput="searchTable(this.value)">
+  </div>
+
+  <div class="table-wrap">
+    <table id="all-table">
+      <thead><tr>
+        <th>Property</th><th>Broker</th><th>Total Views</th><th>Unique Viewers</th><th>Leads</th><th>Fav</th><th>Tier</th><th>Status</th><th>Momentum</th>
+      </tr></thead>
+      <tbody><tr>
+            <td><div class="prop-name">7007 Route 38</div><div class="prop-sub">Pennsauken · Retail</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>4,138</td>
+            <td>1,099</td>
+            <td class="leads-cell">7</td>
+            <td>2</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">334 S White Horse Pike</div><div class="prop-sub">Magnolia · Retail</div></td>
+            <td class="broker-cell">Ken</td>
+            <td>1,385</td>
+            <td>580</td>
+            <td class="leads-cell">6</td>
+            <td>3</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1200 S West Blvd</div><div class="prop-sub">Vineland · Industrial</div></td>
+            <td class="broker-cell">Ken</td>
+            <td>7,720</td>
+            <td>2,484</td>
+            <td class="leads-cell">3</td>
+            <td>1</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">418 Federal St</div><div class="prop-sub">Camden · Retail</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>3,574</td>
+            <td>1,280</td>
+            <td class="leads-cell">3</td>
+            <td>1</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1649 Route 38</div><div class="prop-sub">Mount Holly · Retail</div></td>
+            <td class="broker-cell">Emily</td>
+            <td>3,314</td>
+            <td>980</td>
+            <td class="leads-cell">3</td>
+            <td>2</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">502 Hillside Ter</div><div class="prop-sub">Pennsauken · Office</div></td>
+            <td class="broker-cell">Ken</td>
+            <td>4,091</td>
+            <td>1,503</td>
+            <td class="leads-cell">2</td>
+            <td>5</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">204 Philadelphia Ave</div><div class="prop-sub">Egg Harbor City · Office</div></td>
+            <td class="broker-cell">John</td>
+            <td>2,698</td>
+            <td>1,068</td>
+            <td class="leads-cell">2</td>
+            <td>1</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1348 Glassboro Rd</div><div class="prop-sub">Wenonah · Retail</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>1,347</td>
+            <td>576</td>
+            <td class="leads-cell">2</td>
+            <td>3</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1873 E Marlton Pike</div><div class="prop-sub">Cherry Hill · Office</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>2,707</td>
+            <td>575</td>
+            <td class="leads-cell">2</td>
+            <td>2</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">2 S Route 73 Hwy</div><div class="prop-sub">Berlin · Retail</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>2,012</td>
+            <td>554</td>
+            <td class="leads-cell">2</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">3701 Church Rd</div><div class="prop-sub">Mount Laurel · Office Retail</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>1,883</td>
+            <td>508</td>
+            <td class="leads-cell">2</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">513 N Black Horse Pike</div><div class="prop-sub">Runnemede · Office</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>1,669</td>
+            <td>499</td>
+            <td class="leads-cell">2</td>
+            <td>1</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">30 Jackson Rd</div><div class="prop-sub">Medford · Office</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>1,078</td>
+            <td>354</td>
+            <td class="leads-cell">2</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">204 Philadelphia Ave</div><div class="prop-sub">Egg Harbor City · Office Retail</div></td>
+            <td class="broker-cell">John</td>
+            <td>625</td>
+            <td>288</td>
+            <td class="leads-cell">2</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1254 NJ-73</div><div class="prop-sub">Palmyra · Land</div></td>
+            <td class="broker-cell">Emily</td>
+            <td>526</td>
+            <td>244</td>
+            <td class="leads-cell">2</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1555 Mount Ephraim Ave</div><div class="prop-sub">Camden · Retail</div></td>
+            <td class="broker-cell">John</td>
+            <td>6,379</td>
+            <td>2,032</td>
+            <td class="leads-cell">1</td>
+            <td>1</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">2301 E Evesham Rd</div><div class="prop-sub">Voorhees · Office Medical</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>3,733</td>
+            <td>1,360</td>
+            <td class="leads-cell">1</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1939 Route 70 E</div><div class="prop-sub">Cherry Hill · Office</div></td>
+            <td class="broker-cell">Emily</td>
+            <td>3,906</td>
+            <td>1,120</td>
+            <td class="leads-cell">1</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">331 Market St</div><div class="prop-sub">Camden · Retail</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>2,348</td>
+            <td>1,052</td>
+            <td class="leads-cell">1</td>
+            <td>1</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1793 Springdale Rd</div><div class="prop-sub">Cherry Hill · Retail</div></td>
+            <td class="broker-cell">Emily</td>
+            <td>3,155</td>
+            <td>885</td>
+            <td class="leads-cell">1</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">509 Woodstown Rd</div><div class="prop-sub">Swedesboro · Office</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>2,329</td>
+            <td>834</td>
+            <td class="leads-cell">1</td>
+            <td>1</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1990 Rt 70 E</div><div class="prop-sub">Cherry Hill · Retail</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>3,166</td>
+            <td>812</td>
+            <td class="leads-cell">1</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">871-897 Mantua Pike</div><div class="prop-sub">Woodbury · Retail</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>2,700</td>
+            <td>759</td>
+            <td class="leads-cell">1</td>
+            <td>1</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">853-881 W Butler Pike</div><div class="prop-sub">Ambler · Retail</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>2,342</td>
+            <td>701</td>
+            <td class="leads-cell">1</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1361A Monmouth Rd</div><div class="prop-sub">Mount Holly · Industrial</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>1,570</td>
+            <td>671</td>
+            <td class="leads-cell">1</td>
+            <td>1</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">2905 Marne Hwy</div><div class="prop-sub">Mount Laurel · Office</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>1,153</td>
+            <td>494</td>
+            <td class="leads-cell">1</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">509 Woodstown Rd</div><div class="prop-sub">Swedesboro · Office</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>1,491</td>
+            <td>430</td>
+            <td class="leads-cell">1</td>
+            <td>1</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1204 Route 130 N</div><div class="prop-sub">Cinnaminson · Retail</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>1,506</td>
+            <td>383</td>
+            <td class="leads-cell">1</td>
+            <td>1</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">2111 Route 322</div><div class="prop-sub">Woolwich · Land</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>1,439</td>
+            <td>367</td>
+            <td class="leads-cell">1</td>
+            <td>2</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">5045-5057 Kaighn Ave</div><div class="prop-sub">Pennsauken · Flex</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>1,695</td>
+            <td>332</td>
+            <td class="leads-cell">1</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">581 High St</div><div class="prop-sub">Burlington · Industrial</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>1,019</td>
+            <td>305</td>
+            <td class="leads-cell">1</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">835 E Clements Bridge Rd</div><div class="prop-sub">Runnemede · Retail</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>844</td>
+            <td>222</td>
+            <td class="leads-cell">1</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">530 Crown Point Rd</div><div class="prop-sub">Thorofare · Retail</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>893</td>
+            <td>216</td>
+            <td class="leads-cell">1</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1333 Doughty Rd</div><div class="prop-sub">Egg Harbor Township · Industrial</div></td>
+            <td class="broker-cell">Ken</td>
+            <td>4,604</td>
+            <td>1,472</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">146 S Lakeview Dr</div><div class="prop-sub">Gibbsboro · Office</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>3,619</td>
+            <td>1,273</td>
+            <td class="leads-cell">0</td>
+            <td>1</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">450 S Fellowship Rd</div><div class="prop-sub">Maple Shade Township · Industrial</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>3,823</td>
+            <td>1,235</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1909 Route 70 E</div><div class="prop-sub">Cherry Hill · Office Medical</div></td>
+            <td class="broker-cell">Emily</td>
+            <td>4,332</td>
+            <td>1,211</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">436 N 3rd St</div><div class="prop-sub">Hammonton · Retail</div></td>
+            <td class="broker-cell">Ken</td>
+            <td>2,240</td>
+            <td>951</td>
+            <td class="leads-cell">0</td>
+            <td>1</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1 W Elizabeth Ave</div><div class="prop-sub">Linden · Retail</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>2,870</td>
+            <td>868</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">513 N Black Horse Pike</div><div class="prop-sub">Runnemede · Office</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>2,694</td>
+            <td>845</td>
+            <td class="leads-cell">0</td>
+            <td>1</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">706 N White Horse Pike</div><div class="prop-sub">Magnolia · Retail</div></td>
+            <td class="broker-cell">Ken</td>
+            <td>2,893</td>
+            <td>804</td>
+            <td class="leads-cell">0</td>
+            <td>1</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">515 Williamstown Rd</div><div class="prop-sub">Sicklerville · Retail</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>2,068</td>
+            <td>789</td>
+            <td class="leads-cell">0</td>
+            <td>2</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">210 W High St</div><div class="prop-sub">Glassboro · Office Retail</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>2,725</td>
+            <td>775</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">84 Haddon Ave</div><div class="prop-sub">West Berlin · Retail</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>2,694</td>
+            <td>695</td>
+            <td class="leads-cell">0</td>
+            <td>1</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">411 E Marlton Pike</div><div class="prop-sub">Cherry Hill · Office</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>2,847</td>
+            <td>692</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">975 Tuckerton Rd</div><div class="prop-sub">Marlton · Office Medical</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>2,249</td>
+            <td>590</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">416 Sicklerville Rd</div><div class="prop-sub">Sicklerville · Retail</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>1,403</td>
+            <td>455</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">373-377 Egg Harbor Rd</div><div class="prop-sub">Sewell · Retail</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>1,262</td>
+            <td>404</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">163 N Rt 130</div><div class="prop-sub">Bordentown · Office Medical</div></td>
+            <td class="broker-cell">Emily</td>
+            <td>1,183</td>
+            <td>398</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">4201 Church Rd</div><div class="prop-sub">Mount Laurel · Office</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>1,757</td>
+            <td>367</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">4606-4610 Westfield Ave</div><div class="prop-sub">Pennsauken · Office</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>946</td>
+            <td>352</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">2201 Rt 38</div><div class="prop-sub">Cherry Hill · Office</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>1,375</td>
+            <td>351</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">201-203 Kresson-Gibbsboro Rd NE</div><div class="prop-sub">Voorhees · Retail</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>1,396</td>
+            <td>349</td>
+            <td class="leads-cell">0</td>
+            <td>1</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">103 Old Marlton Pike</div><div class="prop-sub">Medford · Office</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>954</td>
+            <td>301</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1 Britton Pl</div><div class="prop-sub">Voorhees · Office</div></td>
+            <td class="broker-cell">Ken</td>
+            <td>1,526</td>
+            <td>293</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">200 Haddonfield Berlin</div><div class="prop-sub">Gibbsboro · Office</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>744</td>
+            <td>287</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1002-2001 Lincoln Dr W</div><div class="prop-sub">Marlton · Office</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>936</td>
+            <td>285</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">88 S Lakeview Dr</div><div class="prop-sub">Gibbsboro · Office</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>814</td>
+            <td>282</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">851 Lower Landing Rd</div><div class="prop-sub">Blackwood · Land</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>1,058</td>
+            <td>279</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">531 Mullica Hill Rd</div><div class="prop-sub">Mullica Hill · Office</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>696</td>
+            <td>244</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">2208 Atco Ave</div><div class="prop-sub">Atco · Retail</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>556</td>
+            <td>242</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">51 Norman Ave</div><div class="prop-sub">Delran · Industrial</div></td>
+            <td class="broker-cell">Ken</td>
+            <td>779</td>
+            <td>222</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">975 Tuckerton Rd</div><div class="prop-sub">Marlton · Office</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>1,396</td>
+            <td>222</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">2318 Atlantic Ave</div><div class="prop-sub">Atlantic City · Land</div></td>
+            <td class="broker-cell">Ken</td>
+            <td>586</td>
+            <td>212</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">2000 Lincoln Dr E</div><div class="prop-sub">Marlton · Flex</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>865</td>
+            <td>200</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">700 Haddonfield Berlin Rd</div><div class="prop-sub">Voorhees · Retail</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>672</td>
+            <td>176</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">148 W Broad St</div><div class="prop-sub">Burlington · Retail</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>543</td>
+            <td>167</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">90 N Kings Hwy</div><div class="prop-sub">Cherry Hill · Office</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>459</td>
+            <td>159</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">200 Cooper St</div><div class="prop-sub">Beverly · Industrial</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>872</td>
+            <td>157</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">313 Church St</div><div class="prop-sub">Swedesboro · Industrial</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>995</td>
+            <td>131</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">801 Bridgeboro Rd</div><div class="prop-sub">Beverly · Office</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>328</td>
+            <td>125</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">101 Lexington Rd</div><div class="prop-sub">Woolwich · Office</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>434</td>
+            <td>125</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">120 Center Square Rd</div><div class="prop-sub">Swedesboro · Retail</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>367</td>
+            <td>122</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">30 Jackson Rd</div><div class="prop-sub">Medford · Office</div></td>
+            <td class="broker-cell">Ken</td>
+            <td>484</td>
+            <td>121</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">289 White Horse Pike</div><div class="prop-sub">Atco · Office</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>294</td>
+            <td>113</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">706 N White Horse Pike</div><div class="prop-sub">Magnolia · Office Retail</div></td>
+            <td class="broker-cell">Ken</td>
+            <td>949</td>
+            <td>107</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1871 E Marlton Pike</div><div class="prop-sub">Cherry Hill · Retail</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>994</td>
+            <td>106</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">4 S Route 73</div><div class="prop-sub">Berlin · Retail</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>1,149</td>
+            <td>99</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">148 W Broad St</div><div class="prop-sub">Burlington · Retail</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>376</td>
+            <td>95</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">224 Pennypacker Dr</div><div class="prop-sub">Willingboro · Retail</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>316</td>
+            <td>85</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">2301 E Evesham Rd</div><div class="prop-sub">Voorhees · Office</div></td>
+            <td class="broker-cell">Emily</td>
+            <td>327</td>
+            <td>75</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1617 Hurffville rd</div><div class="prop-sub">Sewell · Office</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>534</td>
+            <td>74</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">10 White Horse E rd</div><div class="prop-sub">Voorhees · Land</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>186</td>
+            <td>68</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">942 S Delsea Dr</div><div class="prop-sub">Vineland · Retail</div></td>
+            <td class="broker-cell">Emily</td>
+            <td>244</td>
+            <td>66</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1065 Route 22 W</div><div class="prop-sub">Bridgewater · Office</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>316</td>
+            <td>64</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">539 Marlton Pike</div><div class="prop-sub">Cherry Hill · Office Medical</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>362</td>
+            <td>63</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">109 N Black Horse Pike</div><div class="prop-sub">Blackwood · Flex</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>356</td>
+            <td>62</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">4730 N Crescent Blvd</div><div class="prop-sub">Pennsauken · Industrial</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>429</td>
+            <td>61</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">51 Norman Ave</div><div class="prop-sub">Delran · Industrial</div></td>
+            <td class="broker-cell">Ken</td>
+            <td>269</td>
+            <td>60</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1110 Chews Landing Rd</div><div class="prop-sub">Clementon · Land</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>145</td>
+            <td>60</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1701 Wynwood Dr</div><div class="prop-sub">Cinnaminson · Office</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>180</td>
+            <td>60</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">100 Kings Hwy S</div><div class="prop-sub">Cherry Hill · Office</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>394</td>
+            <td>60</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1603 Route 38</div><div class="prop-sub">Mount Holly · Retail</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>330</td>
+            <td>57</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">5100 Route 42</div><div class="prop-sub">Blackwood · Office Retail</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>326</td>
+            <td>55</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">505 High St</div><div class="prop-sub">Burlington · Office</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>249</td>
+            <td>54</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">4100-4104 Maple Ave</div><div class="prop-sub">Pennsauken · Retail</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>283</td>
+            <td>53</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">175 W Cohawkin Rd</div><div class="prop-sub">Clarksboro · Office</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>307</td>
+            <td>52</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">5600 Black Horse Pike</div><div class="prop-sub">Turnersville · Retail</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>167</td>
+            <td>51</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1011 E Evesham Rd</div><div class="prop-sub">Voorhees · Land</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>148</td>
+            <td>50</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">681-693 Berlin Cross Keys Rd</div><div class="prop-sub">Sicklerville · Retail</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>178</td>
+            <td>45</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">154 Route 73 N</div><div class="prop-sub">Voorhees · Retail</div></td>
+            <td class="broker-cell">Emily</td>
+            <td>227</td>
+            <td>42</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">100 Goldman Dr</div><div class="prop-sub">Cream Ridge · Industrial</div></td>
+            <td class="broker-cell">Ken</td>
+            <td>117</td>
+            <td>41</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">575 Rancocas rd</div><div class="prop-sub">Westampton · Land</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>129</td>
+            <td>41</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1770 Hooper Ave</div><div class="prop-sub">Toms River · Retail</div></td>
+            <td class="broker-cell">Emily</td>
+            <td>150</td>
+            <td>41</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">950-972 Parkway Ave</div><div class="prop-sub">Ewing · Retail</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>233</td>
+            <td>41</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">840 Evesham Rd</div><div class="prop-sub">Cherry Hill · Land</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>113</td>
+            <td>39</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">701 W Route 70</div><div class="prop-sub">Marlton · Retail</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>359</td>
+            <td>39</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1000 Lincoln Dr E</div><div class="prop-sub">Marlton · Office Medical</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>261</td>
+            <td>39</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">934 Parkway Ave</div><div class="prop-sub">Ewing · Office Retail</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>179</td>
+            <td>37</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1011 E Evesham Rd</div><div class="prop-sub">Voorhees · Land</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>102</td>
+            <td>35</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">124 Black Horse Pike</div><div class="prop-sub">West Collingswood Heights · Retail</div></td>
+            <td class="broker-cell">Ken</td>
+            <td>197</td>
+            <td>34</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">Barnsboro Rd</div><div class="prop-sub">Blackwood · Land</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>171</td>
+            <td>34</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">121 W Camden Ave</div><div class="prop-sub">Moorestown · Land</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>74</td>
+            <td>32</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">2115 Route 322</div><div class="prop-sub">Woolwich · Land</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>139</td>
+            <td>32</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">2897-2919 New Brooklyn Erial Rd</div><div class="prop-sub">Sicklerville · Retail</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>160</td>
+            <td>29</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">242 Oak Grove Rd</div><div class="prop-sub">Woolwich · Land</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>116</td>
+            <td>27</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">200 Haddonfield Berlin Rd</div><div class="prop-sub">Voorhees · Office</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>187</td>
+            <td>26</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">309 Market St</div><div class="prop-sub">Camden · Office</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>81</td>
+            <td>25</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">232 S Broadway</div><div class="prop-sub">Gloucester City · Retail</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>69</td>
+            <td>21</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">11 S 3rd St</div><div class="prop-sub">Hammonton · Office</div></td>
+            <td class="broker-cell">Ken</td>
+            <td>50</td>
+            <td>21</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">211 Gibbsboro Rd</div><div class="prop-sub">Lindenwold · Retail</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>50</td>
+            <td>20</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">423 Market St</div><div class="prop-sub">Camden · Office</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>59</td>
+            <td>18</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">99 Sixth Ave</div><div class="prop-sub">Mount Laurel Township · Land</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>65</td>
+            <td>18</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">165 N Route 73</div><div class="prop-sub">Berlin · Land</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>30</td>
+            <td>16</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">881 Cooper st</div><div class="prop-sub">Deptford · Land</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>52</td>
+            <td>16</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1807-1829 Arctic Ave</div><div class="prop-sub">Atlantic City · Land</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>153</td>
+            <td>16</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">13 S Park Rd</div><div class="prop-sub">Southampton · Land</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>57</td>
+            <td>15</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">3929 N Delsea Dr</div><div class="prop-sub">Vineland · Retail</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>40</td>
+            <td>15</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">2 S Main St</div><div class="prop-sub">Woodstown · Retail</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>51</td>
+            <td>15</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">2909 Marne Hwy</div><div class="prop-sub">Mount Laurel · Land</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>46</td>
+            <td>15</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">Block 2203 Sicklerville Rd</div><div class="prop-sub">Sicklerville · Land</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>101</td>
+            <td>14</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">601 Atlantic Ave</div><div class="prop-sub">Atlantic City · Land</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>135</td>
+            <td>14</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">2703 Fire Rd</div><div class="prop-sub">Egg Harbor Township · Office</div></td>
+            <td class="broker-cell">Ken</td>
+            <td>30</td>
+            <td>13</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1507 Route 206</div><div class="prop-sub">Tabernacle Township · Retail</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>121</td>
+            <td>12</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">720 E Linden Ave</div><div class="prop-sub">Lindenwold · Land</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>19</td>
+            <td>10</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">609 High St</div><div class="prop-sub">Mount Holly · Land</div></td>
+            <td class="broker-cell">Emily</td>
+            <td>24</td>
+            <td>6</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">20 E Taunton Rd</div><div class="prop-sub">Berlin · Office</div></td>
+            <td class="broker-cell">Leor</td>
+            <td>13</td>
+            <td>6</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">Wheat Road</div><div class="prop-sub">Vineland · Land</div></td>
+            <td class="broker-cell">Ken</td>
+            <td>0</td>
+            <td>0</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- BROKERS -->
+<div class="section" id="brokers">
+  <div class="section-title">By Broker</div>
+  <div class="section-sub">Individual portfolio performance — 30-day snapshot</div>
+
+  <div class="broker-tabs">
+    <div class="broker-tab active" onclick="showBroker('leor')">Leor Hemo <span style="opacity:.5;font-size:11px">107</span></div>
+    <div class="broker-tab" onclick="showBroker('ken')">Ken Richardson <span style="opacity:.5;font-size:11px">17</span></div>
+    <div class="broker-tab" onclick="showBroker('emily')">Emily Stein <span style="opacity:.5;font-size:11px">11</span></div>
+    <div class="broker-tab" onclick="showBroker('john')">John Doss <span style="opacity:.5;font-size:11px">3</span></div>
+  </div>
+
+  <div class="broker-section active" id="broker-leor">
+    <div class="tiles" style="margin-bottom:28px;">
+      <div class="tile accent"><div class="tile-val">107</div><div class="tile-lbl">Listings</div></div>
+      <div class="tile"><div class="tile-val">104,437</div><div class="tile-lbl">Total Views</div></div>
+      <div class="tile"><div class="tile-val">30,131</div><div class="tile-lbl">Unique Viewers</div></div>
+      <div class="tile good"><div class="tile-val">37</div><div class="tile-lbl">Total Leads</div></div>
+      <div class="tile"><div class="tile-val">0.35</div><div class="tile-lbl">Leads / Listing</div></div>
+      <div class="tile warn"><div class="tile-val">31</div><div class="tile-lbl">Needs Attention</div></div>
+      <div class="tile warn"><div class="tile-val">53</div><div class="tile-lbl">Watch</div></div>
+      <div class="tile good"><div class="tile-val">23</div><div class="tile-lbl">Performing</div></div>
+    </div>
+    <div class="table-wrap">
+      <div class="table-header"><h3>Leor Hemo — All Listings (30d)</h3></div>
+      <table>
+        <thead><tr>
+          <th>Property</th><th>Total Views</th><th>Unique</th><th>Leads</th><th>Fav</th><th>Tier</th><th>Status</th><th>Momentum</th>
+        </tr></thead>
+        <tbody><tr>
+            <td><div class="prop-name">7007 Route 38</div><div class="prop-sub">Pennsauken · Retail · For Lease</div></td>
+            <td>4,138</td>
+            <td>1,099</td>
+            <td class="leads-cell">7</td>
+            <td>2</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">418 Federal St</div><div class="prop-sub">Camden · Retail · For Lease</div></td>
+            <td>3,574</td>
+            <td>1,280</td>
+            <td class="leads-cell">3</td>
+            <td>1</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1348 Glassboro Rd</div><div class="prop-sub">Wenonah · Retail · For Sale</div></td>
+            <td>1,347</td>
+            <td>576</td>
+            <td class="leads-cell">2</td>
+            <td>3</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">3701 Church Rd</div><div class="prop-sub">Mount Laurel · Office Retail · For Lease</div></td>
+            <td>1,883</td>
+            <td>508</td>
+            <td class="leads-cell">2</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">513 N Black Horse Pike</div><div class="prop-sub">Runnemede · Office · For Lease</div></td>
+            <td>1,669</td>
+            <td>499</td>
+            <td class="leads-cell">2</td>
+            <td>1</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">2 S Route 73 Hwy</div><div class="prop-sub">Berlin · Retail · For Lease</div></td>
+            <td>2,012</td>
+            <td>554</td>
+            <td class="leads-cell">2</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1873 E Marlton Pike</div><div class="prop-sub">Cherry Hill · Office · For Lease</div></td>
+            <td>2,707</td>
+            <td>575</td>
+            <td class="leads-cell">2</td>
+            <td>2</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">30 Jackson Rd</div><div class="prop-sub">Medford · Office · For Lease</div></td>
+            <td>1,078</td>
+            <td>354</td>
+            <td class="leads-cell">2</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">853-881 W Butler Pike</div><div class="prop-sub">Ambler · Retail · For Lease</div></td>
+            <td>2,342</td>
+            <td>701</td>
+            <td class="leads-cell">1</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">2301 E Evesham Rd</div><div class="prop-sub">Voorhees · Office Medical · For Sale</div></td>
+            <td>3,733</td>
+            <td>1,360</td>
+            <td class="leads-cell">1</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">509 Woodstown Rd</div><div class="prop-sub">Swedesboro · Office · For Lease</div></td>
+            <td>2,329</td>
+            <td>834</td>
+            <td class="leads-cell">1</td>
+            <td>1</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">509 Woodstown Rd</div><div class="prop-sub">Swedesboro · Office · For Sale</div></td>
+            <td>1,491</td>
+            <td>430</td>
+            <td class="leads-cell">1</td>
+            <td>1</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">530 Crown Point Rd</div><div class="prop-sub">Thorofare · Retail · For Lease</div></td>
+            <td>893</td>
+            <td>216</td>
+            <td class="leads-cell">1</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">5045-5057 Kaighn Ave</div><div class="prop-sub">Pennsauken · Flex · For Lease</div></td>
+            <td>1,695</td>
+            <td>332</td>
+            <td class="leads-cell">1</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1990 Rt 70 E</div><div class="prop-sub">Cherry Hill · Retail · For Lease</div></td>
+            <td>3,166</td>
+            <td>812</td>
+            <td class="leads-cell">1</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">331 Market St</div><div class="prop-sub">Camden · Retail · For Sale</div></td>
+            <td>2,348</td>
+            <td>1,052</td>
+            <td class="leads-cell">1</td>
+            <td>1</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">2905 Marne Hwy</div><div class="prop-sub">Mount Laurel · Office · For Sale</div></td>
+            <td>1,153</td>
+            <td>494</td>
+            <td class="leads-cell">1</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1361A Monmouth Rd</div><div class="prop-sub">Mount Holly · Industrial · For Sale</div></td>
+            <td>1,570</td>
+            <td>671</td>
+            <td class="leads-cell">1</td>
+            <td>1</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">581 High St</div><div class="prop-sub">Burlington · Industrial · For Sale</div></td>
+            <td>1,019</td>
+            <td>305</td>
+            <td class="leads-cell">1</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">871-897 Mantua Pike</div><div class="prop-sub">Woodbury · Retail · For Lease</div></td>
+            <td>2,700</td>
+            <td>759</td>
+            <td class="leads-cell">1</td>
+            <td>1</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">835 E Clements Bridge Rd</div><div class="prop-sub">Runnemede · Retail · For Lease</div></td>
+            <td>844</td>
+            <td>222</td>
+            <td class="leads-cell">1</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">2111 Route 322</div><div class="prop-sub">Woolwich · Land · For Sale</div></td>
+            <td>1,439</td>
+            <td>367</td>
+            <td class="leads-cell">1</td>
+            <td>2</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1204 Route 130 N</div><div class="prop-sub">Cinnaminson · Retail · For Lease</div></td>
+            <td>1,506</td>
+            <td>383</td>
+            <td class="leads-cell">1</td>
+            <td>1</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">90 N Kings Hwy</div><div class="prop-sub">Cherry Hill · Office · For Sale</div></td>
+            <td>459</td>
+            <td>159</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">2201 Rt 38</div><div class="prop-sub">Cherry Hill · Office · For Lease</div></td>
+            <td>1,375</td>
+            <td>351</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">575 Rancocas rd</div><div class="prop-sub">Westampton · Land · For Sale</div></td>
+            <td>129</td>
+            <td>41</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">5600 Black Horse Pike</div><div class="prop-sub">Turnersville · Retail · For Lease</div></td>
+            <td>167</td>
+            <td>51</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">840 Evesham Rd</div><div class="prop-sub">Cherry Hill · Land · For Sale</div></td>
+            <td>113</td>
+            <td>39</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">200 Haddonfield Berlin Rd</div><div class="prop-sub">Voorhees · Office · For Lease</div></td>
+            <td>187</td>
+            <td>26</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">200 Haddonfield Berlin</div><div class="prop-sub">Gibbsboro · Office · For Lease</div></td>
+            <td>744</td>
+            <td>287</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">10 White Horse E rd</div><div class="prop-sub">Voorhees · Land · For Sale</div></td>
+            <td>186</td>
+            <td>68</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">Block 2203 Sicklerville Rd</div><div class="prop-sub">Sicklerville · Land · For Sale</div></td>
+            <td>101</td>
+            <td>14</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">210 W High St</div><div class="prop-sub">Glassboro · Office Retail · For Lease</div></td>
+            <td>2,725</td>
+            <td>775</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">165 N Route 73</div><div class="prop-sub">Berlin · Land · For Sale</div></td>
+            <td>30</td>
+            <td>16</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">109 N Black Horse Pike</div><div class="prop-sub">Blackwood · Flex · For Lease</div></td>
+            <td>356</td>
+            <td>62</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">146 S Lakeview Dr</div><div class="prop-sub">Gibbsboro · Office · For Sale</div></td>
+            <td>3,619</td>
+            <td>1,273</td>
+            <td class="leads-cell">0</td>
+            <td>1</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">515 Williamstown Rd</div><div class="prop-sub">Sicklerville · Retail · For Sale</div></td>
+            <td>2,068</td>
+            <td>789</td>
+            <td class="leads-cell">0</td>
+            <td>2</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">700 Haddonfield Berlin Rd</div><div class="prop-sub">Voorhees · Retail · For Lease</div></td>
+            <td>672</td>
+            <td>176</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1617 Hurffville rd</div><div class="prop-sub">Sewell · Office · For Lease</div></td>
+            <td>534</td>
+            <td>74</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">13 S Park Rd</div><div class="prop-sub">Southampton · Land · For Sale</div></td>
+            <td>57</td>
+            <td>15</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">4606-4610 Westfield Ave</div><div class="prop-sub">Pennsauken · Office · For Lease</div></td>
+            <td>946</td>
+            <td>352</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">224 Pennypacker Dr</div><div class="prop-sub">Willingboro · Retail · For Lease</div></td>
+            <td>316</td>
+            <td>85</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">232 S Broadway</div><div class="prop-sub">Gloucester City · Retail · For Sale</div></td>
+            <td>69</td>
+            <td>21</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1507 Route 206</div><div class="prop-sub">Tabernacle Township · Retail · For Sale</div></td>
+            <td>121</td>
+            <td>12</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1 W Elizabeth Ave</div><div class="prop-sub">Linden · Retail · For Lease</div></td>
+            <td>2,870</td>
+            <td>868</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">121 W Camden Ave</div><div class="prop-sub">Moorestown · Land · For Sale</div></td>
+            <td>74</td>
+            <td>32</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1110 Chews Landing Rd</div><div class="prop-sub">Clementon · Land · For Sale</div></td>
+            <td>145</td>
+            <td>60</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">84 Haddon Ave</div><div class="prop-sub">West Berlin · Retail · For Lease</div></td>
+            <td>2,694</td>
+            <td>695</td>
+            <td class="leads-cell">0</td>
+            <td>1</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">505 High St</div><div class="prop-sub">Burlington · Office · For Lease</div></td>
+            <td>249</td>
+            <td>54</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">531 Mullica Hill Rd</div><div class="prop-sub">Mullica Hill · Office · For Sale</div></td>
+            <td>696</td>
+            <td>244</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1603 Route 38</div><div class="prop-sub">Mount Holly · Retail · For Lease</div></td>
+            <td>330</td>
+            <td>57</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">801 Bridgeboro Rd</div><div class="prop-sub">Beverly · Office · For Lease</div></td>
+            <td>328</td>
+            <td>125</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">200 Cooper St</div><div class="prop-sub">Beverly · Industrial · For Lease</div></td>
+            <td>872</td>
+            <td>157</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">4730 N Crescent Blvd</div><div class="prop-sub">Pennsauken · Industrial · For Sale</div></td>
+            <td>429</td>
+            <td>61</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1701 Wynwood Dr</div><div class="prop-sub">Cinnaminson · Office · For Lease</div></td>
+            <td>180</td>
+            <td>60</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">148 W Broad St</div><div class="prop-sub">Burlington · Retail · For Lease</div></td>
+            <td>543</td>
+            <td>167</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">701 W Route 70</div><div class="prop-sub">Marlton · Retail · For Lease</div></td>
+            <td>359</td>
+            <td>39</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">681-693 Berlin Cross Keys Rd</div><div class="prop-sub">Sicklerville · Retail · For Lease</div></td>
+            <td>178</td>
+            <td>45</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">101 Lexington Rd</div><div class="prop-sub">Woolwich · Office · For Lease</div></td>
+            <td>434</td>
+            <td>125</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">3929 N Delsea Dr</div><div class="prop-sub">Vineland · Retail · For Sale</div></td>
+            <td>40</td>
+            <td>15</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">450 S Fellowship Rd</div><div class="prop-sub">Maple Shade Township · Industrial · For Sale</div></td>
+            <td>3,823</td>
+            <td>1,235</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">2208 Atco Ave</div><div class="prop-sub">Atco · Retail · For Lease</div></td>
+            <td>556</td>
+            <td>242</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">539 Marlton Pike</div><div class="prop-sub">Cherry Hill · Office Medical · For Lease</div></td>
+            <td>362</td>
+            <td>63</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">148 W Broad St</div><div class="prop-sub">Burlington · Retail · For Sale</div></td>
+            <td>376</td>
+            <td>95</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">851 Lower Landing Rd</div><div class="prop-sub">Blackwood · Land · For Sale</div></td>
+            <td>1,058</td>
+            <td>279</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1065 Route 22 W</div><div class="prop-sub">Bridgewater · Office · For Lease</div></td>
+            <td>316</td>
+            <td>64</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">411 E Marlton Pike</div><div class="prop-sub">Cherry Hill · Office · For Lease</div></td>
+            <td>2,847</td>
+            <td>692</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">513 N Black Horse Pike</div><div class="prop-sub">Runnemede · Office · For Sale</div></td>
+            <td>2,694</td>
+            <td>845</td>
+            <td class="leads-cell">0</td>
+            <td>1</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">881 Cooper st</div><div class="prop-sub">Deptford · Land · For Sale</div></td>
+            <td>52</td>
+            <td>16</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1807-1829 Arctic Ave</div><div class="prop-sub">Atlantic City · Land · For Sale</div></td>
+            <td>153</td>
+            <td>16</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">2 S Main St</div><div class="prop-sub">Woodstown · Retail · For Sale</div></td>
+            <td>51</td>
+            <td>15</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">175 W Cohawkin Rd</div><div class="prop-sub">Clarksboro · Office · For Lease</div></td>
+            <td>307</td>
+            <td>52</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">4 S Route 73</div><div class="prop-sub">Berlin · Retail · For Sale</div></td>
+            <td>1,149</td>
+            <td>99</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">423 Market St</div><div class="prop-sub">Camden · Office · For Sale</div></td>
+            <td>59</td>
+            <td>18</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">309 Market St</div><div class="prop-sub">Camden · Office · For Sale</div></td>
+            <td>81</td>
+            <td>25</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">4100-4104 Maple Ave</div><div class="prop-sub">Pennsauken · Retail · For Lease</div></td>
+            <td>283</td>
+            <td>53</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">2000 Lincoln Dr E</div><div class="prop-sub">Marlton · Flex · For Lease</div></td>
+            <td>865</td>
+            <td>200</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">99 Sixth Ave</div><div class="prop-sub">Mount Laurel Township · Land · For Sale</div></td>
+            <td>65</td>
+            <td>18</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">289 White Horse Pike</div><div class="prop-sub">Atco · Office · For Lease</div></td>
+            <td>294</td>
+            <td>113</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">313 Church St</div><div class="prop-sub">Swedesboro · Industrial · For Lease</div></td>
+            <td>995</td>
+            <td>131</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">88 S Lakeview Dr</div><div class="prop-sub">Gibbsboro · Office · For Sale</div></td>
+            <td>814</td>
+            <td>282</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1011 E Evesham Rd</div><div class="prop-sub">Voorhees · Land · For Lease</div></td>
+            <td>102</td>
+            <td>35</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1011 E Evesham Rd</div><div class="prop-sub">Voorhees · Land · For Sale</div></td>
+            <td>148</td>
+            <td>50</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">5100 Route 42</div><div class="prop-sub">Blackwood · Office Retail · For Lease</div></td>
+            <td>326</td>
+            <td>55</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">2897-2919 New Brooklyn Erial Rd</div><div class="prop-sub">Sicklerville · Retail · For Sale</div></td>
+            <td>160</td>
+            <td>29</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">211 Gibbsboro Rd</div><div class="prop-sub">Lindenwold · Retail · For Lease</div></td>
+            <td>50</td>
+            <td>20</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">2909 Marne Hwy</div><div class="prop-sub">Mount Laurel · Land · For Sale</div></td>
+            <td>46</td>
+            <td>15</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">2115 Route 322</div><div class="prop-sub">Woolwich · Land · For Sale</div></td>
+            <td>139</td>
+            <td>32</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">720 E Linden Ave</div><div class="prop-sub">Lindenwold · Land · For Sale</div></td>
+            <td>19</td>
+            <td>10</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">242 Oak Grove Rd</div><div class="prop-sub">Woolwich · Land · For Sale</div></td>
+            <td>116</td>
+            <td>27</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">100 Kings Hwy S</div><div class="prop-sub">Cherry Hill · Office · For Lease</div></td>
+            <td>394</td>
+            <td>60</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1002-2001 Lincoln Dr W</div><div class="prop-sub">Marlton · Office · For Lease</div></td>
+            <td>936</td>
+            <td>285</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1000 Lincoln Dr E</div><div class="prop-sub">Marlton · Office Medical · For Lease</div></td>
+            <td>261</td>
+            <td>39</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">934 Parkway Ave</div><div class="prop-sub">Ewing · Office Retail · For Lease</div></td>
+            <td>179</td>
+            <td>37</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">103 Old Marlton Pike</div><div class="prop-sub">Medford · Office · For Lease</div></td>
+            <td>954</td>
+            <td>301</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">601 Atlantic Ave</div><div class="prop-sub">Atlantic City · Land · For Sale</div></td>
+            <td>135</td>
+            <td>14</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">950-972 Parkway Ave</div><div class="prop-sub">Ewing · Retail · For Lease</div></td>
+            <td>233</td>
+            <td>41</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">975 Tuckerton Rd</div><div class="prop-sub">Marlton · Office · For Sale</div></td>
+            <td>1,396</td>
+            <td>222</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">120 Center Square Rd</div><div class="prop-sub">Swedesboro · Retail · For Lease</div></td>
+            <td>367</td>
+            <td>122</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">Barnsboro Rd</div><div class="prop-sub">Blackwood · Land · For Sale</div></td>
+            <td>171</td>
+            <td>34</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">20 E Taunton Rd</div><div class="prop-sub">Berlin · Office · For Lease</div></td>
+            <td>13</td>
+            <td>6</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">416 Sicklerville Rd</div><div class="prop-sub">Sicklerville · Retail · For Lease</div></td>
+            <td>1,403</td>
+            <td>455</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1871 E Marlton Pike</div><div class="prop-sub">Cherry Hill · Retail · For Lease</div></td>
+            <td>994</td>
+            <td>106</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">373-377 Egg Harbor Rd</div><div class="prop-sub">Sewell · Retail · For Lease</div></td>
+            <td>1,262</td>
+            <td>404</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">4201 Church Rd</div><div class="prop-sub">Mount Laurel · Office · For Lease</div></td>
+            <td>1,757</td>
+            <td>367</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">975 Tuckerton Rd</div><div class="prop-sub">Marlton · Office Medical · For Lease</div></td>
+            <td>2,249</td>
+            <td>590</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">201-203 Kresson-Gibbsboro Rd NE</div><div class="prop-sub">Voorhees · Retail · For Lease</div></td>
+            <td>1,396</td>
+            <td>349</td>
+            <td class="leads-cell">0</td>
+            <td>1</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="broker-section " id="broker-ken">
+    <div class="tiles" style="margin-bottom:28px;">
+      <div class="tile accent"><div class="tile-val">17</div><div class="tile-lbl">Listings</div></div>
+      <div class="tile"><div class="tile-val">27,920</div><div class="tile-lbl">Total Views</div></div>
+      <div class="tile"><div class="tile-val">8,918</div><div class="tile-lbl">Unique Viewers</div></div>
+      <div class="tile good"><div class="tile-val">11</div><div class="tile-lbl">Total Leads</div></div>
+      <div class="tile"><div class="tile-val">0.65</div><div class="tile-lbl">Leads / Listing</div></div>
+      <div class="tile warn"><div class="tile-val">5</div><div class="tile-lbl">Needs Attention</div></div>
+      <div class="tile warn"><div class="tile-val">9</div><div class="tile-lbl">Watch</div></div>
+      <div class="tile good"><div class="tile-val">3</div><div class="tile-lbl">Performing</div></div>
+    </div>
+    <div class="table-wrap">
+      <div class="table-header"><h3>Ken Richardson — All Listings (30d)</h3></div>
+      <table>
+        <thead><tr>
+          <th>Property</th><th>Total Views</th><th>Unique</th><th>Leads</th><th>Fav</th><th>Tier</th><th>Status</th><th>Momentum</th>
+        </tr></thead>
+        <tbody><tr>
+            <td><div class="prop-name">334 S White Horse Pike</div><div class="prop-sub">Magnolia · Retail · For Lease</div></td>
+            <td>1,385</td>
+            <td>580</td>
+            <td class="leads-cell">6</td>
+            <td>3</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1200 S West Blvd</div><div class="prop-sub">Vineland · Industrial · For Sale</div></td>
+            <td>7,720</td>
+            <td>2,484</td>
+            <td class="leads-cell">3</td>
+            <td>1</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">502 Hillside Ter</div><div class="prop-sub">Pennsauken · Office · For Sale</div></td>
+            <td>4,091</td>
+            <td>1,503</td>
+            <td class="leads-cell">2</td>
+            <td>5</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">100 Goldman Dr</div><div class="prop-sub">Cream Ridge · Industrial · For Lease</div></td>
+            <td>117</td>
+            <td>41</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">2318 Atlantic Ave</div><div class="prop-sub">Atlantic City · Land · For Sale</div></td>
+            <td>586</td>
+            <td>212</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">51 Norman Ave</div><div class="prop-sub">Delran · Industrial · For Lease</div></td>
+            <td>269</td>
+            <td>60</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">51 Norman Ave</div><div class="prop-sub">Delran · Industrial · For Sale</div></td>
+            <td>779</td>
+            <td>222</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">706 N White Horse Pike</div><div class="prop-sub">Magnolia · Office Retail · For Lease</div></td>
+            <td>949</td>
+            <td>107</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">706 N White Horse Pike</div><div class="prop-sub">Magnolia · Retail · For Sale</div></td>
+            <td>2,893</td>
+            <td>804</td>
+            <td class="leads-cell">0</td>
+            <td>1</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">Wheat Road</div><div class="prop-sub">Vineland · Land · For Sale</div></td>
+            <td>0</td>
+            <td>0</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">436 N 3rd St</div><div class="prop-sub">Hammonton · Retail · For Sale</div></td>
+            <td>2,240</td>
+            <td>951</td>
+            <td class="leads-cell">0</td>
+            <td>1</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">30 Jackson Rd</div><div class="prop-sub">Medford · Office · For Sale</div></td>
+            <td>484</td>
+            <td>121</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1 Britton Pl</div><div class="prop-sub">Voorhees · Office · For Sale</div></td>
+            <td>1,526</td>
+            <td>293</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">124 Black Horse Pike</div><div class="prop-sub">West Collingswood Heights · Retail · For Sale</div></td>
+            <td>197</td>
+            <td>34</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1333 Doughty Rd</div><div class="prop-sub">Egg Harbor Township · Industrial · For Sale</div></td>
+            <td>4,604</td>
+            <td>1,472</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">2703 Fire Rd</div><div class="prop-sub">Egg Harbor Township · Office · For Sale</div></td>
+            <td>30</td>
+            <td>13</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">11 S 3rd St</div><div class="prop-sub">Hammonton · Office · For Lease</div></td>
+            <td>50</td>
+            <td>21</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="broker-section " id="broker-emily">
+    <div class="tiles" style="margin-bottom:28px;">
+      <div class="tile accent"><div class="tile-val">11</div><div class="tile-lbl">Listings</div></div>
+      <div class="tile"><div class="tile-val">17,388</div><div class="tile-lbl">Total Views</div></div>
+      <div class="tile"><div class="tile-val">5,068</div><div class="tile-lbl">Unique Viewers</div></div>
+      <div class="tile good"><div class="tile-val">7</div><div class="tile-lbl">Total Leads</div></div>
+      <div class="tile"><div class="tile-val">0.64</div><div class="tile-lbl">Leads / Listing</div></div>
+      <div class="tile warn"><div class="tile-val">3</div><div class="tile-lbl">Needs Attention</div></div>
+      <div class="tile warn"><div class="tile-val">4</div><div class="tile-lbl">Watch</div></div>
+      <div class="tile good"><div class="tile-val">4</div><div class="tile-lbl">Performing</div></div>
+    </div>
+    <div class="table-wrap">
+      <div class="table-header"><h3>Emily Stein — All Listings (30d)</h3></div>
+      <table>
+        <thead><tr>
+          <th>Property</th><th>Total Views</th><th>Unique</th><th>Leads</th><th>Fav</th><th>Tier</th><th>Status</th><th>Momentum</th>
+        </tr></thead>
+        <tbody><tr>
+            <td><div class="prop-name">1649 Route 38</div><div class="prop-sub">Mount Holly · Retail · For Lease</div></td>
+            <td>3,314</td>
+            <td>980</td>
+            <td class="leads-cell">3</td>
+            <td>2</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1254 NJ-73</div><div class="prop-sub">Palmyra · Land · For Lease</div></td>
+            <td>526</td>
+            <td>244</td>
+            <td class="leads-cell">2</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1939 Route 70 E</div><div class="prop-sub">Cherry Hill · Office · For Lease</div></td>
+            <td>3,906</td>
+            <td>1,120</td>
+            <td class="leads-cell">1</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1793 Springdale Rd</div><div class="prop-sub">Cherry Hill · Retail · For Lease</div></td>
+            <td>3,155</td>
+            <td>885</td>
+            <td class="leads-cell">1</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr><tr>
+            <td><div class="prop-name">609 High St</div><div class="prop-sub">Mount Holly · Land · For Sale</div></td>
+            <td>24</td>
+            <td>6</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">2301 E Evesham Rd</div><div class="prop-sub">Voorhees · Office · For Sale</div></td>
+            <td>327</td>
+            <td>75</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1770 Hooper Ave</div><div class="prop-sub">Toms River · Retail · For Lease</div></td>
+            <td>150</td>
+            <td>41</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">942 S Delsea Dr</div><div class="prop-sub">Vineland · Retail · For Lease</div></td>
+            <td>244</td>
+            <td>66</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1909 Route 70 E</div><div class="prop-sub">Cherry Hill · Office Medical · For Lease</div></td>
+            <td>4,332</td>
+            <td>1,211</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">154 Route 73 N</div><div class="prop-sub">Voorhees · Retail · For Lease</div></td>
+            <td>227</td>
+            <td>42</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge red">⚠ Needs Attention</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr><tr>
+            <td><div class="prop-name">163 N Rt 130</div><div class="prop-sub">Bordentown · Office Medical · For Lease</div></td>
+            <td>1,183</td>
+            <td>398</td>
+            <td class="leads-cell">0</td>
+            <td>0</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge yellow">◉ Watch</span></td>
+            <td><span class="mom losing">↓ Losing</span></td>
+        </tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="broker-section " id="broker-john">
+    <div class="tiles" style="margin-bottom:28px;">
+      <div class="tile accent"><div class="tile-val">3</div><div class="tile-lbl">Listings</div></div>
+      <div class="tile"><div class="tile-val">9,702</div><div class="tile-lbl">Total Views</div></div>
+      <div class="tile"><div class="tile-val">3,388</div><div class="tile-lbl">Unique Viewers</div></div>
+      <div class="tile good"><div class="tile-val">5</div><div class="tile-lbl">Total Leads</div></div>
+      <div class="tile"><div class="tile-val">1.67</div><div class="tile-lbl">Leads / Listing</div></div>
+      <div class="tile warn"><div class="tile-val">0</div><div class="tile-lbl">Needs Attention</div></div>
+      <div class="tile warn"><div class="tile-val">0</div><div class="tile-lbl">Watch</div></div>
+      <div class="tile good"><div class="tile-val">3</div><div class="tile-lbl">Performing</div></div>
+    </div>
+    <div class="table-wrap">
+      <div class="table-header"><h3>John Doss — All Listings (30d)</h3></div>
+      <table>
+        <thead><tr>
+          <th>Property</th><th>Total Views</th><th>Unique</th><th>Leads</th><th>Fav</th><th>Tier</th><th>Status</th><th>Momentum</th>
+        </tr></thead>
+        <tbody><tr>
+            <td><div class="prop-name">204 Philadelphia Ave</div><div class="prop-sub">Egg Harbor City · Office Retail · For Lease</div></td>
+            <td>625</td>
+            <td>288</td>
+            <td class="leads-cell">2</td>
+            <td>0</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">204 Philadelphia Ave</div><div class="prop-sub">Egg Harbor City · Office · For Sale</div></td>
+            <td>2,698</td>
+            <td>1,068</td>
+            <td class="leads-cell">2</td>
+            <td>1</td>
+            <td><span class="exp-basic">Basic</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom gaining">↑ Gaining</span></td>
+        </tr><tr>
+            <td><div class="prop-name">1555 Mount Ephraim Ave</div><div class="prop-sub">Camden · Retail · For Sale</div></td>
+            <td>6,379</td>
+            <td>2,032</td>
+            <td class="leads-cell">1</td>
+            <td>1</td>
+            <td><span class="exp-silver">Silver</span></td>
+            <td><span class="badge green">✓ Active</span></td>
+            <td><span class="mom stable">→ Stable</span></td>
+        </tr></tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function showBroker(key) {
+  document.querySelectorAll('.broker-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.broker-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('broker-' + key).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function filterTable(val, filterId) {
+  const rows = document.querySelectorAll('#all-table tbody tr');
+  const brokerVal = document.getElementById('broker-filter').value.toLowerCase();
+  const searchVal = document.getElementById('search-input').value.toLowerCase();
+  rows.forEach(row => {
+    const flagMatch = !val || row.querySelector('.badge')?.textContent.includes(val);
+    const brokerMatch = !brokerVal || row.querySelector('.broker-cell')?.textContent.toLowerCase().includes(brokerVal);
+    const searchMatch = !searchVal || row.textContent.toLowerCase().includes(searchVal);
+    row.style.display = (flagMatch && brokerMatch && searchMatch) ? '' : 'none';
+  });
+}
+
+function filterBrokerCol(val) {
+  const flagVal = document.getElementById('flag-filter').value;
+  const searchVal = document.getElementById('search-input').value.toLowerCase();
+  const rows = document.querySelectorAll('#all-table tbody tr');
+  rows.forEach(row => {
+    const brokerMatch = !val || row.querySelector('.broker-cell')?.textContent.includes(val);
+    const flagMatch = !flagVal || row.querySelector('.badge')?.textContent.includes(flagVal);
+    const searchMatch = !searchVal || row.textContent.toLowerCase().includes(searchVal);
+    row.style.display = (brokerMatch && flagMatch && searchMatch) ? '' : 'none';
+  });
+}
+
+function searchTable(val) {
+  const flagVal = document.getElementById('flag-filter').value;
+  const brokerVal = document.getElementById('broker-filter').value;
+  const rows = document.querySelectorAll('#all-table tbody tr');
+  rows.forEach(row => {
+    const searchMatch = !val || row.textContent.toLowerCase().includes(val.toLowerCase());
+    const flagMatch = !flagVal || row.querySelector('.badge')?.textContent.includes(flagVal);
+    const brokerMatch = !brokerVal || row.querySelector('.broker-cell')?.textContent.includes(brokerVal);
+    row.style.display = (searchMatch && flagMatch && brokerMatch) ? '' : 'none';
+  });
+}
+</script>
+</body>
+</html>

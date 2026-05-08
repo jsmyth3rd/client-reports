@@ -1,0 +1,1262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Life Unlimited — 2026 Strategy Session Analysis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --navy: #1A2D4A;
+  --navy-lt: #EBF3FB;
+  --mid-blue: #185FA5;
+  --grey-rule: #E0E0E0;
+  --text-primary: #1A1A1A;
+  --text-secondary: #555;
+  --text-muted: #888;
+  --bg: #F7F8FA;
+  --card-bg: #FFFFFF;
+  --sidebar-w: 220px;
+}
+body { font-family: "Inter", sans-serif; font-size: 14px; color: var(--text-primary); background: var(--bg); }
+
+/* Layout */
+.layout { display: flex; min-height: 100vh; }
+.sidebar {
+  width: var(--sidebar-w); flex-shrink: 0; background: var(--navy);
+  position: sticky; top: 0; height: 100vh; overflow-y: auto;
+  padding: 1.5rem 0;
+}
+.sidebar-logo { padding: 0 1.25rem 1.25rem; border-bottom: 0.5px solid rgba(255,255,255,0.15); margin-bottom: 1rem; }
+.sidebar-logo-name { font-size: 13px; font-weight: 600; color: #fff; line-height: 1.3; }
+.sidebar-logo-sub { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 2px; }
+.nav-group-label { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.4); padding: 0.75rem 1.25rem 0.25rem; }
+.nav-item {
+  display: block; padding: 6px 1.25rem; font-size: 12px; color: rgba(255,255,255,0.75);
+  text-decoration: none; border-left: 2px solid transparent; transition: all 0.12s;
+}
+.nav-item:hover { background: rgba(255,255,255,0.08); color: #fff; border-left-color: rgba(255,255,255,0.4); }
+.nav-item.pending { color: rgba(255,255,255,0.3); font-style: italic; }
+.nav-item.pending:hover { background: transparent; border-left-color: transparent; cursor: default; color: rgba(255,255,255,0.3); }
+
+.main { flex: 1; min-width: 0; }
+
+/* Cover */
+.cover {
+  background: var(--navy); color: #fff; padding: 3rem 3rem 2.5rem;
+  border-bottom: 3px solid #C9A84C;
+}
+.cover-title { font-size: 28px; font-weight: 600; margin-bottom: 6px; }
+.cover-sub { font-size: 15px; color: rgba(255,255,255,0.65); margin-bottom: 1.5rem; }
+.cover-meta { font-size: 12px; color: rgba(255,255,255,0.45); }
+.cover-desc {
+  margin-top: 1.5rem; font-size: 13px; color: rgba(255,255,255,0.7);
+  line-height: 1.7; max-width: 680px;
+  border-top: 0.5px solid rgba(255,255,255,0.15); padding-top: 1.25rem;
+}
+
+/* Content area */
+.content { padding: 2rem 2.5rem; }
+
+/* Dept section */
+.dept-section { margin-bottom: 3.5rem; scroll-margin-top: 1.5rem; }
+.dept-banner {
+  background: var(--card-bg); border: 0.5px solid var(--grey-rule);
+  border-radius: 12px 12px 0 0; padding: 1.25rem 1.5rem;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 3px solid var(--navy);
+}
+.dept-name { font-size: 18px; font-weight: 600; color: var(--navy); }
+.dept-group { font-size: 11px; color: var(--text-muted); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.05em; }
+.stat-row { display: flex; gap: 8px; }
+.stat-card { background: #F7F8FA; border-radius: 8px; padding: 8px 14px; text-align: center; min-width: 80px; }
+.stat-num { font-size: 20px; font-weight: 600; }
+.stat-lbl { font-size: 10px; color: var(--text-muted); margin-top: 1px; }
+.green { color: #27500A; }
+.amber { color: #633806; }
+.red   { color: #791F1F; }
+
+.mission-bar {
+  background: #F0F5FB; border: 0.5px solid #B5D4F4;
+  border-top: none; padding: 0.75rem 1.5rem;
+  font-size: 12px; color: #185FA5; font-style: italic; line-height: 1.6;
+}
+
+/* Summary section */
+.summary-section {
+  background: var(--card-bg); border: 0.5px solid var(--grey-rule);
+  border-top: none; padding: 1.25rem 1.5rem;
+}
+.summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.summary-card { border-radius: 8px; padding: 0.875rem 1rem; border: 0.5px solid transparent; }
+.summary-head { font-size: 11px; font-weight: 600; letter-spacing: 0.04em; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; text-transform: uppercase; }
+.summary-body { font-size: 12px; line-height: 1.65; color: var(--text-secondary); }
+.opp-head  { color: #085041; } .opp-head ~ * { } .summary-card:has(.opp-head)  { background: #F0FAF5; border-color: #9FE1CB; }
+.chal-head { color: #3C3489; } .summary-card:has(.chal-head) { background: #F5F4FE; border-color: #CECBF6; }
+.goal90-head  { color: #0C447C; } .summary-card:has(.goal90-head)  { background: #F4F9FF; border-color: #B5D4F4; }
+.goal12-head  { color: #27500A; } .summary-card:has(.goal12-head) { background: #F9FCF6; border-color: #C0DD97; }
+
+/* Gaps */
+.gaps-block {
+  background: #F5F4FE; border: 0.5px solid #CECBF6; border-top: none;
+  padding: 1rem 1.5rem;
+}
+.gaps-head { font-size: 11px; font-weight: 600; color: #3C3489; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.gaps-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.gaps-list li { font-size: 12px; color: #26215C; line-height: 1.6; padding-left: 14px; position: relative; }
+.gaps-list li::before { content: "→"; position: absolute; left: 0; color: #534AB7; font-weight: 600; }
+
+/* Goals */
+.subsection-label {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--text-muted); margin: 1.25rem 0 8px;
+}
+.goal-card {
+  background: var(--card-bg); border: 0.5px solid var(--grey-rule);
+  border-radius: 8px; padding: 0.875rem 1rem; margin-bottom: 6px;
+}
+.goal-header { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 8px; }
+.horizon { font-size: 10px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; padding: 3px 8px; border-radius: 6px; white-space: nowrap; margin-top: 1px; }
+.h90  { background: #E6F1FB; color: #0C447C; }
+.h12m { background: #EAF3DE; color: #27500A; }
+.goal-text { font-size: 13px; color: var(--text-primary); line-height: 1.5; flex: 1; }
+.pillar-tag { font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 6px; white-space: nowrap; }
+.chips-row { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; padding-top: 8px; border-top: 0.5px solid var(--grey-rule); }
+.chips-label { font-size: 11px; color: var(--text-muted); margin-right: 2px; }
+.chip { font-size: 11px; padding: 3px 9px; border-radius: 6px; line-height: 1.4; }
+.chip-opp  { background: #E1F5EE; color: #085041; border: 0.5px solid #9FE1CB; }
+.chip-chal { background: #EEEDFE; color: #3C3489; border: 0.5px solid #CECBF6; }
+.chip-none { background: #F1EFE8; color: #5F5E5A; border: 0.5px solid #D3D1C7; font-style: italic; }
+
+/* Orphans */
+.orphan-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.orphan { border-radius: 8px; padding: 0.875rem 1rem; }
+.orph-opp  { background: #E1F5EE; border: 0.5px solid #9FE1CB; }
+.orph-chal { background: #EEEDFE; border: 0.5px solid #CECBF6; }
+.orphan-head { font-size: 11px; font-weight: 600; margin-bottom: 5px; display: flex; align-items: center; gap: 6px; text-transform: uppercase; letter-spacing: 0.03em; }
+.orph-opp  .orphan-head { color: #085041; }
+.orph-chal .orphan-head { color: #3C3489; }
+.orphan-text { font-size: 12px; line-height: 1.55; }
+.orph-opp  .orphan-text { color: #0F6E56; }
+.orph-chal .orphan-text { color: #534AB7; }
+
+/* Coming soon */
+.coming-soon {
+  background: var(--card-bg); border: 0.5px dashed var(--grey-rule);
+  border-radius: 12px; padding: 2rem; text-align: center;
+  color: var(--text-muted); font-size: 13px; margin-bottom: 2rem;
+}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<!-- Sidebar nav -->
+<nav class="sidebar" aria-label="Department navigation">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-name">Life Unlimited</div>
+    <div class="sidebar-logo-sub">2026 Strategy Analysis</div>
+  </div>
+  <div class="nav-group-label">Program Services</div>
+  <a href="#my-day" class="nav-item">My Day</a>
+<a href="#employment" class="nav-item">Employment</a>
+<a href="#aba" class="nav-item">ABA</a>
+<a href="#community-support" class="nav-item">Community Support</a>
+<a href="#community-living" class="nav-item">Community Living</a>
+<a href="#health" class="nav-item pending">Health</a>
+<a href="#nwmo---in-home" class="nav-item pending">NWMO – In Home</a>
+<a href="#nwmo---cds" class="nav-item pending">NWMO – CDS</a>
+<a href="#intake" class="nav-item pending">Intake</a>
+<a href="#recreation" class="nav-item pending">Recreation</a>
+<a href="#human-resources" class="nav-item pending">Human Resources</a>
+<a href="#training" class="nav-item pending">Training</a>
+<a href="#finance" class="nav-item pending">Finance</a>
+<a href="#quality-assurance" class="nav-item pending">Quality Assurance</a>
+<a href="#it" class="nav-item pending">IT</a>
+<a href="#property-management" class="nav-item pending">Property Management</a>
+<a href="#marketing" class="nav-item pending">Marketing</a>
+<a href="#fundraising" class="nav-item pending">Fundraising</a>
+<a href="#social-enterprises" class="nav-item pending">Social Enterprises</a>
+
+</nav>
+
+<!-- Main content -->
+<main class="main">
+  <div class="cover">
+    <div class="cover-title">2026 Strategy Session Analysis</div>
+    <div class="cover-sub">Opportunities, Challenges, and Goal Alignment — Department by Department</div>
+    <div class="cover-meta">Life Unlimited &nbsp;·&nbsp; Prepared by Page 3 Consulting &nbsp;·&nbsp; May 2026</div>
+    <div class="cover-desc">
+      This report reviews the strategy session submissions from all 19 Life Unlimited departments. For each department, it summarizes the themes in their identified opportunities, challenges, and goals — then maps each 90-day and 12-month goal to the opportunities and challenges that motivated it. Items with no corresponding goal are called out separately. The final section for each department flags the key gaps worth raising in direct conversation with those teams.
+    </div>
+  </div>
+
+  <div class="content">
+    
+  <section class="dept-section" id="my-day">
+    <div class="dept-banner">
+      <div>
+        <div class="dept-name">My Day</div>
+        <div class="dept-group">Program Services</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-card"><div class="stat-num green">8</div><div class="stat-lbl">Goals connected</div></div>
+        <div class="stat-card"><div class="stat-num amber">6</div><div class="stat-lbl">Goals unconnected</div></div>
+        <div class="stat-card"><div class="stat-num red">6</div><div class="stat-lbl">Orphaned items</div></div>
+      </div>
+    </div>
+
+    <div class="mission-bar">My Day empowers individuals to reach their full potential by providing personalized supports to increase independence, meaningful relationships, and purpose in the community.</div>
+
+    <!-- Summary section -->
+    <div class="summary-section">
+      <div class="summary-grid">
+        <div class="summary-card">
+          <div class="summary-head opp-head"><i class="ti ti-bulb"></i> Opportunities — themes</div>
+          <div class="summary-body">The team sees meaningful room to grow around individual-level service quality — better documentation of each person's needs, cross-program collaboration, and expanding community presence through school partnerships and grassroots community initiatives. On the workforce side, Therap proficiency and structured onboarding are identified as levers worth investing in.</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-head chal-head"><i class="ti ti-alert-triangle"></i> Challenges — themes</div>
+          <div class="summary-body">The two most operationally significant challenges are staffing ratios for individuals with challenging behaviors and fragmented documentation across Therap and other systems. Poor cross-department communication — particularly with pharmacy, CL, and nursing — also surfaces as a friction point that affects service quality daily. Budget visibility and categorization round out the financial challenges.</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-head goal90-head"><i class="ti ti-calendar"></i> 90-day goals — themes</div>
+          <div class="summary-body">The 90-day goals are a mix of relationship-building, community presence, and operational controls. The free pantry and community relationship goals are action-oriented and achievable. The petty cash transition is a sensible financial control step. Several goals in this horizon feel more like ongoing commitments than time-bounded 90-day actions.</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-head goal12-head"><i class="ti ti-calendar-stats"></i> 12-month goals — themes</div>
+          <div class="summary-body">The 12-month goals show more ambition — a structured volunteer pipeline, specialized Clubhouse training, a curriculum position, and expanded billing hours. The Clubhouse-as-standalone goal is the most strategically significant in this horizon. However, several goals introduce new initiatives (storm shelters, face recognition check-in, annual retreat) that weren't connected to any stated opportunity or challenge.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Key gaps -->
+    <div class="gaps-block">
+      <div class="gaps-head"><i class="ti ti-flag"></i> Key gaps to raise</div>
+      <ul class="gaps-list"><li>The staffing ratio challenge — too few staff for individuals with challenging behaviors — is the most operationally significant issue named in the sheet and appears in neither goal horizon. This warrants a direct conversation about whether it belongs as a Rock.</li><li>Therap documentation fragmentation and poor cross-department communication with pharmacy, CL, and nursing are daily friction points with no corresponding goal. These may be systemic issues requiring cross-team coordination beyond My Day's own planning.</li><li>Six goals introduce initiatives (storm shelters, face recognition check-in, annual retreat, billboard-size parking) that have no stated problem driving them. Before building these into Monday.com, it's worth asking: what gap does each of these solve?</li></ul>
+    </div>
+
+    <!-- Goal-by-goal -->
+    <div class="subsection-label">Goals and what they connect to</div>
+    
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">Encourage communication — multiple means available; ASL training for all DSPs; parking lot and sidewalk painting at Blue Springs.</span>
+            <span class="pillar-tag" style="background:#E6F1FB;color:#0C447C;border:0.5px solid #B5D4F4">Services</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-opp">Opp: Individual cheat sheets / cross-program collaboration</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">Schedule visits to new team members in TMO; bus training for new hires completed before on-the-job training.</span>
+            <span class="pillar-tag" style="background:#EAF3DE;color:#27500A;border:0.5px solid #C0DD97">Workforce</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-none">No clear connection to stated opps/challenges</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">Eliminate petty cash; transition to pay cards managed by My Day supervisors.</span>
+            <span class="pillar-tag" style="background:#FAEEDA;color:#633806;border:0.5px solid #FAC775">Financial</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-chal">Challenge: Lack of categorized budget (partial — controls spending, not categorization)</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">Create own free pantry in the community.</span>
+            <span class="pillar-tag" style="background:#EEEDFE;color:#3C3489;border:0.5px solid #CECBF6">Advocacy</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-opp">Opp: Filling free pantries in the community</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">Establish professional relationships with community programs; liability form for observations.</span>
+            <span class="pillar-tag" style="background:#FAECE7;color:#712B13;border:0.5px solid #F5C4B3">Innovation</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-opp">Opp: More info on individuals prior to tours (partial)</span><span class="chip chip-chal">Challenge: Open new locations / evolve Clubhouse</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">Volunteer partnership with high schools/colleges; mentorship program between My Day and Clubhouse; handicap-accessible doors at all My Days.</span>
+            <span class="pillar-tag" style="background:#E6F1FB;color:#0C447C;border:0.5px solid #B5D4F4">Services</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-opp">Opp: Cross-program collaboration</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">Specialized Clubhouse training for staff — conflict resolution, communication, sex education, soft skills.</span>
+            <span class="pillar-tag" style="background:#EAF3DE;color:#27500A;border:0.5px solid #C0DD97">Workforce</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-chal">Challenge: Inconsistent policy implementation</span><span class="chip chip-opp">Opp: DSPs attending Therap webinars (partial)</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">Increase Lee's Summit My Day to 7 billable hours daily.</span>
+            <span class="pillar-tag" style="background:#FAEEDA;color:#633806;border:0.5px solid #FAC775">Financial</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-none">No clear connection to stated opps/challenges</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">Position for Curriculum Writer/Program Developer; efficient attendance check-in process (face recognition).</span>
+            <span class="pillar-tag" style="background:#FAEEDA;color:#633806;border:0.5px solid #FAC775">Financial</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-none">No clear connection to stated opps/challenges</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">Monthly disability awareness presentations at schools and community locations, led by individuals served.</span>
+            <span class="pillar-tag" style="background:#EEEDFE;color:#3C3489;border:0.5px solid #CECBF6">Advocacy</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-opp">Opp: School presentations</span><span class="chip chip-chal">Challenge: Guardian education (partial)</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">Larger parking lots and circle drives; pipeline to employment for individuals served; fenced courtyards with accessible seating.</span>
+            <span class="pillar-tag" style="background:#FAECE7;color:#712B13;border:0.5px solid #F5C4B3">Innovation</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-opp">Opp: Secured entry (partial — site safety, not access control)</span><span class="chip chip-none">Pipeline to employment has no stated opp/challenge</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">Annual retreat for My Day staff; Clubhouse as a standalone program; storm shelters at all My Day locations.</span>
+            <span class="pillar-tag" style="background:#FAECE7;color:#712B13;border:0.5px solid #F5C4B3">Innovation</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-chal">Challenge: Evolve and elevate the Clubhouse programs</span><span class="chip chip-none">Staff retreat and storm shelters have no stated opp/challenge</span></div>
+        </div>
+
+    <!-- Orphans -->
+    <div class="subsection-label" style="margin-top:1.5rem">Opportunities and challenges with no corresponding goal</div>
+    <div class="orphan-grid"><div class="orphan orph-chal">
+      <div class="orphan-head">
+        <i class="ti ti-alert-triangle"></i> Challenge
+        <span class="pillar-tag" style="background:#E6F1FB;color:#0C447C;border:0.5px solid #B5D4F4">Services</span>
+      </div>
+      <div class="orphan-text">Reliable equipment; staff-to-individual ratios too high for individuals with challenging behaviors.</div>
+    </div><div class="orphan orph-chal">
+      <div class="orphan-head">
+        <i class="ti ti-alert-triangle"></i> Challenge
+        <span class="pillar-tag" style="background:#EAF3DE;color:#27500A;border:0.5px solid #C0DD97">Workforce</span>
+      </div>
+      <div class="orphan-text">Staff documenting in multiple locations in Therap; poor communication with pharmacy, CL, and nursing.</div>
+    </div><div class="orphan orph-chal">
+      <div class="orphan-head">
+        <i class="ti ti-alert-triangle"></i> Challenge
+        <span class="pillar-tag" style="background:#EEEDFE;color:#3C3489;border:0.5px solid #CECBF6">Advocacy</span>
+      </div>
+      <div class="orphan-text">Mobility/behavioral individual-to-staff ratio.</div>
+    </div><div class="orphan orph-opp">
+      <div class="orphan-head">
+        <i class="ti ti-bulb"></i> Opportunity
+        <span class="pillar-tag" style="background:#E6F1FB;color:#0C447C;border:0.5px solid #B5D4F4">Services</span>
+      </div>
+      <div class="orphan-text">Individual cheat sheets (diets, protocols, precursors, allergies) — no goal exists to create or systematize these.</div>
+    </div><div class="orphan orph-opp">
+      <div class="orphan-head">
+        <i class="ti ti-bulb"></i> Opportunity
+        <span class="pillar-tag" style="background:#EAF3DE;color:#27500A;border:0.5px solid #C0DD97">Workforce</span>
+      </div>
+      <div class="orphan-text">Frontline DSPs attending Therap webinars — acknowledged as an opportunity but no goal targets Therap proficiency.</div>
+    </div><div class="orphan orph-opp">
+      <div class="orphan-head">
+        <i class="ti ti-bulb"></i> Opportunity
+        <span class="pillar-tag" style="background:#FAECE7;color:#712B13;border:0.5px solid #F5C4B3">Innovation</span>
+      </div>
+      <div class="orphan-text">Secured entry at all My Day locations — physical safety infrastructure not addressed in either goal horizon.</div>
+    </div></div>
+  </section>
+
+    
+  <section class="dept-section" id="employment">
+    <div class="dept-banner">
+      <div>
+        <div class="dept-name">Employment</div>
+        <div class="dept-group">Program Services</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-card"><div class="stat-num green">7</div><div class="stat-lbl">Goals connected</div></div>
+        <div class="stat-card"><div class="stat-num amber">1</div><div class="stat-lbl">Goals unconnected</div></div>
+        <div class="stat-card"><div class="stat-num red">2</div><div class="stat-lbl">Orphaned items</div></div>
+      </div>
+    </div>
+    <div class="mission-bar">To empower individuals to achieve and maintain their goals through competitive integrated community employment and meaningful community partnerships.</div>
+    <div class="summary-section">
+      <div class="summary-grid">
+        <div class="summary-card">
+          <div class="summary-head opp-head"><i class="ti ti-bulb"></i> Opportunities — themes</div>
+          <div class="summary-body">The team's primary opportunities center on pipeline and process: restructuring the post-placement transition so clients don't fall through the cracks, and growing referrals through stronger VR counselor relationships. Staff recruitment and retention is also framed as an opportunity — the team sees stabilizing the workforce as a lever for improving everything else downstream.</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-head chal-head"><i class="ti ti-alert-triangle"></i> Challenges — themes</div>
+          <div class="summary-body">Staff turnover is the central challenge and it cascades. Inconsistent staffing leads to multiple coaches supporting one client, which creates service gaps during transitions and erodes confidence among clients, guardians, and VR counselors alike. On the advocacy side, the team also flags a practical problem: business development takes time they don't have, and there's no system for tracking established employer relationships.</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-head goal90-head"><i class="ti ti-calendar"></i> 90-day goals — themes</div>
+          <div class="summary-body">The 90-day goals are well-grounded and actionable. Standardizing checklists, filling open positions, deploying sub job coaches, and continuing VR relationship-building all respond directly to identified problems. This is one of the cleaner 90-day sets in the analysis — each goal is traceable to a specific challenge.</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-head goal12-head"><i class="ti ti-calendar-stats"></i> 12-month goals — themes</div>
+          <div class="summary-body">The 12-month goals extend the 90-day logic well. A formal transition protocol from ESP to Job Coach, deeper VR engagement across regions, and a 3-year tenure target all flow from the team's stated priorities. The one outlier is the Proud LU sticker campaign — a community visibility tactic with no stated problem or opportunity driving it. The Advocacy section overall is underbuilt relative to the team's stated 10-year vision of employers proactively reaching out to LU.</div>
+        </div>
+      </div>
+    </div>
+    <div class="gaps-block">
+      <div class="gaps-head"><i class="ti ti-flag"></i> Key gaps to raise</div>
+      <ul class="gaps-list"><li>The Advocacy section is underbuilt relative to the team's stated 10-year vision (employers proactively reaching out to LU). Two real challenges — time for relationship-building, and no tracking system for employer partners — have no goals. This is worth a focused conversation about what a business development discipline actually looks like in practice.</li><li>The 3-year tenure goal is an outcome, not an action. It describes where they want to be, not what they'll do differently. A supporting goal around compensation, scheduling, or incentive structure would make this actionable.</li><li>The Innovation and Growth pillar submitted no content. For a team whose 10-year vision includes regional expansion, that's a notable omission worth surfacing.</li></ul>
+    </div>
+    <div class="subsection-label">Goals and what they connect to</div>
+    
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">Refine and standardize on-the-job support checklists for each current client.</span>
+            <span class="pillar-tag" style="background:#E6F1FB;color:#0C447C;border:0.5px solid #B5D4F4">Services</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-chal">Challenge: Inconsistent support — multiple staff per client</span><span class="chip chip-chal">Challenge: Gaps in follow-through during transition</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">Continue relationship building with VR office; decrease average number of days clients are placed.</span>
+            <span class="pillar-tag" style="background:#E6F1FB;color:#0C447C;border:0.5px solid #B5D4F4">Services</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-opp">Opp: Increase referral pipeline</span><span class="chip chip-chal">Challenge: Staff turnover undermining stakeholder confidence</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">Sub job coaches to support team absorption of open staff position duties.</span>
+            <span class="pillar-tag" style="background:#EAF3DE;color:#27500A;border:0.5px solid #C0DD97">Workforce</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-chal">Challenge: Variable job coach schedule and pay rate</span><span class="chip chip-chal">Challenge: Staff turnover undermining service quality</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">All positions filled and training complete.</span>
+            <span class="pillar-tag" style="background:#EAF3DE;color:#27500A;border:0.5px solid #C0DD97">Workforce</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-opp">Opp: Staff recruitment and retention</span><span class="chip chip-chal">Challenge: Variable schedule and pay; incentive structure</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">Implement a standardized transition process from ESP to Job Coach after 2 weeks of successful employment.</span>
+            <span class="pillar-tag" style="background:#E6F1FB;color:#0C447C;border:0.5px solid #B5D4F4">Services</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-chal">Challenge: Gaps in follow-through during transition to employment</span><span class="chip chip-opp">Opp: Restructure the transition process post-placement</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">Improve staff retention and service consistency; expand VR counselor engagement across all regions; reduce time-to-placement.</span>
+            <span class="pillar-tag" style="background:#E6F1FB;color:#0C447C;border:0.5px solid #B5D4F4">Services</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-chal">Challenge: Staff turnover undermining confidence of clients, guardians, and agency</span><span class="chip chip-opp">Opp: Increase referral pipeline</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">All Employment Services positions have a minimum of 3 years tenure.</span>
+            <span class="pillar-tag" style="background:#EAF3DE;color:#27500A;border:0.5px solid #C0DD97">Workforce</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-opp">Opp: Staff recruitment and retention</span><span class="chip chip-chal">Challenge: Variable schedule and incentive structure</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">"Proud LU" stickers on business windows and doors across the KC area.</span>
+            <span class="pillar-tag" style="background:#EEEDFE;color:#3C3489;border:0.5px solid #CECBF6">Advocacy</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-none">No clear connection to a stated opp or challenge</span></div>
+        </div>
+    <div class="subsection-label" style="margin-top:1.5rem">Opportunities and challenges with no corresponding goal</div>
+    <div class="orphan-grid"><div class="orphan orph-chal">
+      <div class="orphan-head"><i class="ti ti-alert-triangle"></i> Challenge &nbsp;<span class="pillar-tag" style="background:#EEEDFE;color:#3C3489;border:0.5px solid #CECBF6">Advocacy</span></div>
+      <div class="orphan-text">Time commitment required for business development and community partnership work — no goal addresses how to create or protect capacity for this.</div>
+    </div><div class="orphan orph-chal">
+      <div class="orphan-head"><i class="ti ti-alert-triangle"></i> Challenge &nbsp;<span class="pillar-tag" style="background:#EEEDFE;color:#3C3489;border:0.5px solid #CECBF6">Advocacy</span></div>
+      <div class="orphan-text">Documenting established relationships and whether partners have current opportunities — the team flagged this as a challenge but wrote no goal around a tracking or CRM system.</div>
+    </div></div>
+  </section>
+    
+  <section class="dept-section" id="aba">
+    <div class="dept-banner">
+      <div>
+        <div class="dept-name">ABA</div>
+        <div class="dept-group">Program Services</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-card"><div class="stat-num green">7</div><div class="stat-lbl">Goals connected</div></div>
+        <div class="stat-card"><div class="stat-num amber">5</div><div class="stat-lbl">Goals unconnected</div></div>
+        <div class="stat-card"><div class="stat-num red">3</div><div class="stat-lbl">Orphaned items</div></div>
+      </div>
+    </div>
+    <div class="mission-bar">To support individuals and stakeholders to overcome current barriers and achieve socially significant outcomes through evidence-based practice and dissemination to our community.</div>
+    <div class="summary-section">
+      <div class="summary-grid">
+        <div class="summary-card">
+          <div class="summary-head opp-head"><i class="ti ti-bulb"></i> Opportunities — themes</div>
+          <div class="summary-body">The team's clearest opportunities are in clinical standardization and external growth. Implementing proper behavioral assessments, building a skill acquisition library, and developing cross-department training are all areas where the team sees room to establish ABA as a real infrastructure service across the organization — not just a standalone department.</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-head chal-head"><i class="ti ti-alert-triangle"></i> Challenges — themes</div>
+          <div class="summary-body">Two challenges dominate the picture and are interrelated: a national BCBA workforce shortage means the team can't hire fast enough, and the BCBAs they do have are spending time on direct intervention instead of supervisory and clinical duties. This creates a ceiling on growth and quality. Beneath that, inconsistent data systems, no internal collection platform, and weak skill acquisition programming are service-quality challenges the team is actively trying to address. The incentive bonus structure — flagged as unattainable and uncompetitive — is a retention risk that sits underneath the workforce challenge but gets no goal response.</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-head goal90-head"><i class="ti ti-calendar"></i> 90-day goals — themes</div>
+          <div class="summary-body">The 90-day goals are well-targeted and actionable. Beginning standardized assessments, streamlining training for float DSPs, getting BCBAs in front of program managers, and starting the billing accuracy work with Finance all address real identified problems. The tier model solidification and school district outreach show the team is thinking beyond internal fixes toward system-level change.</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-head goal12-head"><i class="ti ti-calendar-stats"></i> 12-month goals — themes</div>
+          <div class="summary-body">The 12-month goals build logically on the 90-day work — the RBT Playbook formalizes what the training streamlining started, the Lead RBT and Lead BCBA Trainer positions address the supervisory bottleneck, and the university partnership takes the graduate pipeline from concept to relationship. The Latte Life and Employment partnership goal is ambitious and interesting but has no problem statement driving it — it reads more as a growth aspiration than a response to a named challenge.</div>
+        </div>
+      </div>
+    </div>
+    <div class="gaps-block">
+      <div class="gaps-head"><i class="ti ti-flag"></i> Key gaps to raise</div>
+      <ul class="gaps-list"><li>The incentive bonus structure challenge is the most significant orphaned item. ABA explicitly flags it as unattainable and uncompetitive with the broader market — in a field with a known national workforce shortage, this is a retention risk. It connects directly to the BCBA shortage challenge but neither goal horizon addresses compensation or incentive redesign.</li><li>The two workforce challenges (BCBA shortage and BCBAs doing direct work) have partial goal responses — hire more RBTs, create Lead positions — but no goal addresses the structural cause: caseload design and how work is allocated between BCBAs and RBTs. The new positions goal helps but may not move the needle without a parallel caseload restructure.</li><li>The Latte Life and Employment partnership is an interesting 12-month goal but it appears without context — no opportunity or challenge motivates it. Before it becomes a Rock, it's worth asking what problem it solves and whether the team has capacity to take it on alongside everything else.</li></ul>
+    </div>
+    <div class="subsection-label">Goals and what they connect to</div>
+    
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">Begin standard assessments with clients (e.g. AFILS).</span>
+            <span class="pillar-tag" style="background:#E6F1FB;color:#0C447C;border:0.5px solid #B5D4F4">Services</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-chal">Challenge: Weak skill acquisition programming</span><span class="chip chip-opp">Opp: Begin using appropriate behavioral assessments</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">Streamline staff training — float DSPs receive all BSPs; staff learn precursors.</span>
+            <span class="pillar-tag" style="background:#E6F1FB;color:#0C447C;border:0.5px solid #B5D4F4">Services</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-chal">Challenge: Messy record keeping; no internal ABA data collection system</span><span class="chip chip-chal">Challenge: Consistency and continuity of care across multiple locations</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">BCBA presentations to Program Managers and Program Directors about ABA.</span>
+            <span class="pillar-tag" style="background:#E6F1FB;color:#0C447C;border:0.5px solid #B5D4F4">Services</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-opp">Opp: ABA collaborating and training staff from other departments</span><span class="chip chip-chal">Challenge: Consistency and continuity across locations and outside BSPs</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">Hire more RBTs; advance training through in-house RBT training and graduate student pipeline.</span>
+            <span class="pillar-tag" style="background:#EAF3DE;color:#27500A;border:0.5px solid #C0DD97">Workforce</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-chal">Challenge: BCBAs doing direct intervention instead of BCBA duties</span><span class="chip chip-chal">Challenge: Workforce shortage of BCBAs in adult services</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">Work with Finance to sequence billing accuracy.</span>
+            <span class="pillar-tag" style="background:#FAEEDA;color:#633806;border:0.5px solid #FAC775">Financial</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-none">No stated opp or challenge — implied by department growth stage</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">Increase profit by 3%.</span>
+            <span class="pillar-tag" style="background:#FAEEDA;color:#633806;border:0.5px solid #FAC775">Financial</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-none">No actionable opportunity stated — recent profitability is a fact, not a stated opportunity or problem to solve</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">Collaborate with local school districts for transition services.</span>
+            <span class="pillar-tag" style="background:#EEEDFE;color:#3C3489;border:0.5px solid #CECBF6">Advocacy</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-opp">Opp: Increase support for external clients; network with stakeholders</span><span class="chip chip-chal">Challenge: Consistency and continuity of care across locations</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">Solidify tier model for programs; collaborate with Training to streamline external BSPs.</span>
+            <span class="pillar-tag" style="background:#FAECE7;color:#712B13;border:0.5px solid #F5C4B3">Innovation</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-chal">Challenge: Knowledge and skillset to create ABA foundational training</span><span class="chip chip-opp">Opp: Developing marketing flier; increasing LU ABA recognition</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">RBT Playbook — skill acquisition library, supervision requirements, check-offs with BCBAs.</span>
+            <span class="pillar-tag" style="background:#E6F1FB;color:#0C447C;border:0.5px solid #B5D4F4">Services</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-chal">Challenge: Weak skill acquisition programming</span><span class="chip chip-chal">Challenge: BCBAs doing direct intervention instead of supervisory duties</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">Develop new positions — Lead RBTs, Lead BCBA Trainer.</span>
+            <span class="pillar-tag" style="background:#EAF3DE;color:#27500A;border:0.5px solid #C0DD97">Workforce</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-chal">Challenge: BCBA shortage; BCBAs absorbed in direct work instead of supervisory duties</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">Increase profit by 10%.</span>
+            <span class="pillar-tag" style="background:#FAEEDA;color:#633806;border:0.5px solid #FAC775">Financial</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-none">No actionable opportunity stated — trendline growth is context, not a stated opportunity or problem to solve</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">Find metrics to measure how ABA financially benefits other programs.</span>
+            <span class="pillar-tag" style="background:#FAEEDA;color:#633806;border:0.5px solid #FAC775">Financial</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-none">No stated opp or challenge — implied by cross-program support role</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">Connect with local universities for graduate training program.</span>
+            <span class="pillar-tag" style="background:#EEEDFE;color:#3C3489;border:0.5px solid #CECBF6">Advocacy</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-chal">Challenge: Low CEU opportunities and BCBA licensure maintenance</span><span class="chip chip-chal">Challenge: BCBA workforce shortage in adult services</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">Partnership with Employment and Latte Life — double the number of ABA/Employment clients.</span>
+            <span class="pillar-tag" style="background:#EAF3DE;color:#27500A;border:0.5px solid #C0DD97">Workforce</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-none">No stated opp or challenge — aligns with growth direction but not explicitly motivated</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">Company-wide Tier 2 support.</span>
+            <span class="pillar-tag" style="background:#FAECE7;color:#712B13;border:0.5px solid #F5C4B3">Innovation</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-chal">Challenge: Knowledge and skillset to create ABA foundational training</span><span class="chip chip-opp">Opp: ABA collaborating and training staff from other departments</span></div>
+        </div>
+    <div class="subsection-label" style="margin-top:1.5rem">Opportunities and challenges with no corresponding goal</div>
+    <div class="orphan-grid"><div class="orphan orph-chal">
+      <div class="orphan-head"><i class="ti ti-alert-triangle"></i> Challenge &nbsp;<span class="pillar-tag" style="background:#FAEEDA;color:#633806;border:0.5px solid #FAC775">Financial</span></div>
+      <div class="orphan-text">Incentive bonus structure is not attainable due to caseload hours and is uncompetitive with traditional ABA structures. No goal addresses compensation or incentive redesign — a real retention risk given the stated BCBA shortage.</div>
+    </div><div class="orphan orph-chal">
+      <div class="orphan-head"><i class="ti ti-alert-triangle"></i> Challenge &nbsp;<span class="pillar-tag" style="background:#FAECE7;color:#712B13;border:0.5px solid #F5C4B3">Innovation</span></div>
+      <div class="orphan-text">Low opportunities for Continuing Education Units and BCBA licensure maintenance. The university partnership goal partially addresses this but is not framed as a CEU solution.</div>
+    </div><div class="orphan orph-opp">
+      <div class="orphan-head"><i class="ti ti-bulb"></i> Opportunity &nbsp;<span class="pillar-tag" style="background:#EAF3DE;color:#27500A;border:0.5px solid #C0DD97">Workforce</span></div>
+      <div class="orphan-text">Dedicated office space at The Manor — listed as a structural goal but no goal articulates what that space is meant to enable for the team beyond physical presence.</div>
+    </div></div>
+  </section>
+    
+  <section class="dept-section" id="community-support">
+    <div class="dept-banner">
+      <div>
+        <div class="dept-name">Community Support</div>
+        <div class="dept-group">Program Services</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-card"><div class="stat-num green">10</div><div class="stat-lbl">Goals connected</div></div>
+        <div class="stat-card"><div class="stat-num amber">4</div><div class="stat-lbl">Goals unconnected</div></div>
+        <div class="stat-card"><div class="stat-num red">2</div><div class="stat-lbl">Orphaned items</div></div>
+      </div>
+    </div>
+    <div class="mission-bar">No mission statement submitted.</div>
+    <div class="summary-section">
+      <div class="summary-grid">
+        <div class="summary-card">
+          <div class="summary-head opp-head"><i class="ti ti-bulb"></i> Opportunities — themes</div>
+          <div class="summary-body">The team's clearest opportunities lie in the structural advantages already built into their model: 1:1 ratios, person-centered flexibility, and the ability to serve individuals who fall through the cracks of more structured programs. There is meaningful room to grow by sub-specializing, building out group programming, formalizing curricula, and establishing CSO as a known gap-and-transition resource across the KC IDD service landscape. The team also sees an opportunity to leverage their remote model more intentionally through better documentation tools and cross-training.</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-head chal-head"><i class="ti ti-alert-triangle"></i> Challenges — themes</div>
+          <div class="summary-body">Visibility is the dominant challenge — the department is not well known inside or outside LU, which limits referrals, community partnerships, and the team's ability to influence how individuals and their natural supports engage with CSO. Beneath that, the remote and dispersed nature of the workforce creates real collaboration and consistency gaps. Financially, low reimbursement rates and individuals declining services put structural pressure on the department that the team is working around rather than through.</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-head goal90-head"><i class="ti ti-calendar"></i> 90-day goals — themes</div>
+          <div class="summary-body">The 90-day goals are ambitious and broad — 16 total goals across both horizons is a high volume for a lean, remote team. The most grounded 90-day goals are the visibility work (marketing flier, intake partnership), the group capacity build-out, and the workforce infrastructure updates (OJT, SharePoint, cross-training). The sub-department proposal is strategically significant and appropriate as a 90-day deliverable. Several goals read more like ongoing operational commitments than discrete 90-day actions.</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-head goal12-head"><i class="ti ti-calendar-stats"></i> 12-month goals — themes</div>
+          <div class="summary-body">The 12-month goals build well on the 90-day layer — moving from proposal to actual sub-department execution, from occasional community expert involvement to all ISD groups being expert-led, and from curriculum drafts to a product others want access to. The 50% deficit reduction target is directionally right but is built entirely on revenue-side goals; no goal addresses why individuals decline services or why DSPs leave, which are the demand- and retention-side levers that would actually move the number.</div>
+        </div>
+      </div>
+    </div>
+    <div class="gaps-block">
+      <div class="gaps-head"><i class="ti ti-flag"></i> Key gaps to raise</div>
+      <ul class="gaps-list"><li>No mission statement was submitted. For a department with this much thoughtful content elsewhere in the sheet, it is likely an oversight — but worth flagging before this is used in any board-facing materials.</li><li>The 50% deficit reduction goal is built entirely on revenue-side actions. No goal asks why individuals decline services or addresses DSP turnover as a retention problem. Without demand- and retention-side levers, the target is difficult to achieve through capacity expansion alone.</li><li>The volume of 90-day goals is high for a lean, remote team — several read as ongoing operational commitments rather than discrete 90-day outcomes. Before these go into Monday.com as Rocks, the team should identify the two or three that would have the most leverage and treat the rest as operational cadence.</li><li>The fundraising goal appears without context — there is no stated problem, donor relationship, or strategy behind it. Worth asking what kind of fundraising, for what purpose, and whether the team has the capacity to pursue it alongside everything else.</li></ul>
+    </div>
+    <div class="subsection-label">Goals and what they connect to</div>
+    
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">Analyze the true needs of the people on the current caseload.</span>
+            <span class="pillar-tag" style="background:#E6F1FB;color:#0C447C;border:0.5px solid #B5D4F4">Services</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-chal">Challenge: Disconnect between CSO purpose, individual goals, and natural support expectations</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">Intake more clients with challenging behaviors who can benefit from 1:1 ratio; build robust group CN and ISD programming.</span>
+            <span class="pillar-tag" style="background:#E6F1FB;color:#0C447C;border:0.5px solid #B5D4F4">Services</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-opp">Opp: 1:1 ratios built into code; serving people likely to fall through the cracks</span><span class="chip chip-opp">Opp: Potential to grow and develop services</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">Create proposal to specialize services into sub-departments.</span>
+            <span class="pillar-tag" style="background:#E6F1FB;color:#0C447C;border:0.5px solid #B5D4F4">Services</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-chal">Challenge: Oversight and collaboration difficult with remote, spread-out team</span><span class="chip chip-opp">Opp: Offer gap and transitional services; potential to grow</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">Partner with marketing to create a CSO flyer; build presentations on what CSO does; work closely with intake for referrals.</span>
+            <span class="pillar-tag" style="background:#EEEDFE;color:#3C3489;border:0.5px solid #CECBF6">Advocacy</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-chal">Challenge: Not well known; not invited to the table; use of internal acronyms</span><span class="chip chip-chal">Challenge: People don't know about CSO or what it can offer</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">Update OJT materials and process; update team expectations; train DSPs on admin tasks; populate DSP SharePoint; cross-train at least two PRN DSPs for north and south.</span>
+            <span class="pillar-tag" style="background:#EAF3DE;color:#27500A;border:0.5px solid #C0DD97">Workforce</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-chal">Challenge: Few opportunities for modeling and in-person collaboration due to remote work</span><span class="chip chip-chal">Challenge: Tools are currently inconsistent</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">Have shift guidelines on every shift note; updated uniform ISP programs per individual; robust resource inventory in DSP SharePoint; each DSP cross-trained in at least one other department.</span>
+            <span class="pillar-tag" style="background:#EAF3DE;color:#27500A;border:0.5px solid #C0DD97">Workforce</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-chal">Challenge: Few opportunities for in-person modeling; tools are inconsistent</span><span class="chip chip-opp">Opp: Getting team knowledge to paper; utilizing Microsoft accounts</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">Fill Saturday group to capacity; add a 3rd DSP; identify a second day for group programming.</span>
+            <span class="pillar-tag" style="background:#FAEEDA;color:#633806;border:0.5px solid #FAC775">Financial</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-chal">Challenge: Reimbursement rates are low</span><span class="chip chip-opp">Opp: Increasing group ratios to maximize group reimbursement</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">Finish CSO portion of the playbook; incorporate a monthly group programming calendar.</span>
+            <span class="pillar-tag" style="background:#FAECE7;color:#712B13;border:0.5px solid #F5C4B3">Innovation</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-chal">Challenge: Being reactive instead of proactive</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">Add group CN code; add PA sub-department; build curriculum for group programming to recruit to.</span>
+            <span class="pillar-tag" style="background:#FAECE7;color:#712B13;border:0.5px solid #F5C4B3">Innovation</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-opp">Opp: Build out CN group, ISD group, curricula, internships</span><span class="chip chip-chal">Challenge: Much potential for programming not yet realized</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">Increase meaningful and engaging programming as an alternative to traditional day habs.</span>
+            <span class="pillar-tag" style="background:#E6F1FB;color:#0C447C;border:0.5px solid #B5D4F4">Services</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-opp">Opp: Offer gap and transitional services as alternative to day hab</span><span class="chip chip-chal">Challenge: Disconnect between purpose and individual/natural support expectations</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">Through gap services, increase referrals to and graduations from CSO to other IDD services and community programming.</span>
+            <span class="pillar-tag" style="background:#E6F1FB;color:#0C447C;border:0.5px solid #B5D4F4">Services</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-opp">Opp: Connecting with community partners; serving people likely to fall through the cracks</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">Be interconnected within LU; partner with at least 2 outside agencies; have at least 2 community experts leading ISD groups.</span>
+            <span class="pillar-tag" style="background:#EEEDFE;color:#3C3489;border:0.5px solid #CECBF6">Advocacy</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-opp">Opp: Better connecting with LU departments; partnering with community services; inviting community experts</span><span class="chip chip-chal">Challenge: Not well known; not invited to the table</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">All ISD groups led by community experts; work closely with LU intake department.</span>
+            <span class="pillar-tag" style="background:#EEEDFE;color:#3C3489;border:0.5px solid #CECBF6">Advocacy</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-opp">Opp: Inviting community experts to teach, coach, and mentor individuals</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">Be a department people actively compete to work for; partner with colleges to employ students and graduates.</span>
+            <span class="pillar-tag" style="background:#EAF3DE;color:#27500A;border:0.5px solid #C0DD97">Workforce</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-none">No stated opp or challenge — aspirational goal with no problem driving it</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">Decrease deficit by 50% and have CSO-specific fundraising.</span>
+            <span class="pillar-tag" style="background:#FAEEDA;color:#633806;border:0.5px solid #FAC775">Financial</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-chal">Challenge: Reimbursement rates are low; individuals decline services</span><span class="chip chip-none">Fundraising has no stated opp or challenge driving it</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">Streamline schedule for consistency and minimized commute time.</span>
+            <span class="pillar-tag" style="background:#FAEEDA;color:#633806;border:0.5px solid #FAC775">Financial</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-opp">Opp: Identifying vehicles at multiple locations to reduce commute time</span><span class="chip chip-opp">Opp: Increasing group ratios to maximize group reimbursement</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">Have a robust curriculum that others want access to; have an internship program.</span>
+            <span class="pillar-tag" style="background:#FAECE7;color:#712B13;border:0.5px solid #F5C4B3">Innovation</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-opp">Opp: Build out curricula; create internships through LU</span><span class="chip chip-none">Internship program has no explicit problem driving it beyond growth aspiration</span></div>
+        </div>
+    <div class="subsection-label" style="margin-top:1.5rem">Opportunities and challenges with no corresponding goal</div>
+    <div class="orphan-grid"><div class="orphan orph-chal">
+      <div class="orphan-head"><i class="ti ti-alert-triangle"></i> Challenge &nbsp;<span class="pillar-tag" style="background:#E6F1FB;color:#0C447C;border:0.5px solid #B5D4F4">Services</span></div>
+      <div class="orphan-text">Turnover — named as a challenge but no goal directly addresses DSP retention. The workforce goals focus on cross-training and materials, not the causes of turnover.</div>
+    </div><div class="orphan orph-chal">
+      <div class="orphan-head"><i class="ti ti-alert-triangle"></i> Challenge &nbsp;<span class="pillar-tag" style="background:#FAEEDA;color:#633806;border:0.5px solid #FAC775">Financial</span></div>
+      <div class="orphan-text">Individuals declining services — named as a financial challenge but no goal addresses why individuals decline or how to reduce that rate. The financial goals focus on maximizing billing, not reducing cancellations.</div>
+    </div></div>
+  </section>
+    
+  <section class="dept-section" id="community-living">
+    <div class="dept-banner">
+      <div>
+        <div class="dept-name">Community Living</div>
+        <div class="dept-group">Program Services</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat-card"><div class="stat-num green">16</div><div class="stat-lbl">Goals connected</div></div>
+        <div class="stat-card"><div class="stat-num amber">12</div><div class="stat-lbl">Goals unconnected</div></div>
+        <div class="stat-card"><div class="stat-num red">7</div><div class="stat-lbl">Orphaned items</div></div>
+      </div>
+    </div>
+    <div class="mission-bar">No mission statement submitted.</div>
+    <div class="summary-section">
+      <div class="summary-grid">
+        <div class="summary-card">
+          <div class="summary-head opp-head"><i class="ti ti-bulb"></i> Opportunities — themes</div>
+          <div class="summary-body">The team's most concrete opportunities are in Jackson County expansion, technology integration — particularly AI and a unified shift app — and building the pipeline from transition-age youth through a bridge program with schools and intake. There are also meaningful opportunities to deepen guardian and family relationships through structured programming, and to convert behavioral services from a cost center into a differentiated service model.</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-head chal-head"><i class="ti ti-alert-triangle"></i> Challenges — themes</div>
+          <div class="summary-body">Workforce challenges dominate and are deeply interconnected: high turnover with unknown root causes, DSPs feeling undervalued, behavioral homes that staff won't pick up at, schedule structures that offer no middle ground, and supervisors trapped in direct care ratio when they need administrative time. Policy inconsistency and inaccessibility appears in multiple rows as a compounding friction. The financial pressure from overtime, unfilled beds, and low individual activity funding runs underneath all of it.</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-head goal90-head"><i class="ti ti-calendar"></i> 90-day goals — themes</div>
+          <div class="summary-body">The 90-day goals reflect the breadth of the submission — there are over 15 distinct items, ranging from strategic (identify homes not generating revenue, AI training rollout, bridge program curriculum) to operational (digital transportation logs, business cards, internship program) to aspirational (edible landscapes). The workforce goals are the most grounded: stress and burnout root cause analysis, role-specific onboarding, and the shift app all respond directly to named challenges. Several goals need to move to a parking lot before this becomes a working plan.</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-head goal12-head"><i class="ti ti-calendar-stats"></i> 12-month goals — themes</div>
+          <div class="summary-body">The 12-month goals are similarly broad. The strongest are the career ladder, staff retention incentives, the home-matching program before TMO, the guardian training program, and the Jackson County real estate strategy. The weakest — own transportation service, individual-run open house, apprenticeship programs — appear without any motivating problem. The 90% satisfaction score target is an outcome without a strategy. Before any of this is loaded into Monday.com, the team needs to identify the three to five goals that will have the most leverage and treat the rest as operational cadence or future planning.</div>
+        </div>
+      </div>
+    </div>
+    <div class="gaps-block">
+      <div class="gaps-head"><i class="ti ti-flag"></i> Key gaps to raise</div>
+      <ul class="gaps-list"><li>Community Living submitted 28 rows representing multiple contributors writing independently. The result is closer to a team brainstorm than a department plan. Before any of this is loaded into Monday.com, a prioritization session is needed to identify the three to five goals that will have real leverage — the rest should move to a parking lot.</li><li>The behavioral homes overtime loop is both a workforce and financial challenge that goes unaddressed. Staff won't pick up at behavioral homes due to skill gaps, which drives overtime costs. A day program for behaviors appears as a 12-month goal but doesn't close the loop on the DSP skill gap that creates the avoidance in the first place.</li><li>The 80% retention goal and the root cause analysis goal both address turnover, but the 80% target is set before the analysis is complete. The sequencing should be reversed — understand why people are leaving first, then set a retention target based on what's actually fixable.</li><li>Several goals with no motivating problem — edible landscapes, individual-run open house, own transportation service — should be moved to a parking lot rather than tracked as active goals. Including them in Monday.com alongside serious operational priorities will dilute focus and create noise.</li></ul>
+    </div>
+    <div class="subsection-label">Goals and what they connect to</div>
+    
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">Identify ISPs that need re-evaluation to best capture individual needs.</span>
+            <span class="pillar-tag" style="background:#E6F1FB;color:#0C447C;border:0.5px solid #B5D4F4">Services</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-opp">Opp: No other provider modeling programs like CL</span><span class="chip chip-chal">Challenge: State and government regulations</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">Open host homes; PD/geographic get-togethers; increase nursing department.</span>
+            <span class="pillar-tag" style="background:#E6F1FB;color:#0C447C;border:0.5px solid #B5D4F4">Services</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-chal">Challenge: Specialist gaps — training, ABA, RBT coverage in homes</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">Vans for homes with multiple mobility needs to take the whole home out at once.</span>
+            <span class="pillar-tag" style="background:#E6F1FB;color:#0C447C;border:0.5px solid #B5D4F4">Services</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-chal">Challenge: Low staffing, inconsistency</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">Internal team pre-ISP meeting.</span>
+            <span class="pillar-tag" style="background:#E6F1FB;color:#0C447C;border:0.5px solid #B5D4F4">Services</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-opp">Opp: Refine IDT process; streamline technology</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">Identify homes currently not generating revenue.</span>
+            <span class="pillar-tag" style="background:#E6F1FB;color:#0C447C;border:0.5px solid #B5D4F4">Services</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-opp">Opp: Growth in Jackson County; identify barriers to beds being filled</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">TS administrative work hours; TS/PM participate in DSP hiring process; more efficient documentation for TS/PM/PD.</span>
+            <span class="pillar-tag" style="background:#EAF3DE;color:#27500A;border:0.5px solid #C0DD97">Workforce</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-chal">Challenge: TS completion of all job duties while on direct care time</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">Meet with teams to determine cause of stress and burnout; fully staffed.</span>
+            <span class="pillar-tag" style="background:#EAF3DE;color:#27500A;border:0.5px solid #C0DD97">Workforce</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-chal">Challenge: Individuals require more support than ratio allows; lack of CA power for team supervisor</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">App: start-to-finish shift — clock in, MAR reminders, documentation, goals, clock out, all in one.</span>
+            <span class="pillar-tag" style="background:#EAF3DE;color:#27500A;border:0.5px solid #C0DD97">Workforce</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-chal">Challenge: Consistency in policy enforcement; no policy access; too many applications</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">80% retention rate with current employees.</span>
+            <span class="pillar-tag" style="background:#EAF3DE;color:#27500A;border:0.5px solid #C0DD97">Workforce</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-chal">Challenge: High turnover; lack of exit survey data; unknown root causes</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">Role-specific training during onboarding.</span>
+            <span class="pillar-tag" style="background:#EAF3DE;color:#27500A;border:0.5px solid #C0DD97">Workforce</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-chal">Challenge: Lack of specialized training; staff buy-in for professional development</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">Business cards and ID badges for community outings.</span>
+            <span class="pillar-tag" style="background:#EAF3DE;color:#27500A;border:0.5px solid #C0DD97">Workforce</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-none">No stated opp or challenge — operational item with no motivating problem</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">Internship program.</span>
+            <span class="pillar-tag" style="background:#EAF3DE;color:#27500A;border:0.5px solid #C0DD97">Workforce</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-opp">Opp: No relationships with colleges; paid internships not yet funded</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">Add staff to grants department.</span>
+            <span class="pillar-tag" style="background:#FAEEDA;color:#633806;border:0.5px solid #FAC775">Financial</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-opp">Opp: Funding for additional staff; establish funding through fundraisers</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">Digital automated transportation logs.</span>
+            <span class="pillar-tag" style="background:#FAEEDA;color:#633806;border:0.5px solid #FAC775">Financial</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-opp">Opp: OT cap; cap on social security funds for individuals</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">Traveling DSP advocate; identify appropriate guardians for parent group; identify topics.</span>
+            <span class="pillar-tag" style="background:#EEEDFE;color:#3C3489;border:0.5px solid #CECBF6">Advocacy</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-opp">Opp: Develop training on guardian relationships</span><span class="chip chip-chal">Challenge: Funding; low morale for backing the company</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">Develop classes or board for self-advocacy.</span>
+            <span class="pillar-tag" style="background:#EEEDFE;color:#3C3489;border:0.5px solid #CECBF6">Advocacy</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-chal">Challenge: Lack of self-advocacy training info</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">Developing curriculum for bridge program with intake.</span>
+            <span class="pillar-tag" style="background:#EEEDFE;color:#3C3489;border:0.5px solid #CECBF6">Advocacy</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-opp">Opp: Limited providers; younger population transition opportunity</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">Work hub, comprehensive work system, AI training for staff and individuals.</span>
+            <span class="pillar-tag" style="background:#FAECE7;color:#712B13;border:0.5px solid #F5C4B3">Innovation</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-opp">Opp: AI available in current programs; technology integration</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">Complete finding new system options.</span>
+            <span class="pillar-tag" style="background:#FAECE7;color:#712B13;border:0.5px solid #F5C4B3">Innovation</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-chal">Challenge: Small IT department; funding; room for growth</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">Start edible landscapes.</span>
+            <span class="pillar-tag" style="background:#FAECE7;color:#712B13;border:0.5px solid #F5C4B3">Innovation</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-none">No stated opp or challenge — no problem motivating this goal</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h90">90 days</span>
+            <span class="goal-text">Expansion in Jackson County.</span>
+            <span class="pillar-tag" style="background:#FAECE7;color:#712B13;border:0.5px solid #F5C4B3">Innovation</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-opp">Opp: Growth opportunity and cost of housing in Jackson County</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">90% satisfaction scores on individual, guardian, and SC surveys.</span>
+            <span class="pillar-tag" style="background:#E6F1FB;color:#0C447C;border:0.5px solid #B5D4F4">Services</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-none">No stated opp or challenge — outcome target with no motivating problem or strategy</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">Residential training curriculum developed based on surveys and ISPs.</span>
+            <span class="pillar-tag" style="background:#E6F1FB;color:#0C447C;border:0.5px solid #B5D4F4">Services</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-chal">Challenge: State and government regulations; need for individual-aligned training</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">Day program for behaviors.</span>
+            <span class="pillar-tag" style="background:#E6F1FB;color:#0C447C;border:0.5px solid #B5D4F4">Services</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-chal">Challenge: Behavioral homes — staff OT due to skill gaps and avoidance</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">All homes are revenue generating.</span>
+            <span class="pillar-tag" style="background:#E6F1FB;color:#0C447C;border:0.5px solid #B5D4F4">Services</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-opp">Opp: Growth in Jackson County; identify barriers to beds being filled</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">Training program and opportunities for guardians.</span>
+            <span class="pillar-tag" style="background:#E6F1FB;color:#0C447C;border:0.5px solid #B5D4F4">Services</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-opp">Opp: Developing training on guardian relationships</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">Apprenticeship programs.</span>
+            <span class="pillar-tag" style="background:#E6F1FB;color:#0C447C;border:0.5px solid #B5D4F4">Services</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-none">No stated opp or challenge driving this</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">No open full shifts; increase staff retention with incentives.</span>
+            <span class="pillar-tag" style="background:#EAF3DE;color:#27500A;border:0.5px solid #C0DD97">Workforce</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-chal">Challenge: DSPs feeling undervalued; funding for raises; higher overtime</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">Internal training and career ladder developed.</span>
+            <span class="pillar-tag" style="background:#EAF3DE;color:#27500A;border:0.5px solid #C0DD97">Workforce</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-chal">Challenge: Lack of specialized training; staff buy-in for professional development</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">Program to visit homes after interview to determine match prior to TMO.</span>
+            <span class="pillar-tag" style="background:#EAF3DE;color:#27500A;border:0.5px solid #C0DD97">Workforce</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-chal">Challenge: DSPs not ready when new homes open; shadow shifts without follow-up work</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">>50% of DSP hires come from CL referrals.</span>
+            <span class="pillar-tag" style="background:#EAF3DE;color:#27500A;border:0.5px solid #C0DD97">Workforce</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-opp">Opp: Under-utilized retention data; identify high-turnover locations</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">App development for documentation.</span>
+            <span class="pillar-tag" style="background:#EAF3DE;color:#27500A;border:0.5px solid #C0DD97">Workforce</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-chal">Challenge: Consistency in policy enforcement; too many programs and applications</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">Tuition reimbursement.</span>
+            <span class="pillar-tag" style="background:#EAF3DE;color:#27500A;border:0.5px solid #C0DD97">Workforce</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-none">No stated opp or challenge — aspirational benefit with no problem driving it</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">Establish living wage increase and performance-based increase.</span>
+            <span class="pillar-tag" style="background:#FAEEDA;color:#633806;border:0.5px solid #FAC775">Financial</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-chal">Challenge: DSPs feeling undervalued; funding for raises; higher overtime</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">Own transportation service.</span>
+            <span class="pillar-tag" style="background:#FAEEDA;color:#633806;border:0.5px solid #FAC775">Financial</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-none">No stated opp or challenge — infrastructure goal without a motivating problem</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">Develop parent group; hold mini conference with breakout sessions.</span>
+            <span class="pillar-tag" style="background:#EEEDFE;color:#3C3489;border:0.5px solid #CECBF6">Advocacy</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-opp">Opp: Guardian relationship training</span><span class="chip chip-chal">Challenge: Low morale for backing the company</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">Individual advocacy group and classes.</span>
+            <span class="pillar-tag" style="background:#EEEDFE;color:#3C3489;border:0.5px solid #CECBF6">Advocacy</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-chal">Challenge: Lack of self-advocacy training; encouraging individuals to participate</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">Develop partnerships with local schools and SPED programs.</span>
+            <span class="pillar-tag" style="background:#EEEDFE;color:#3C3489;border:0.5px solid #CECBF6">Advocacy</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-opp">Opp: Limited providers; younger population transition opportunity</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">Partnership and educational opportunities with healthcare providers and hospitals.</span>
+            <span class="pillar-tag" style="background:#EEEDFE;color:#3C3489;border:0.5px solid #CECBF6">Advocacy</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-none">No stated opp or challenge — good strategic direction but unmotivated in this submission</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">Competence and regular use of AI by staff and individuals.</span>
+            <span class="pillar-tag" style="background:#FAECE7;color:#712B13;border:0.5px solid #F5C4B3">Innovation</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-opp">Opp: Technology integration; AI available in current programs</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">Individual run open house.</span>
+            <span class="pillar-tag" style="background:#FAECE7;color:#712B13;border:0.5px solid #F5C4B3">Innovation</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-none">No stated opp or challenge — no problem motivating this goal</span></div>
+        </div>
+        <div class="goal-card">
+          <div class="goal-header">
+            <span class="horizon h12m">12 months</span>
+            <span class="goal-text">Find real estate and funding investment for Jackson County properties.</span>
+            <span class="pillar-tag" style="background:#FAECE7;color:#712B13;border:0.5px solid #F5C4B3">Innovation</span>
+          </div>
+          <div class="chips-row"><span class="chips-label">Connects to:</span><span class="chip chip-opp">Opp: Cost of housing in Jackson County; AI and technology to support growth</span></div>
+        </div>
+    <div class="subsection-label" style="margin-top:1.5rem">Opportunities and challenges with no corresponding goal</div>
+    <div class="orphan-grid"><div class="orphan orph-chal">
+      <div class="orphan-head"><i class="ti ti-alert-triangle"></i> Challenge &nbsp;<span class="pillar-tag" style="background:#FAEEDA;color:#633806;border:0.5px solid #FAC775">Financial</span></div>
+      <div class="orphan-text">Behavioral homes — lack of staff skill causes overtime because staff won't pick up at those locations. No goal addresses skill-building at behavioral homes specifically as a financial lever.</div>
+    </div><div class="orphan orph-chal">
+      <div class="orphan-head"><i class="ti ti-alert-triangle"></i> Challenge &nbsp;<span class="pillar-tag" style="background:#EAF3DE;color:#27500A;border:0.5px solid #C0DD97">Workforce</span></div>
+      <div class="orphan-text">Limited schedule options for DSPs — shifts are either under 30 or over 36 hours with no middle ground. No goal addresses schedule flexibility or redesign.</div>
+    </div><div class="orphan orph-chal">
+      <div class="orphan-head"><i class="ti ti-alert-triangle"></i> Challenge &nbsp;<span class="pillar-tag" style="background:#EAF3DE;color:#27500A;border:0.5px solid #C0DD97">Workforce</span></div>
+      <div class="orphan-text">No access to policies across the organization — named in multiple rows but no dedicated goal creates a policy access solution separate from the shift app.</div>
+    </div><div class="orphan orph-chal">
+      <div class="orphan-head"><i class="ti ti-alert-triangle"></i> Challenge &nbsp;<span class="pillar-tag" style="background:#EEEDFE;color:#3C3489;border:0.5px solid #CECBF6">Advocacy</span></div>
+      <div class="orphan-text">Limited funds for individual community involvement and chaperone funding — no goal addresses how to increase activity budgets or find supplemental funding for outings.</div>
+    </div><div class="orphan orph-opp">
+      <div class="orphan-head"><i class="ti ti-bulb"></i> Opportunity &nbsp;<span class="pillar-tag" style="background:#E6F1FB;color:#0C447C;border:0.5px solid #B5D4F4">Services</span></div>
+      <div class="orphan-text">Expand behavioral services, resources, and government influence — named as an opportunity but no 90-day or 12-month goal targets behavioral service expansion directly.</div>
+    </div><div class="orphan orph-opp">
+      <div class="orphan-head"><i class="ti ti-bulb"></i> Opportunity &nbsp;<span class="pillar-tag" style="background:#EAF3DE;color:#27500A;border:0.5px solid #C0DD97">Workforce</span></div>
+      <div class="orphan-text">Under-utilized data already collected — flagged but no goal builds an analytical process to act on it.</div>
+    </div><div class="orphan orph-opp">
+      <div class="orphan-head"><i class="ti ti-bulb"></i> Opportunity &nbsp;<span class="pillar-tag" style="background:#FAEEDA;color:#633806;border:0.5px solid #FAC775">Financial</span></div>
+      <div class="orphan-text">Additional revenue streams (coffee shop model referenced) — noted as a direction but no goal formalizes a revenue diversification strategy within CL's scope.</div>
+    </div></div>
+  </section>
+    <div class="coming-soon">
+      <i class="ti ti-clock" style="font-size:24px;display:block;margin-bottom:8px;"></i>
+      Remaining departments will be added as each analysis is completed.
+    </div>
+  </div>
+</main>
+
+</div>
+</body>
+</html>

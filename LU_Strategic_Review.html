@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Life Unlimited — 2026 Strategic Planning Review</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal:       #1B6B6B;
+    --teal-mid:   #2A8F8F;
+    --teal-light: #E6F4F4;
+    --teal-pale:  #F2FAFA;
+    --slate:      #1C2B2B;
+    --mist:       #8AABAB;
+    --cream:      #FAF9F6;
+    --white:      #FFFFFF;
+    --text:       #1C2B2B;
+    --text-soft:  #4A6666;
+    --border:     #C8DEDE;
+    --opp:        #1B6B6B;
+    --chal:       #7B4F2E;
+    --opp-bg:     #E6F4F4;
+    --chal-bg:    #F5EDE6;
+    --shadow:     0 2px 16px rgba(27,107,107,0.10);
+    --shadow-lg:  0 8px 40px rgba(27,107,107,0.14);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    height: 100%;
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    overflow: hidden;
+  }
+
+  /* ── LAYOUT ─────────────────────────────────────────────── */
+  #app {
+    display: grid;
+    grid-template-rows: 56px 1fr;
+    grid-template-columns: 260px 1fr;
+    height: 100vh;
+  }
+
+  /* ── TOPBAR ─────────────────────────────────────────────── */
+  #topbar {
+    grid-column: 1 / -1;
+    background: var(--slate);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    gap: 20px;
+    z-index: 100;
+  }
+  #topbar .wordmark {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    color: var(--white);
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+  }
+  #topbar .wordmark span { color: var(--mist); }
+  #topbar .divider { width: 1px; height: 28px; background: rgba(255,255,255,0.15); }
+  #topbar .doc-title {
+    font-size: 13px;
+    color: rgba(255,255,255,0.55);
+    font-weight: 400;
+    letter-spacing: 0.03em;
+    flex: 1;
+  }
+  #progress-bar {
+    height: 3px;
+    background: rgba(255,255,255,0.12);
+    border-radius: 2px;
+    width: 160px;
+    overflow: hidden;
+  }
+  #progress-fill {
+    height: 100%;
+    background: var(--mist);
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+  #screen-counter {
+    font-size: 12px;
+    color: rgba(255,255,255,0.4);
+    white-space: nowrap;
+    font-weight: 500;
+  }
+
+  /* ── SIDEBAR ────────────────────────────────────────────── */
+  #sidebar {
+    background: var(--slate);
+    overflow-y: auto;
+    padding: 16px 0;
+    border-right: 1px solid rgba(255,255,255,0.06);
+  }
+  #sidebar::-webkit-scrollbar { width: 4px; }
+  #sidebar::-webkit-scrollbar-track { background: transparent; }
+  #sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 2px; }
+
+  .nav-section-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    padding: 12px 20px 6px;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 20px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border-left: 3px solid transparent;
+    font-size: 13px;
+    color: rgba(255,255,255,0.55);
+    font-weight: 400;
+    line-height: 1.3;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.8); }
+  .nav-item.active {
+    background: rgba(138,171,171,0.15);
+    border-left-color: var(--mist);
+    color: var(--white);
+    font-weight: 500;
+  }
+  .nav-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    flex-shrink: 0;
+  }
+  .nav-item.active .nav-dot { background: var(--mist); }
+
+  /* ── MAIN CONTENT ───────────────────────────────────────── */
+  #main {
+    overflow: hidden;
+    position: relative;
+    background: var(--cream);
+  }
+
+  .screen {
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(24px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    padding: 48px 56px 80px;
+  }
+  .screen.active {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateX(0);
+  }
+  .screen.exit-left { transform: translateX(-24px); opacity: 0; }
+  .screen::-webkit-scrollbar { width: 6px; }
+  .screen::-webkit-scrollbar-track { background: transparent; }
+  .screen::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* ── HOME SCREEN ────────────────────────────────────────── */
+  #screen-home {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 80px 80px;
+  }
+  .home-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mist);
+    margin-bottom: 16px;
+  }
+  .home-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(36px, 4vw, 54px);
+    line-height: 1.1;
+    color: var(--slate);
+    margin-bottom: 20px;
+  }
+  .home-title em { font-style: italic; color: var(--teal); }
+  .home-subtitle {
+    font-size: 16px;
+    color: var(--text-soft);
+    font-weight: 300;
+    max-width: 540px;
+    line-height: 1.6;
+    margin-bottom: 48px;
+  }
+  .home-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    max-width: 760px;
+  }
+  .home-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 22px;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: var(--shadow);
+  }
+  .home-card:hover { border-color: var(--teal-mid); box-shadow: var(--shadow-lg); transform: translateY(-1px); }
+  .home-card-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mist);
+    margin-bottom: 6px;
+  }
+  .home-card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--slate);
+    line-height: 1.3;
+  }
+  .home-card-count {
+    font-size: 12px;
+    color: var(--text-soft);
+    margin-top: 4px;
+  }
+
+  /* ── SCREEN HEADER ──────────────────────────────────────── */
+  .screen-header {
+    margin-bottom: 36px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .screen-eyebrow {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mist);
+    margin-bottom: 8px;
+  }
+  .screen-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(24px, 3vw, 36px);
+    color: var(--slate);
+    line-height: 1.15;
+  }
+  .screen-title em { font-style: italic; color: var(--teal); }
+  .screen-intro {
+    font-size: 15px;
+    color: var(--text-soft);
+    margin-top: 10px;
+    line-height: 1.65;
+    max-width: 720px;
+    font-weight: 300;
+  }
+
+  /* ── THEME CARDS (strengths/opps/challenges/goals) ──────── */
+  .theme-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 20px;
+  }
+  .theme-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px 26px;
+    box-shadow: var(--shadow);
+    transition: box-shadow 0.2s;
+  }
+  .theme-card:hover { box-shadow: var(--shadow-lg); }
+  .theme-card-num {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--mist);
+    margin-bottom: 8px;
+  }
+  .theme-card-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--slate);
+    margin-bottom: 10px;
+    line-height: 1.35;
+  }
+  .theme-card-body {
+    font-size: 13.5px;
+    color: var(--text-soft);
+    line-height: 1.65;
+    font-weight: 300;
+  }
+  .theme-card.opp { border-top: 3px solid var(--opp); }
+  .theme-card.chal { border-top: 3px solid var(--chal); }
+  .theme-card.strength { border-top: 3px solid var(--teal-mid); }
+  .theme-card.goal { border-top: 3px solid var(--slate); }
+
+  /* ── DEPT SCREEN ────────────────────────────────────────── */
+  .dept-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    align-items: start;
+  }
+  @media (max-width: 900px) { .dept-layout { grid-template-columns: 1fr; } }
+
+  .dept-panel {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+  .dept-panel-tab-bar {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    background: var(--teal-pale);
+  }
+  .dept-panel-tab {
+    flex: 1;
+    padding: 12px 16px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-soft);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.15s;
+    text-align: center;
+  }
+  .dept-panel-tab:hover { color: var(--teal); }
+  .dept-panel-tab.active { color: var(--teal); border-bottom-color: var(--teal); background: var(--white); }
+  .dept-panel-body { padding: 24px; }
+
+  .narrative-section { margin-bottom: 20px; }
+  .narrative-section:last-child { margin-bottom: 0; }
+  .narrative-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .narrative-label.opp { color: var(--opp); }
+  .narrative-label.chal { color: var(--chal); }
+  .narrative-label::before {
+    content: '';
+    display: inline-block;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
+  }
+  .narrative-text {
+    font-size: 13.5px;
+    color: var(--text-soft);
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  /* Goals table */
+  .goals-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .goals-table th {
+    background: var(--slate);
+    color: var(--white);
+    text-align: left;
+    padding: 10px 14px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .goals-table th:first-child { border-radius: 0; width: 28%; }
+  .goals-table td {
+    padding: 10px 14px;
+    vertical-align: top;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    line-height: 1.55;
+    color: var(--text);
+  }
+  .goals-table tr:last-child td { border-bottom: none; }
+  .goals-table tr:nth-child(even) td { background: var(--teal-pale); }
+  .goals-table td:first-child {
+    font-weight: 600;
+    font-size: 12px;
+    color: var(--teal);
+    letter-spacing: 0.01em;
+  }
+  .goals-table ul { padding-left: 14px; }
+  .goals-table li { margin-bottom: 4px; }
+
+  /* ── DEPT MISSION ───────────────────────────────────────── */
+  .dept-mission {
+    font-family: 'DM Serif Display', serif;
+    font-style: italic;
+    font-size: 15px;
+    color: var(--text-soft);
+    background: var(--teal-light);
+    border-left: 3px solid var(--teal);
+    padding: 14px 18px;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 20px;
+    line-height: 1.55;
+  }
+
+  /* ── NAV FOOTER ─────────────────────────────────────────── */
+  #nav-footer {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    left: 260px;
+    height: 56px;
+    background: var(--white);
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 56px;
+    z-index: 50;
+  }
+  .nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-soft);
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--white);
+    padding: 8px 18px;
+    border-radius: 6px;
+    transition: all 0.15s;
+  }
+  .nav-btn:hover:not(:disabled) { background: var(--teal); color: var(--white); border-color: var(--teal); }
+  .nav-btn:disabled { opacity: 0.3; cursor: default; }
+  .nav-btn svg { width: 14px; height: 14px; }
+  .nav-current-label {
+    font-size: 13px;
+    color: var(--text-soft);
+    font-weight: 400;
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- TOPBAR -->
+  <div id="topbar">
+    <div class="wordmark">Life <span>Unlimited</span></div>
+    <div class="divider"></div>
+    <div class="doc-title">2026 Strategic Planning Review</div>
+    <div id="progress-bar"><div id="progress-fill"></div></div>
+    <div id="screen-counter"></div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <nav id="sidebar">
+    <div class="nav-section-label">Overview</div>
+    <div class="nav-item active" data-screen="home"><div class="nav-dot"></div>Home</div>
+
+    <div class="nav-section-label">Org-Level Analysis</div>
+    <div class="nav-item" data-screen="strengths"><div class="nav-dot"></div>Organizational Strengths</div>
+    <div class="nav-item" data-screen="opportunities"><div class="nav-dot"></div>Opportunity Themes</div>
+    <div class="nav-item" data-screen="challenges"><div class="nav-dot"></div>Challenge Themes</div>
+    <div class="nav-item" data-screen="org-goals"><div class="nav-dot"></div>Potential Org-Level Goals</div>
+
+    <div class="nav-section-label">Departments</div>
+    <div class="nav-item" data-screen="dept-myday"><div class="nav-dot"></div>My Day</div>
+    <div class="nav-item" data-screen="dept-employment"><div class="nav-dot"></div>Employment Services</div>
+    <div class="nav-item" data-screen="dept-aba"><div class="nav-dot"></div>ABA Services</div>
+    <div class="nav-item" data-screen="dept-cso"><div class="nav-dot"></div>Community Support (CSO)</div>
+    <div class="nav-item" data-screen="dept-cl"><div class="nav-dot"></div>Community Living</div>
+    <div class="nav-item" data-screen="dept-hr"><div class="nav-dot"></div>Human Resources</div>
+    <div class="nav-item" data-screen="dept-training"><div class="nav-dot"></div>Training</div>
+    <div class="nav-item" data-screen="dept-finance"><div class="nav-dot"></div>Finance</div>
+    <div class="nav-item" data-screen="dept-health"><div class="nav-dot"></div>Health Services</div>
+    <div class="nav-item" data-screen="dept-qa"><div class="nav-dot"></div>Quality Assurance</div>
+    <div class="nav-item" data-screen="dept-nwmo-ih"><div class="nav-dot"></div>NWMO In-Home</div>
+    <div class="nav-item" data-screen="dept-cds"><div class="nav-dot"></div>NWMO-CDS</div>
+    <div class="nav-item" data-screen="dept-it"><div class="nav-dot"></div>Information Technology</div>
+    <div class="nav-item" data-screen="dept-intake"><div class="nav-dot"></div>Intake</div>
+    <div class="nav-item" data-screen="dept-rec"><div class="nav-dot"></div>Recreation</div>
+    <div class="nav-item" data-screen="dept-marketing"><div class="nav-dot"></div>Marketing</div>
+    <div class="nav-item" data-screen="dept-fundraising"><div class="nav-dot"></div>Fundraising</div>
+    <div class="nav-item" data-screen="dept-upm"><div class="nav-dot"></div>Property Management (UPM)</div>
+  </nav>
+
+  <!-- MAIN -->
+  <main id="main">
+
+    <!-- HOME -->
+    <div class="screen active" id="screen-home">
+      <div class="home-eyebrow">Life Unlimited · Strategic Planning</div>
+      <div class="home-title">2026 Planning<br><em>Analysis Review</em></div>
+      <div class="home-subtitle">A summary of findings from the 2026 department planning submissions — organized for S-Team review and discussion.</div>
+      <div class="home-grid">
+        <div class="home-card" onclick="goToScreen('strengths')">
+          <div class="home-card-label">Org Analysis</div>
+          <div class="home-card-title">Organizational Strengths</div>
+          <div class="home-card-count">6 themes identified</div>
+        </div>
+        <div class="home-card" onclick="goToScreen('opportunities')">
+          <div class="home-card-label">Org Analysis</div>
+          <div class="home-card-title">Opportunity Themes</div>
+          <div class="home-card-count">8 cross-dept themes</div>
+        </div>
+        <div class="home-card" onclick="goToScreen('challenges')">
+          <div class="home-card-label">Org Analysis</div>
+          <div class="home-card-title">Challenge Themes</div>
+          <div class="home-card-count">8 cross-dept themes</div>
+        </div>
+        <div class="home-card" onclick="goToScreen('org-goals')">
+          <div class="home-card-label">Org Analysis</div>
+          <div class="home-card-title">Potential Org-Level Goals</div>
+          <div class="home-card-count">8 candidate goals</div>
+        </div>
+        <div class="home-card" onclick="goToScreen('dept-myday')">
+          <div class="home-card-label">Departments</div>
+          <div class="home-card-title">Department Summaries</div>
+          <div class="home-card-count">16 departments</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STRENGTHS -->
+    <div class="screen" id="screen-strengths">
+      <div class="screen-header">
+        <div class="screen-eyebrow">Org-Level Analysis · 1 of 4</div>
+        <div class="screen-title">Organizational <em>Strengths</em></div>
+        <div class="screen-intro">These strengths appear with enough consistency across department submissions to be considered enterprise-level assets. They represent what the organization has to build from.</div>
+      </div>
+      <div class="theme-grid">
+        <div class="theme-card strength">
+          <div class="theme-card-num">01</div>
+          <div class="theme-card-title">The Training Department</div>
+          <div class="theme-card-body">The most widely cited internal asset across all submissions. Community Living names it explicitly multiple times. ABA, Employment, and QA all reference it as something they build on. The ANCOR Moving Mountains Award, apprenticeship program, competency checkpoints, and Relias auto-enrollment are genuine assets. Currently under-leveraged for cross-department consistency.</div>
+        </div>
+        <div class="theme-card strength">
+          <div class="theme-card-num">02</div>
+          <div class="theme-card-title">Collaborative, Mission-Driven Culture</div>
+          <div class="theme-card-body">Team cohesion, willingness to learn, and dedication to the mission appear in My Day, CSO, NWMO In-Home, NWMO-CDS, ABA, Intake, and Community Living. It shows up in turnover rates below national averages, staff longevity, and internal promotions. This cultural asset is most at risk when the organization grows faster than its systems.</div>
+        </div>
+        <div class="theme-card strength">
+          <div class="theme-card-num">03</div>
+          <div class="theme-card-title">Established External Relationships</div>
+          <div class="theme-card-body">Domain-specific but consistent: My Day has SC/guardian relationships; Employment has VR counselor relationships; ABA collaborates cross-departmentally with nursing and employment daily; Recreation has funding agency relationships; Health has provider networks. The organization has built significant relational capital without a coordinated way to leverage it across programs.</div>
+        </div>
+        <div class="theme-card strength">
+          <div class="theme-card-num">04</div>
+          <div class="theme-card-title">Financial Stability and CFO Credibility</div>
+          <div class="theme-card-body">Community Living cited the CFO and UPM by name as a department strength. Finance references clean audits, a passed Rep Payee review, and an unmodified audit opinion. Fundraising has a track record of grant success. Financial stability is a real competitive advantage given how many peer organizations in this sector are not in the same position.</div>
+        </div>
+        <div class="theme-card strength">
+          <div class="theme-card-num">05</div>
+          <div class="theme-card-title">Growth Momentum and Physical Infrastructure</div>
+          <div class="theme-card-body">UPM, Community Living, and My Day all reference recent expansion as an active strength: new homes, new program locations, new HUD properties. The Trails development, Latte Life, and the Thrift Store are tangible proof points. The organization has demonstrated it can grow, which creates a credible platform for the next phase provided workforce infrastructure keeps pace.</div>
+        </div>
+        <div class="theme-card strength">
+          <div class="theme-card-num">06</div>
+          <div class="theme-card-title">Person-Centered Service Model</div>
+          <div class="theme-card-body">Named as a defining strength by CSO, NWMO In-Home, NWMO-CDS, Community Living, and My Day. It is the philosophical foundation of what the organization does and how it differentiates from competitors. It is also the thing most at risk when staffing is thin and reactive operations displace proactive planning.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OPPORTUNITIES -->
+    <div class="screen" id="screen-opportunities">
+      <div class="screen-header">
+        <div class="screen-eyebrow">Org-Level Analysis · 2 of 4</div>
+        <div class="screen-title">Opportunity <em>Themes</em></div>
+        <div class="screen-intro">Areas where multiple departments independently identified similar potential. These are strongest when pursued with coordination rather than in parallel silos.</div>
+      </div>
+      <div class="theme-grid">
+        <div class="theme-card opp"><div class="theme-card-num">01</div><div class="theme-card-title">Cross-Training and Specialization</div><div class="theme-card-body">Surfaces in CSO, Community Living, ABA, Training, HR, NWMO-CDS, and Intake. Departments see real upside in staff trained across multiple programs but are pursuing it independently. The opportunity is a coordinated organizational effort with HR and Training owning the infrastructure.</div></div>
+        <div class="theme-card opp"><div class="theme-card-num">02</div><div class="theme-card-title">Technology and Data Platform Modernization</div><div class="theme-card-body">Finance, IT, ABA, QA, Community Living, and CDS all identify modernization as an opportunity. Finance is advancing Planful and Power BI. IT is pursuing a data warehouse and Therap API integrations. ABA needs a data collection platform. Every department is pushing on a piece of this without a unified roadmap connecting them.</div></div>
+        <div class="theme-card opp"><div class="theme-card-num">03</div><div class="theme-card-title">Community and Institutional Partnerships</div><div class="theme-card-body">Employment, CSO, ABA, Community Living, Recreation, NWMO In-Home, NWMO-CDS, Intake, Marketing, and Fundraising all name external partnerships as a growth lever. Broadly recognized but uncoordinated. There is no shared partnership development function connecting these efforts.</div></div>
+        <div class="theme-card opp"><div class="theme-card-num">04</div><div class="theme-card-title">Brand Awareness and Marketing Reach</div><div class="theme-card-body">CSO, ABA, NWMO In-Home, NWMO-CDS, Employment, and Health all note that potential clients, referral sources, and staff candidates don't know enough about them or about Life Unlimited broadly. Departments are identifying this gap independently, suggesting the feedback loop between programs and Marketing isn't yet working effectively.</div></div>
+        <div class="theme-card opp"><div class="theme-card-num">05</div><div class="theme-card-title">Revenue Diversification</div><div class="theme-card-body">Finance, Fundraising, Health, Recreation, CSO, Community Living, and NWMO In-Home all see opportunities to bring in new revenue. These efforts are distributed across departments without a unified revenue strategy. Coordination across these parallel tracks could significantly amplify results.</div></div>
+        <div class="theme-card opp"><div class="theme-card-num">06</div><div class="theme-card-title">Expanded Service Lines and Geographic Reach</div><div class="theme-card-body">Intake, Community Living, My Day, CDS, Recreation, NWMO In-Home, and Marketing all see growth into new counties, cities, or populations as active opportunities. The breadth of this theme signals organizational readiness, but also the need for a coordinated growth framework that sequences expansion against workforce and property capacity.</div></div>
+        <div class="theme-card opp"><div class="theme-card-num">07</div><div class="theme-card-title">Occupancy and Utilization Optimization</div><div class="theme-card-body">Intake, Community Living, CDS, and NWMO In-Home are all working toward maximum utilization of existing authorized capacity. This is a financially significant operational efficiency goal that deserves a unified tracking mechanism and clear accountability rather than being managed separately within each program.</div></div>
+        <div class="theme-card opp"><div class="theme-card-num">08</div><div class="theme-card-title">Guardian and Stakeholder Engagement</div><div class="theme-card-body">Community Living, QA, NWMO In-Home, NWMO-CDS, Marketing, and Fundraising all include goals around improving communication with guardians, families, and service coordinators. This spans multiple pillars and would benefit from a coordinated strategy rather than department-by-department approaches.</div></div>
+      </div>
+    </div>
+
+    <!-- CHALLENGES -->
+    <div class="screen" id="screen-challenges">
+      <div class="screen-header">
+        <div class="screen-eyebrow">Org-Level Analysis · 3 of 4</div>
+        <div class="screen-title">Challenge <em>Themes</em></div>
+        <div class="screen-intro">Challenges that appear across multiple departments. Several are systemic — no single department can resolve them independently.</div>
+      </div>
+      <div class="theme-grid">
+        <div class="theme-card chal"><div class="theme-card-num">01</div><div class="theme-card-title">Staffing Levels and Turnover</div><div class="theme-card-body">The single most pervasive challenge across the entire submission. Community Living, Employment, ABA, CSO, NWMO In-Home, NWMO-CDS, Health, and Intake all name it explicitly. The specific manifestations vary — BCBA shortage, PCA supply, DSP turnover, open requisitions — but the root issue is consistent: the organization cannot reliably staff to its service model. Nearly every other operational challenge is downstream of this one.</div></div>
+        <div class="theme-card chal"><div class="theme-card-num">02</div><div class="theme-card-title">Inconsistent Policy Access and Enforcement</div><div class="theme-card-body">My Day, Community Living, Training, and QA all surface this independently. Staff cannot consistently find or access policies, policies are not enforced uniformly across departments, and there is no single source of truth for the handbook or procedures. This creates compliance risk and erodes trust in the management layer across programs.</div></div>
+        <div class="theme-card chal"><div class="theme-card-num">03</div><div class="theme-card-title">Interdepartmental Communication Breakdowns</div><div class="theme-card-body">Intake, Health, Community Living, CSO, My Day, and Finance all name poor cross-departmental communication as a live challenge. The symptoms are specific: information forwarded rather than shared directly, departments not knowing what others can offer, decisions made without looping in affected teams. This compounds the difficulty of executing any initiative requiring cross-department coordination.</div></div>
+        <div class="theme-card chal"><div class="theme-card-num">04</div><div class="theme-card-title">Too Many Systems, No Single Source of Truth</div><div class="theme-card-body">Community Living, My Day, CSO, Finance, IT, and QA all describe operating across too many disconnected platforms — Therap, Teams, SharePoint, OneNote, Power BI, and email — with no clear ownership hierarchy. Staff don't know where to look, and data doesn't flow between systems. This fragmentation amplifies every other operational challenge.</div></div>
+        <div class="theme-card chal"><div class="theme-card-num">05</div><div class="theme-card-title">Low Reimbursement Rates and Budget Constraints</div><div class="theme-card-body">CSO, NWMO In-Home, NWMO-CDS, Health, and Community Living all flag low state reimbursement rates as a structural constraint. This is an external funding environment problem that limits what compensation, staffing, and programming the organization can sustain. Marketing and Fundraising are working on the other side of this through advocacy and revenue diversification, but the gap is real.</div></div>
+        <div class="theme-card chal"><div class="theme-card-num">06</div><div class="theme-card-title">Reactive Culture and Capacity Overload</div><div class="theme-card-body">CSO names this explicitly. The same pattern appears in Community Living, Training, Intake, and NWMO In-Home. Staff are stretched, priorities compete, and longer-term development work gets displaced by immediate operational demands. This is what makes strategic initiatives stall and is the hardest challenge to address because it feeds on itself.</div></div>
+        <div class="theme-card chal"><div class="theme-card-num">07</div><div class="theme-card-title">Guardian and Family Engagement Gaps</div><div class="theme-card-body">Community Living, Health, QA, NWMO In-Home, and Intake all note that guardians are hard to reach, inconsistently informed, and sometimes at odds with what individuals want. This is a service quality issue as much as a community engagement issue, and no single department owns the solution.</div></div>
+        <div class="theme-card chal"><div class="theme-card-num">08</div><div class="theme-card-title">Compensation Competitiveness</div><div class="theme-card-body">Employment, ABA, Community Living, HR, and NWMO In-Home all identify pay as a challenge for both recruitment and retention. This warrants separate attention from the broader staffing theme because compensation is a financial and policy decision that requires leadership-level action department managers cannot take on their own.</div></div>
+      </div>
+    </div>
+
+    <!-- ORG GOALS -->
+    <div class="screen" id="screen-org-goals">
+      <div class="screen-header">
+        <div class="screen-eyebrow">Org-Level Analysis · 4 of 4</div>
+        <div class="screen-title">Potential <em>Org-Level Goals</em></div>
+        <div class="screen-intro">Areas where multiple departments are working toward the same destination without a shared framework or owner. These are candidates for organizational-level goals with department-level components underneath.</div>
+      </div>
+      <div class="theme-grid">
+        <div class="theme-card goal"><div class="theme-card-num">01</div><div class="theme-card-title">Workforce Pipeline and Career Ladder Development</div><div class="theme-card-body">Nearly every service department is working on some version of a formal pathway from frontline to leadership. HR and Training are building the enabling infrastructure. An organizational goal with defined ownership would allow these efforts to compound rather than run in parallel.</div></div>
+        <div class="theme-card goal"><div class="theme-card-num">02</div><div class="theme-card-title">Turnover Reduction with Data-Driven Targets</div><div class="theme-card-body">Community Living, Employment, CSO, NWMO In-Home, and HR all name retention as a primary goal. Targets vary across submissions. These could be unified into a single organizational retention goal with a defined threshold and shared measurement methodology.</div></div>
+        <div class="theme-card goal"><div class="theme-card-num">03</div><div class="theme-card-title">Curriculum and Playbook Completion Across Programs</div><div class="theme-card-body">My Day, Community Living, ABA, CSO, Training, and QA all have goals around formal curriculum or playbooks. Several are already committed to in the strategic plan. The department submissions suggest completion is still in progress in many cases. It is worth surfacing whether existing commitments are on track or need to be re-sequenced.</div></div>
+        <div class="theme-card goal"><div class="theme-card-num">04</div><div class="theme-card-title">Technology Integration and Data Infrastructure</div><div class="theme-card-body">Finance, IT, QA, Community Living, Health, and CDS all converge here. The org-level goal would be to build a unified data infrastructure that reduces manual process work and enables real-time reporting. Each department solving a piece independently risks creating new fragmentation rather than resolving existing fragmentation.</div></div>
+        <div class="theme-card goal"><div class="theme-card-num">05</div><div class="theme-card-title">Revenue Diversification and Financial Self-Sustainability</div><div class="theme-card-body">Finance, Fundraising, Health, Recreation, CSO, and Community Living all reference new revenue streams, grant growth, or deficit reduction. The distributed nature of these efforts suggests there is no unified revenue strategy. Several programs are pursuing funding in ways that could be better coordinated with Fundraising and Finance.</div></div>
+        <div class="theme-card goal"><div class="theme-card-num">06</div><div class="theme-card-title">Geographic and Service Expansion</div><div class="theme-card-body">Intake, Community Living, My Day, CDS, NWMO In-Home, Recreation, and Marketing all have expansion goals. This signals organizational readiness but also the need for a coordinated growth framework that sequences expansion against workforce and property capacity.</div></div>
+        <div class="theme-card goal"><div class="theme-card-num">07</div><div class="theme-card-title">Occupancy and Utilization Optimization</div><div class="theme-card-body">Intake, Community Living, CDS, and NWMO In-Home are all working toward maximum utilization of existing authorized capacity. This is a financially significant operational goal that deserves a unified tracking mechanism and clear accountability at the organizational level.</div></div>
+        <div class="theme-card goal"><div class="theme-card-num">08</div><div class="theme-card-title">Guardian and Stakeholder Engagement</div><div class="theme-card-body">Community Living, QA, NWMO In-Home, NWMO-CDS, Marketing, and Fundraising all have goals around improving communication with guardians, families, and SCs. This spans the Disability Rights and Exceptional Services pillars and would benefit from a coordinated strategy rather than department-by-department approaches.</div></div>
+      </div>
+    </div>
+
+    <!-- DEPT SCREENS -->
+    <script>
+    const DEPTS = [
+      {
+        id: "myday", name: "My Day",
+        mission: "My Day empowers individuals to reach their full potential by providing personalized supports to increase independence, meaningful relationships, and purpose in the community.",
+        opp: "The identified opportunities build directly on documented strengths. Expanding school presentations and community presence is a natural extension of existing SC and guardian relationships. Curriculum development is well-grounded in the stability that long-tenured supervisors provide. The pipeline-to-employment opportunity connects to both community partnerships and the Clubhouse program's potential as a standalone model. These opportunities are proportionate to what the department currently has.",
+        chal: "The primary challenges are equipment reliability, staffing ratios for individuals with more complex behavioral needs, and inconsistent policy access and documentation practices in Therap. Communication gaps between My Day, pharmacy, Community Living, and nursing create coordination friction that affects service quality. These are operational challenges rather than strategic ones, but they limit how much capacity the team has to pursue development work.",
+        goals: [
+          { pillar: "Exceptional Services", mid: ["Develop curriculum with lesson plans and resource catalog across all locations", "Develop Clubhouse-specific curriculum", "1:1 supports provided as needed"], long: ["Three fully established specialized My Day programs: retirement, medically fragile, and challenging behaviors"] },
+          { pillar: "Exceptional Workforce", mid: ["Specialized Clubhouse staff training: conflict resolution, communication, soft skills"], long: ["Separate My Day training strand", "Lead DSP positions with increased pay", "Performance-based pay for DSPs"] },
+          { pillar: "Financial Strength", mid: ["Increase Lee's Summit hours to 7 billable hours daily"], long: ["Curriculum Writer/Program Developer position", "Efficient attendance check-in process"] },
+          { pillar: "Innovation & Growth", mid: ["Larger parking lots and circle drives at all locations", "Pipeline to employment", "Fenced courtyards at all locations"], long: ["Annual staff retreat", "Clubhouse as standalone program", "Storm shelters at all locations"] },
+          { pillar: "Disability Rights", mid: ["Monthly disability awareness presentations at schools and community locations"], long: ["Consistent relationships with community programs that foster employment"] },
+        ]
+      },
+      {
+        id: "employment", name: "Employment Services",
+        mission: "To empower individuals to achieve and maintain their goals through competitive integrated community employment and meaningful community partnerships.",
+        opp: "The clearest opportunity-to-strength alignment is the referral pipeline goal, which builds directly on existing VR counselor relationships. The transition process restructuring opportunity connects well to the department's strength in organized client tools and real-time problem resolution. Community business development is supported by documented employer relationships and a growing track record of placements.",
+        chal: "Staff turnover remains the core challenge, both in its direct impact on service consistency and its effect on external confidence in Life Unlimited as a CRP. Variable schedules and an incentive structure that doesn't match sector norms make it difficult to attract and retain job coaches. The remaining core team is described as dedicated and competent — a floor, not a foundation for rapid expansion.",
+        goals: [
+          { pillar: "Exceptional Services", mid: ["Implement standardized transition process from ESP to Job Coach after 2 weeks of successful employment", "Improve staff stability and service consistency; increase VR counselor engagement"], long: ["Significantly reduce clients returning to job development after job loss", "Expand VR counselor engagement across all regions; reduce time-to-placement"] },
+          { pillar: "Exceptional Workforce", mid: ["All positions filled and training complete"], long: ["All Employment Services positions have minimum 3 years tenure", "Fully staffed, experienced, sustainable workforce supporting regional expansion"] },
+        ]
+      },
+      {
+        id: "aba", name: "ABA Services",
+        mission: "To support individuals and stakeholders to overcome current barriers and achieve socially significant outcomes through evidence-based practice and dissemination to our community.",
+        opp: "Opportunities track closely with documented strengths. Cross-departmental collaboration is the base for community networking. Clinical team growth supports documentation and assessment expansion. The geolocated staffing model is a direct extension of the department's financial contribution to other programs. One connection not yet made explicit: the team identifies low CEU opportunities as a challenge while also naming its knowledge and skillset to create ABA foundational training as a strength — that program could address both.",
+        chal: "The BCBA workforce shortage in adult services is sector-wide and limits growth pace. The current incentive structure is not competitive with traditional ABA norms. BCBAs are providing direct intervention while also completing supervisory duties due to insufficient RBT coverage, creating burnout risk. Data collection and record-keeping systems need significant improvement before the department can scale efficiently.",
+        goals: [
+          { pillar: "Exceptional Services", mid: ["RBT Playbook with skill acquisition library and supervision requirements", "BCBA presentations to PMs and PDs"], long: ["Library of assessments and skill acquisition plans", "Advanced team player training and RBT course development"] },
+          { pillar: "Exceptional Workforce", mid: ["Dedicated office space at The Manor", "Partnership with Employment and Latte Life to double ABA/employment clients"], long: ["Solidify Lead Trainer position", "Graduate student training program"] },
+          { pillar: "Financial Strength", mid: ["Increase profit by 10%"], long: ["Find metrics to measure financial benefit to other programs", "Increase profit by 25%"] },
+          { pillar: "Innovation & Growth", mid: ["Solidify tier model for programs", "Collaborate with Training to streamline external BSPs"], long: ["Company-wide Tier 2 behavior support", "Intake system identifying Tier 1, 2, and 3 support needs"] },
+          { pillar: "Disability Rights", mid: ["Collaborate with local school districts for transition services"], long: ["Connect with local universities for graduate training program"] },
+        ]
+      },
+      {
+        id: "cso", name: "Community Support (CSO)",
+        mission: "Providing exceptional person-centered support that empowers independence and community participation through respectful partnership and individualized planning.",
+        opp: "The 1:1 service model is both a documented strength and the foundation of the most significant opportunity: serving individuals who fall through gaps in other programs. Team cohesion supports the cross-training opportunity. Curriculum and internship development are aspirational but reasonable for a department with this team profile, contingent on having adequate time outside of direct care ratios.",
+        chal: "Turnover, geographic dispersion, and low brand awareness within and outside the organization are the core challenges. Staff work remotely and in 1:1 settings, which limits peer learning and in-person collaboration. Low reimbursement rates and individuals declining services create financial pressure. The challenge of being reactive rather than proactive is named directly and reflects the tension between direct care demands and planning work.",
+        goals: [
+          { pillar: "Exceptional Services", mid: ["Break into at least two sub-departments", "Robust programming for group CN and ISD"], long: ["Increase referrals to and graduations from CSO", "Known for offering gap and transitional services"] },
+          { pillar: "Exceptional Workforce", mid: ["Shift guidelines attached to every shift note", "Each DSP cross-trained in at least one other department"], long: ["Partner with colleges for student employment", "Department people actively compete to work for"] },
+          { pillar: "Financial Strength", mid: ["Streamline schedule for minimized commute time"], long: ["Decrease deficit by 50%", "CSO-specific fundraising established"] },
+          { pillar: "Innovation & Growth", mid: ["Add group CN code", "Add Personal Attendant sub-department", "Build group programming curriculum"], long: ["Robust curriculum others want access to", "Internship program established"] },
+          { pillar: "Disability Rights", mid: ["Partner with at least 2 outside agencies", "At least 2 community experts leading ISD groups"], long: ["All ISD groups led by community experts", "Known for connecting individuals with community services"] },
+        ]
+      },
+      {
+        id: "cl", name: "Community Living",
+        mission: "Community Living supports approximately 170 individuals across residential settings with approximately 310 staff, providing 24/7 person-centered residential support.",
+        opp: "The clearest strength-to-opportunity alignments are in workforce development. The Training department — cited repeatedly as a strength — is the foundation for the career ladder and role-specific training opportunities. Staff longevity and motivated supervisors support community integration goals. Where alignment is thinner is in technology-facing opportunities. Several digital goals list IT as a supporting strength, but IT itself has identified significant resource constraints.",
+        chal: "Low staffing, high overtime, inconsistent policy enforcement, and the cost of living in key geographic markets are the primary pressures. Team Supervisors are frequently pulled into direct care ratios, leaving administrative and developmental work undone. Turnover root causes are not yet fully understood due to limited exit survey data. These are interconnected: solving turnover partially depends on solving the administrative burden on supervisors, which in turn depends on staffing levels.",
+        goals: [
+          { pillar: "Exceptional Services", mid: ["90% satisfaction scores on individual, guardian, and SC surveys", "Open host homes", "Increase nursing department presence"], long: ["Residential training curriculum developed from surveys and ISPs", "Become a training and model site for other agencies", "Person-centered remote support in each room"] },
+          { pillar: "Exceptional Workforce", mid: ["80% retention rate with current employees", "Fully staffed across all locations", "Role-specific training during onboarding"], long: ["More than 50% of DSP hires from CL referrals", "Internal career ladder developed", "DSP-to-leadership pipeline in place"] },
+          { pillar: "Financial Strength", mid: ["Achieve less than 15% OT across department", "Bill for all transportation"], long: ["All homes revenue-generating", "Own transportation service developed"] },
+          { pillar: "Innovation & Growth", mid: ["Automated transportation logs", "Expansion in Jackson County", "More neighborhood/community living settings modeled on Trails"], long: ["Regional satellite office spaces", "Growth into St. Joe, St. Louis, and Kansas markets"] },
+        ]
+      },
+      {
+        id: "hr", name: "Human Resources",
+        mission: "Providing efficient and exceptional service to Life Unlimited teams and partners.",
+        opp: "HR enters this cycle with genuine strengths: above-benchmark engagement scores, a seasoned recruiting team with solid ATS utilization, competitive wages and expansive benefits, and demonstrated leadership support. The coaching and focus group opportunities build directly on the team's responsiveness. The benefits education opportunity is grounded in having competitive compensation to communicate better. The ATS modernization and recruiting brand opportunities connect to existing institutional partnerships.",
+        chal: "Sourcing quality candidates in a competitive labor market, declining engagement scores in some areas, and building trust and collaboration across departments are the primary friction points. Manager familiarity with policies and timely completion of performance evaluations are operational execution gaps. The Office Management function is being built from scratch, creating both opportunity and short-term capacity strain.",
+        goals: [
+          { pillar: "Recruiting", mid: ["Add recruiting supervisor", "New ATS system", "Work with marketing on branding"], long: ["Recruiting liaison for brand and job fair presence", "AI integrated into recruiting", "Turnover under 29%"] },
+          { pillar: "Engagement", mid: ["Lunch and Learn series", "HR Education and Development Day"], long: ["Technology-leveraged connection systems", "Ongoing coaching and feedback infrastructure"] },
+          { pillar: "Compensation", mid: ["Track years of experience in ProLiant", "Enhance pay data system"], long: ["Improved 401k match", "PTO Donation Program", "Tuition reimbursement"] },
+          { pillar: "Performance", mid: ["Certifications promoted on monitors", "Instant acknowledgment system research"], long: ["HR ticketing system", "Instant feedback system"] },
+          { pillar: "Policy", mid: ["Forms and policy writing committee with QA"], long: ["Workplace violence prevention plan", "Improved policy review process"] },
+          { pillar: "Wellness", mid: ["Walking challenge with Recreation", "Workout room at NKC office"], long: ["LU Corporate Challenge with Recreation"] },
+        ]
+      },
+      {
+        id: "training", name: "Training",
+        mission: "To maximize team member confidence and professional growth to amplify our impact in the lives of the individuals we serve.",
+        opp: "The supervisor training series opportunity is a direct extension of curriculum work already completed. External consulting, already underway with RISE Community Services, is grounded in documented capability. The front-facing external training page reflects a legitimate expansion of the department's role beyond internal compliance training. The department correctly identifies curriculum development skills and a data-driven approach as the enabling strengths.",
+        chal: "The persistent perception that only Training does training limits how effectively the department can drive skill development across programs. Noise and environment issues at the Training Center remain unresolved. The push-pull dynamic — programs simultaneously needing more training and feeling training takes too much time — is a real tension. Role differentiation across PD, PM, and TS positions creates ambiguity that complicates both training design and supervisor development.",
+        goals: [
+          { pillar: "Exceptional Workforce", mid: ["Implement new Supervisor Training Series", "Create front-facing page for external services", "Customer service training across programs"], long: ["Implement Leadership Development program", "Specialized training plans for admin positions", "Grow external consulting services"] },
+          { pillar: "Exceptional Services", mid: ["Marketing training resources for Employment Services", "Add DHSS regulation content to trainings", "Routine Playbook reviews"], long: ["Training Department capacity scaled to growing organizational needs"] },
+          { pillar: "Onboarding", mid: ["Gather pre/post-orientation testing data", "Increase compliance through immediate assignment notification"], long: ["Team members have early contact with leadership before completing orientation"] },
+        ]
+      },
+      {
+        id: "finance", name: "Finance",
+        mission: "We ensure long-term sustainability through responsible financial stewardship, strategic growth, and diversified revenue streams — with financial integrity and a smile.",
+        opp: "Finance brings a strong institutional foundation: clean audit history, unmodified audit opinion, passed Rep Payee review, a track record of supporting new revenue streams, and years of progressive institutional knowledge. The Therap integration, Power BI expansion, and financial reporting modernization opportunities connect directly to existing technology utilization strength and compliance credibility. The honest constraint is time — the department names it as its primary challenge and the volume of opportunities is significant relative to current bandwidth.",
+        chal: "Compliance requirements are expanding as the organization grows geographically and in service complexity. Keeping up with expanding financial filing requirements and supporting geographic data requests are challenges that scale with organizational size. Communication within the team and finding the right staffing fit are internal challenges being actively worked through.",
+        goals: [
+          { pillar: "Innovation & Growth", mid: ["Workforce planning into Planful", "Automate Rep Payee statements", "Transition financial reporting to Planful", "Complete carrier and fleet analysis"], long: ["Consolidate redundant systems", "Explore new ERP and time/labor software"] },
+          { pillar: "Financial Strength", mid: ["Complete ReStart Audit", "Complete FY27 budget", "Develop resource dept staffing triggers model", "Rev Cycle KPI development"], long: ["Managed Care readiness", "Enhanced reporting and forecasting across new geographies"] },
+          { pillar: "Exceptional Workforce", mid: ["Create Financial Playbook for cross-training and standardization"], long: ["Position organization to offer financial services to other nonprofits"] },
+        ]
+      },
+      {
+        id: "health", name: "Health Services",
+        mission: "To be the premiere provider of health and wellness within the community we serve and those that serve them.",
+        opp: "The Nurse Educator role opportunity is well-grounded in existing provider relationships and a motivated team. Grant-seeking is supported by established funder relationships. The CNA program and DHSS expansion opportunities are realistic extensions of current clinical capabilities. One tension: the team reports being fully staffed as a strength while also identifying small team size as a capacity constraint. The growth opportunities assume more scale than the current staffing model may support without targeted investment.",
+        chal: "Territorial behavior among staff and between departments creates friction that limits effective collaboration. Better communication across departments, particularly around care coordination and intake, is a persistent challenge. Limited vehicles constrain geographic reach. UR rejections and RN PAM compensation affect financial sustainability. Guardian awareness of shared living and IDD services remains low.",
+        goals: [
+          { pillar: "Exceptional Services", mid: ["Nurses and CNAs certified", "Nurse Educator role established", "HC Super User program launched"], long: ["CNA home program", "Health coordination certification", "Expand to DHSS and other regions"] },
+          { pillar: "Exceptional Workforce", mid: ["DHSS, LPN, and PCA credentialing pathways", "Maintain caseload levels to prevent burnout"], long: ["Regional Health Teams established", "Leadership programs supporting expansion"] },
+          { pillar: "Financial Strength", mid: ["Obtain at least one grant"], long: ["Financially self-sustaining department"] },
+          { pillar: "Innovation & Growth", mid: ["Expand nursing services to health homes", "Remote pharmacy services"], long: ["AI tools integrated for charting", "Health services expanded to DHSS, CSO, and Health Homes"] },
+          { pillar: "Disability Rights", mid: ["DDNA advocacy", "DNR policy change advocacy efforts"], long: ["Foster relationships with families across programs"] },
+        ]
+      },
+      {
+        id: "qa", name: "Quality Assurance",
+        mission: "Design, monitor, and improve organizational systems that protect health, safety, rights, and dignity by transforming data into insight and continuously improving outcomes for the people we support.",
+        opp: "QA's opportunities are realistic extensions of what the team has already demonstrated it can do. Compliance trend automation builds on attention to detail and collaboration strengths. Therap data management is grounded in documented expertise. The guardian focus group opportunity is supported by long-term healthy stakeholder relationships. Partnering with Training to close the loop on compliance gaps connects two already well-aligned departments.",
+        chal: "The primary challenge is time. Competing priorities and the labor-intensive nature of manual compliance processes limit how quickly QA can move on development work. Closing the loop between compliance findings and training updates requires coordination that doesn't yet have a formal structure. Expanding coverage to all programs is aspirational with current resources.",
+        goals: [
+          { pillar: "Exceptional Services", mid: ["Meaningful Day Quality Measures executive view", "Investigation process flow and procedure development", "CARF ongoing process management"], long: ["Automated auditing and issue identification", "Root cause analysis and mitigation process", "Coordination and facilitation of all audits"] },
+          { pillar: "Exceptional Workforce", mid: ["My Day Compliance Dashboard", "Add additional roles to IDT", "Training environment configured for Therap", "Role-based training for direct care staff"], long: ["Cross-organizational compliance partnerships", "Regional alignment"] },
+          { pillar: "Innovation & Growth", mid: ["Deep dive review with Therap for Intake, ABA, Employment, and CSO capabilities"], long: ["Continuous process review and improvement feeding into training"] },
+          { pillar: "Financial Strength", mid: ["Define roles, steps, and process flow for entering individual financial data in Therap"], long: ["All financial information readily available in Therap"] },
+          { pillar: "Disability Rights", mid: ["Reach out to guardians to build focus group"], long: ["Guardian and stakeholder education co-developed with guardians and SCs"] },
+        ]
+      },
+      {
+        id: "nwmo-ih", name: "NWMO In-Home",
+        mission: "Exceptional person-centered support that empowers independence at home and in the community.",
+        opp: "Service reliability and care plan alignment builds directly on experienced staff and strong nursing relationships. Process improvement and admin burden reduction opportunities are well-matched to documented problem-solving and flexibility strengths. Financial management goals around billed versus authorized hours are supported by the team's record of responsible resource stewardship. Outreach and community partnership opportunities are grounded in existing engagement work, though staff availability limits expansion pace.",
+        chal: "PCA supply, pay rates, and onboarding length are the core workforce challenges. Without enough PCAs, growth cannot happen regardless of outreach efforts. Funds for advertising are limited, which constrains the department's ability to reach new participants and potential staff. Advocacy at the state level for reimbursement rate increases is a long-cycle effort with uncertain outcomes.",
+        goals: [
+          { pillar: "Exceptional Services", mid: ["Consistent and reliable service delivery", "Strong alignment between care plans and services provided"], long: ["Highly reliable service delivery with minimal disruptions", "Strong regional reputation for service quality"] },
+          { pillar: "Exceptional Workforce", mid: ["Improved onboarding and reduced turnover", "Increased staff engagement and job satisfaction"], long: ["Sustained reduction in turnover and vacancy", "Clear pathways to leadership and development"] },
+          { pillar: "Financial Strength", mid: ["Budget maintained within thresholds", "Increased billed vs authorized hours", "Reduced overtime"], long: ["Consistent financial performance", "High utilization of authorized service hours"] },
+          { pillar: "Disability Rights", mid: ["Monthly community events", "Blood pressure clinics at senior living facilities"], long: ["Established partnerships with key community organizations", "Increased referrals and collaborative problem-solving"] },
+          { pillar: "Innovation & Growth", mid: ["Streamline workloads and reduce admin burden"], long: ["Culture of continuous improvement", "Strategic alignment of growth with community needs"] },
+        ]
+      },
+      {
+        id: "cds", name: "NWMO-CDS",
+        mission: "Providing exceptional, person-centered support that empowers individuals to maintain independence at home and fully participate in their communities.",
+        opp: "DHSS training integration builds on existing participant communication touchpoints and customer service strength. Networking with hospitals, nursing homes, and colleges is a realistic extension of documented advocacy strength. The leadership development opportunity is well-grounded in the team's resilient culture and willingness to grow from within. The framing of growth as intentional rather than opportunity-based reflects a clear-eyed understanding of what the program needs.",
+        chal: "Inconsistency in participant communication affects compliance with state requirements. Gaps in training, onboarding, and standardized processes create variability in service delivery that limits scalability. State regulation adherence by participants and attendants is an ongoing compliance challenge. Financial sustainability is tied to alignment between staffing levels and revenue, which remains a work in progress.",
+        goals: [
+          { pillar: "Exceptional Services", mid: ["Time management systems for visits, calls, and documentation", "CDS grows across all 12 approved counties", "Go 100% paperless with tablets"], long: ["Career ladder from CDS Specialist through Program Director", "Retention metrics established and tracked"] },
+          { pillar: "Exceptional Workforce", mid: ["Develop leaders from within with formal accountability", "Achieve 90–95% service utilization", "Reduce missed and unbilled hours by at least 25%"], long: ["Fully integrated compliance and performance management system", "Establish CDS as a best-in-class person-centered services model in Missouri"] },
+          { pillar: "Disability Rights", mid: ["Consistent community involvement", "Ongoing community partnerships maintained"], long: ["Participants empowered to advocate for themselves"] },
+        ]
+      },
+      {
+        id: "it", name: "Information Technology",
+        mission: "To deliver secure, reliable, and compassionate technology services that empower teams at Life Unlimited to better serve individuals and strengthen our communities.",
+        opp: "Organizational goodwill and leadership engagement are the most important assets for executing data governance, security posture, and centralized data repository opportunities. The supportive user base across departments reduces adoption friction for new systems. The gap is not motivation or alignment — it is headcount and the weight of technical debt from legacy systems. The ambition of the stated opportunities, particularly the unified digital ecosystem and embedded analyst model, will require investment decisions beyond the IT team's current capacity.",
+        chal: "Limited IT resources, disconnected systems, inadequate oversight of business applications, and legacy technical debt are the core constraints. The distributed workforce creates complexity in endpoint management and security. Communication between IT and other departments limits IT's ability to anticipate needs before they become problems. These challenges are solvable but require resourcing decisions at a level above the department.",
+        goals: [
+          { pillar: "Innovation & Growth", mid: ["IT and maintenance ticketing system with analytics", "IT asset management solution", "Completed cybersecurity risk assessment", "Enhance cybersecurity training", "Microsoft Fabric or Snowflake as data warehouse"], long: ["Unified digital ecosystem across Life Unlimited", "Data Warehouse (Azure or Snowflake)", "SaaS API integrations with Therap and critical applications", "Virtual PMO for all strategic projects", "Embedded analysts supporting programs"] },
+        ]
+      },
+      {
+        id: "intake", name: "Intake",
+        mission: "Exceptional promotion of Life Unlimited and evaluation of referrals resulting in appropriate placements that provide high-quality supports to cultivate a meaningful life.",
+        opp: "Process streamlining opportunities are well-grounded in the team's flexibility and rapid response strengths. Interdepartmental coordination opportunities with Health and CDS connect directly to documented collaboration strengths. Community partnership expansion is a realistic reach from current fair and event participation, though workforce availability limits how quickly this can scale.",
+        chal: "Double work from duplicated processes, communication gaps between departments, and balancing occupancy targets with property expansion pace are the primary friction points. Workforce availability limits both outreach capacity and the ability to take on additional coordination responsibilities. Budget clarity for the Intake function itself is identified as a near-term need.",
+        goals: [
+          { pillar: "Exceptional Services", mid: ["Collaborate with CDS to expand into Clay, Platte, and Jackson Counties", "Health Team review of My Day intakes prior to start date"], long: ["Implement advanced technology for intake processes", "South KC intake space established"] },
+          { pillar: "Exceptional Workforce", mid: ["Restructure intake team", "Provide Training with new behavior trends for Mandt training"], long: ["NWMO program run through Intake Department", "Fully cross-trained team on DMH and DHSS services"] },
+          { pillar: "Financial Strength", mid: ["Establish intake budget", "Achieve 90% occupancy for My Day and CL programs"], long: ["Stay above 95% CL occupancy", "Stay above 90% My Day occupancy"] },
+          { pillar: "Disability Rights", mid: ["Research medical community events and NWMO agencies to market services"], long: ["Present on intake process at a national conference", "Serve underserved communities through expanded capacity"] },
+          { pillar: "Innovation & Growth", mid: ["Explore Therap for intake capabilities", "Build relationships with hospitals and medical agencies"], long: ["3 ISLs in NWMO", "2 additional ISLs in Jackson County"] },
+        ]
+      },
+      {
+        id: "rec", name: "Recreation",
+        mission: "To deliver purposeful Therapeutic Recreation services that empower individuals to engage in their communities, develop meaningful relationships, and achieve holistic well-being.",
+        opp: "Established funder relationships with DDRB, EITAS, and ARC are a strong base for new fundraising and sponsorship opportunities. The team's depth of experience and commitment to therapeutic practice supports software implementation and outcome tracking opportunities. Platte County expansion is grounded in existing programming infrastructure. The BRIDGE program expansion is a realistic next step given current program strengths.",
+        chal: "CTRS time limitations constrain how quickly therapeutic processes can be formalized. Identifying and connecting with eligible participants takes time the small team does not always have. Locating the right businesses and community organizations for programming partnerships requires outreach capacity that competes with direct programming demands.",
+        goals: [
+          { pillar: "Exceptional Services", mid: ["Fully implement new software with active online registration", "Improve participant onboarding", "Update Recreation website"], long: ["Expand and sustain the BRIDGE program", "Implement outcome tracking to measure participant growth and program impact"] },
+          { pillar: "Exceptional Workforce", mid: ["Develop staff competencies in therapeutic recreation strategies"], long: ["Expand Recreation team to support program and geographic growth", "Strengthen staff development through training and professional certification"] },
+          { pillar: "Financial Strength", mid: ["Launch annual fundraising event", "Secure 1–2 recurring funding sources or sponsorships"], long: ["Diversified revenue streams including events, partnerships, and program-based funding"] },
+          { pillar: "Disability Rights", mid: ["Implement Platte County programming and logistics", "Increase community awareness through marketing and outreach"], long: ["Strengthen partnerships with schools, community organizations, and local officials"] },
+          { pillar: "Innovation & Growth", mid: ["Expand programs to Platte County"], long: ["Active team supporting Platte County and surrounding areas"] },
+        ]
+      },
+      {
+        id: "marketing", name: "Marketing",
+        mission: "We promote services from Life Unlimited to educate, inform, and advocate for a better future for adults with disabilities and the staff who support them.",
+        opp: "Committee presence at all levels of government is the foundation for advocacy and provider rate opportunities. The engaged following supports household name and community awareness goals. Storytelling strength supports donor engagement and video content opportunities. The department's ability to move fluidly across enterprise projects positions it well to support Latte Life, Thrift Store, and NWMO awareness. The primary execution risk is bandwidth: a small team is being asked to support a growing multi-brand organization.",
+        chal: "Funding constraints limit team size. The ever-changing donor landscape requires narrative agility that is hard to systematize. Interdepartmental communication gaps mean Marketing sometimes receives requests without enough context or lead time. Dashboard creation for marketing analytics is identified as a needed capability that does not yet exist.",
+        goals: [
+          { pillar: "Disability Rights", mid: ["Creation of Unlimited Advocates program", "Day in the Life video completion"], long: ["Increase provider rates to support living wages", "LU recognized as a household name across KC metro"] },
+          { pillar: "Innovation & Growth", mid: ["Community awareness campaign throughout NWMO area"], long: ["Standard procedures for all brand rollouts and mergers", "Recognizable, trusted network of community-driven brands"] },
+          { pillar: "Financial Strength", mid: ["Gift acknowledgment and thank you video from individuals"], long: ["Gift receipt automation", "Consistent automated donor engagement system"] },
+          { pillar: "Exceptional Services", mid: ["Hospital and higher education marketing materials"], long: ["Support portal activation and rollout"] },
+          { pillar: "Exceptional Workforce", mid: ["New staff fully running with content under minimal oversight", "AI integrated into MarComms workflow"], long: ["Fully running Marketing Department across all programs"] },
+        ]
+      },
+      {
+        id: "fundraising", name: "Fundraising",
+        mission: "To secure funding from government, family, corporate, special events, and individual sources to support and advance the mission of Life Unlimited.",
+        opp: "Fundraising is one of the organization's strongest resource departments. $1.65M raised in grants including 8 new funders, $2M in AHAP tax credits, a $1M realized estate gift, and a clean donor database reflect a team doing meaningful work with a lean footprint. Major gifts builds on HOTM donor history and Capital Campaign infrastructure. The CRM modernization opportunity is backed by staff deeply committed to consistent data practices — an underappreciated foundation for a system transition.",
+        chal: "Limited staff capacity for data collection, gift entry, and portfolio management is the primary constraint. The CRM is isolated from accounting and marketing platforms, creating duplication and limiting data-driven decision-making. The donor pipeline outside of events is shallow and the prospect qualification process is early in development. Planned giving is starting fresh, requiring collateral development and sustained communication that competes with other campaign priorities.",
+        goals: [
+          { pillar: "Major Giving", mid: ["$2M secured through AHAP tax credits", "50 prospects qualified or disqualified", "Quarterly major gifts email update"], long: ["Pipeline for major gifts prospects in CRM", "Data analysis for programmatic evaluation", "Standard process for collecting and sharing program needs"] },
+          { pillar: "Annual Giving", mid: ["Launch mini campaign", "Complete communications calendar"], long: ["Yearly 5% increase in annual giving revenue", "Increase annual giving donor count year over year"] },
+          { pillar: "Planned Giving", mid: ["Make-a-Will Month mini-campaign", "Planned giving collateral and SOPs"], long: ["5+ documented estate gifts per year", "Re-establish Legacy Giving Society"] },
+          { pillar: "Grants", mid: ["Fully establish pipeline and grants calendar"], long: ["Strong funder relationships", "Proactive RFP research schedule"] },
+          { pillar: "Volunteer Mgmt", mid: ["Proactive outreach to 25 corporations with volunteer capacity"], long: ["2 new large-scale volunteer opportunities", "5% increase in volunteer hours per year"] },
+        ]
+      },
+      {
+        id: "upm", name: "Property Management (UPM)",
+        mission: "Provide well-maintained facilities and vehicles to best serve our individuals and team members.",
+        opp: "The fleet lifecycle program and maintenance tracking software opportunities are well-grounded in the fleet specialist hire and the team's track record of in-house project execution. The maintenance shop opportunity builds on the regionalized team structure. The affordable housing opportunity is supported by full HUD occupancy and strong inspection scores. Security improvements require collaboration with IT, and clarity on ownership between UPM and IT is a needed first step.",
+        chal: "Portfolio growth is outpacing response time capacity. As the number of properties increases, maintenance coordination becomes more complex and delays become more likely. Emergency calls for non-emergency issues create inefficiency and stress. Balancing outsourcing versus in-house work is an active decision point as the portfolio scales. Ownership of security systems between UPM and IT remains unclear.",
+        goals: [
+          { pillar: "Exceptional Services", mid: ["Fleet mileage and maintenance tracking software"], long: ["All properties have Life Unlimited-provided transportation", "Expanded Fleet Management team"] },
+          { pillar: "Innovation & Growth", mid: ["Maintenance and Service Shop established", "Secure entries at My Day facilities", "Handicap accessible door openers at all locations"], long: ["Remote support for maintenance issues after hours", "Additional hub location as organization expands", "Acquiring HUD or other affordable housing", "Broadacres improvements and storm shelter addition"] },
+        ]
+      },
+    ];
+    </script>
+
+  </main>
+
+  <!-- NAV FOOTER -->
+  <div id="nav-footer">
+    <button class="nav-btn" id="btn-prev" onclick="navigate(-1)" disabled>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      Previous
+    </button>
+    <div class="nav-current-label" id="nav-label"></div>
+    <button class="nav-btn" id="btn-next" onclick="navigate(1)">
+      Next
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+  </div>
+
+</div>
+
+<script>
+// ── SCREEN ORDER ──────────────────────────────────────────────
+const SCREEN_ORDER = [
+  'home',
+  'strengths', 'opportunities', 'challenges', 'org-goals',
+  'dept-myday', 'dept-employment', 'dept-aba', 'dept-cso', 'dept-cl',
+  'dept-hr', 'dept-training', 'dept-finance', 'dept-health', 'dept-qa',
+  'dept-nwmo-ih', 'dept-cds', 'dept-it', 'dept-intake', 'dept-rec',
+  'dept-marketing', 'dept-fundraising', 'dept-upm'
+];
+
+// ── BUILD DEPT SCREENS ────────────────────────────────────────
+function buildGoalsTable(goals) {
+  const rows = goals.map(g => {
+    const midItems = (g.mid || []).map(t => `<li>${t}</li>`).join('');
+    const longItems = (g.long || []).map(t => `<li>${t}</li>`).join('');
+    return `<tr>
+      <td>${g.pillar}</td>
+      <td><ul>${midItems}</ul></td>
+      <td><ul>${longItems}</ul></td>
+    </tr>`;
+  }).join('');
+  return `<table class="goals-table">
+    <thead><tr>
+      <th>Pillar / Area</th>
+      <th>Mid-Term Goals (12 Months)</th>
+      <th>Long-Term Goals (2–5 Years)</th>
+    </tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
+}
+
+DEPTS.forEach(dept => {
+  const screenId = `screen-dept-${dept.id}`;
+  const div = document.createElement('div');
+  div.className = 'screen';
+  div.id = screenId;
+
+  div.innerHTML = `
+    <div class="screen-header">
+      <div class="screen-eyebrow">Department</div>
+      <div class="screen-title">${dept.name}</div>
+    </div>
+    <div class="dept-layout">
+      <div class="dept-panel">
+        <div class="dept-panel-tab-bar">
+          <div class="dept-panel-tab active" onclick="switchTab(this, 'narrative-${dept.id}')">Summary</div>
+        </div>
+        <div class="dept-panel-body" id="narrative-${dept.id}">
+          <div class="dept-mission">${dept.mission}</div>
+          <div class="narrative-section">
+            <div class="narrative-label opp">Opportunities</div>
+            <div class="narrative-text">${dept.opp}</div>
+          </div>
+          <div class="narrative-section">
+            <div class="narrative-label chal">Challenges</div>
+            <div class="narrative-text">${dept.chal}</div>
+          </div>
+        </div>
+      </div>
+      <div class="dept-panel">
+        <div class="dept-panel-tab-bar">
+          <div class="dept-panel-tab active" onclick="switchTab(this, 'goals-${dept.id}')">Goals by Pillar</div>
+        </div>
+        <div class="dept-panel-body" id="goals-${dept.id}" style="padding:16px 0 16px;">
+          ${buildGoalsTable(dept.goals)}
+        </div>
+      </div>
+    </div>
+  `;
+  document.getElementById('main').appendChild(div);
+});
+
+// ── NAVIGATION ────────────────────────────────────────────────
+let currentIndex = 0;
+
+function getScreenEl(id) {
+  // Static screens use id="screen-{id}", dynamic dept screens use id="screen-dept-{deptId}"
+  // SCREEN_ORDER dept entries are already "dept-myday" etc, so "screen-" + id works for both
+  return document.getElementById('screen-' + id);
+}
+
+function goToScreen(id, direction = 1) {
+  const idx = SCREEN_ORDER.indexOf(id);
+  if (idx === -1) return;
+
+  // Hide ALL screens first — belt and suspenders
+  document.querySelectorAll('.screen').forEach(el => {
+    el.classList.remove('active', 'exit-left');
+    el.style.opacity = '';
+    el.style.transform = '';
+    el.style.pointerEvents = '';
+  });
+
+  currentIndex = idx;
+  const nextEl = getScreenEl(id);
+  if (nextEl) {
+    nextEl.style.transform = direction >= 0 ? 'translateX(24px)' : 'translateX(-24px)';
+    nextEl.offsetHeight; // force reflow
+    nextEl.classList.add('active');
+    nextEl.scrollTop = 0;
+  }
+
+  // Update sidebar
+  document.querySelectorAll('.nav-item').forEach(el => {
+    el.classList.toggle('active', el.dataset.screen === id);
+  });
+  updateTopbar();
+}
+
+function navigate(dir) {
+  const newIdx = currentIndex + dir;
+  if (newIdx < 0 || newIdx >= SCREEN_ORDER.length) return;
+  goToScreen(SCREEN_ORDER[newIdx], dir);
+}
+
+function updateTopbar() {
+  const total = SCREEN_ORDER.length;
+  const curr = currentIndex + 1;
+  document.getElementById('progress-fill').style.width = `${(curr / total) * 100}%`;
+  document.getElementById('screen-counter').textContent = `${curr} / ${total}`;
+
+  const names = {
+    home: 'Home', strengths: 'Organizational Strengths', opportunities: 'Opportunity Themes',
+    challenges: 'Challenge Themes', 'org-goals': 'Potential Org-Level Goals'
+  };
+  const id = SCREEN_ORDER[currentIndex];
+  let label = names[id] || '';
+  if (!label && id.startsWith('dept-')) {
+    const dept = DEPTS.find(d => `dept-${d.id}` === id);
+    if (dept) label = dept.name;
+  }
+  document.getElementById('nav-label').textContent = label;
+  document.getElementById('btn-prev').disabled = currentIndex === 0;
+  document.getElementById('btn-next').disabled = currentIndex === SCREEN_ORDER.length - 1;
+}
+
+// Sidebar clicks
+document.querySelectorAll('.nav-item').forEach(el => {
+  el.addEventListener('click', () => {
+    const id = el.dataset.screen;
+    const dir = SCREEN_ORDER.indexOf(id) >= currentIndex ? 1 : -1;
+    goToScreen(id, dir);
+  });
+});
+
+// Tab switching (for future use)
+function switchTab(tab, panelId) {
+  const bar = tab.closest('.dept-panel-tab-bar');
+  bar.querySelectorAll('.dept-panel-tab').forEach(t => t.classList.remove('active'));
+  tab.classList.add('active');
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') navigate(1);
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') navigate(-1);
+});
+
+// Init
+updateTopbar();
+</script>
+</body>
+</html>

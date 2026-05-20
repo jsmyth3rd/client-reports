@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Markeim Arts Center — Registration & Revenue Analysis</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --clay:    #8B4A2B;
+    --clay-lt: #F2E8E0;
+    --clay-md: #C4845A;
+    --ink:     #1C1917;
+    --stone:   #57534E;
+    --mist:    #F7F4F0;
+    --border:  #E7E0D8;
+    --white:   #FFFFFF;
+    --teal:    #1D6B6B;
+    --teal-lt: #E0EFEF;
+    --amber:   #B45309;
+    --amber-lt:#FEF3C7;
+    --blue:    #1E4DA1;
+    --blue-lt: #EFF4FF;
+    --green:   #2D6A4F;
+    --green-lt:#D8F3DC;
+    --red:     #9B2335;
+    --red-lt:  #FDE8EC;
+    --purple:  #5B3A8A;
+    --purple-lt:#F0EAFB;
+  }
+
+  html { font-size: 16px; scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--mist);
+    color: var(--ink);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Cover ─────────────────────────────────────── */
+  .cover {
+    background: var(--ink);
+    color: var(--white);
+    padding: 80px 64px 72px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cover::before {
+    content: '';
+    position: absolute;
+    top: -120px; right: -120px;
+    width: 480px; height: 480px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(139,74,43,0.35) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .cover::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; left: 40%;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(29,107,107,0.25) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .cover-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--clay-md);
+    margin-bottom: 24px;
+  }
+  .cover h1 {
+    font-family: 'Libre Baskerville', serif;
+    font-size: clamp(32px, 5vw, 54px);
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--white);
+    margin-bottom: 16px;
+    max-width: 720px;
+  }
+  .cover-sub {
+    font-size: 17px;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 56px;
+    max-width: 560px;
+    font-weight: 300;
+  }
+  .cover-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border-top: 1px solid rgba(255,255,255,0.12);
+    padding-top: 40px;
+    position: relative;
+    z-index: 1;
+  }
+  .cover-stat { padding: 0 32px 0 0; }
+  .cover-stat:first-child { padding-left: 0; }
+  .cover-stat-val {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .cover-stat-label {
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+    font-weight: 400;
+    letter-spacing: 0.02em;
+  }
+
+  /* ── Nav ────────────────────────────────────────── */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 0 64px;
+    display: flex;
+    gap: 0;
+  }
+  .nav a {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    color: var(--stone);
+    padding: 14px 16px;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+    white-space: nowrap;
+  }
+  .nav a:hover { color: var(--ink); border-bottom-color: var(--clay); }
+
+  /* ── Layout ─────────────────────────────────────── */
+  .page { max-width: 1100px; margin: 0 auto; padding: 0 64px 80px; }
+
+  .section {
+    padding-top: 72px;
+  }
+
+  .section-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--clay);
+    margin-bottom: 10px;
+  }
+  .section-title {
+    font-family: 'Libre Baskerville', serif;
+    font-size: clamp(22px, 3vw, 30px);
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 14px;
+    line-height: 1.25;
+  }
+  .section-intro {
+    font-size: 15px;
+    color: var(--stone);
+    max-width: 720px;
+    margin-bottom: 40px;
+    line-height: 1.75;
+  }
+
+  hr.divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 72px 0 0;
+  }
+
+  /* ── Metric cards ───────────────────────────────── */
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+  .metric-grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .metric-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 22px;
+  }
+  .metric-card.accent { background: var(--clay); border-color: var(--clay); }
+  .metric-card.accent .mc-label { color: rgba(255,255,255,0.65); }
+  .metric-card.accent .mc-val { color: var(--white); }
+  .metric-card.accent .mc-sub { color: rgba(255,255,255,0.5); }
+  .mc-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--stone);
+    margin-bottom: 8px;
+  }
+  .mc-val {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .mc-sub {
+    font-size: 12px;
+    color: var(--stone);
+  }
+
+  /* ── Charts ─────────────────────────────────────── */
+  .chart-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 28px 28px 20px;
+    margin-bottom: 24px;
+  }
+  .chart-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .chart-note {
+    font-size: 12px;
+    color: var(--stone);
+    margin-bottom: 20px;
+  }
+  .chart-wrap { position: relative; width: 100%; }
+  .chart-wrap canvas { display: block; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+
+  /* ── Narrative callouts ─────────────────────────── */
+  .narrative {
+    background: var(--clay-lt);
+    border-left: 4px solid var(--clay);
+    border-radius: 0 8px 8px 0;
+    padding: 20px 24px;
+    margin: 28px 0;
+  }
+  .narrative p {
+    font-size: 14px;
+    color: var(--ink);
+    line-height: 1.7;
+  }
+  .narrative p + p { margin-top: 10px; }
+  .narrative strong { font-weight: 600; }
+
+  .insight-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 24px 0;
+  }
+  .insight {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 20px;
+    border-top: 3px solid var(--clay);
+  }
+  .insight.teal { border-top-color: var(--teal); }
+  .insight.amber { border-top-color: var(--amber); }
+  .insight.blue { border-top-color: var(--blue); }
+  .insight.green { border-top-color: var(--green); }
+  .insight.purple { border-top-color: var(--purple); }
+  .insight.red { border-top-color: var(--red); }
+  .insight-title { font-size: 13px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+  .insight-body { font-size: 12px; color: var(--stone); line-height: 1.65; }
+
+  /* ── Loyalty bar rows ───────────────────────────── */
+  .loyalty-row {
+    display: grid;
+    grid-template-columns: 160px 80px 80px 80px 1fr;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+  .loyalty-row.header {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--stone);
+    padding-bottom: 8px;
+  }
+  .loyalty-name { font-weight: 500; color: var(--ink); }
+  .loyalty-num { color: var(--stone); text-align: right; }
+  .lbar-bg { background: var(--border); border-radius: 3px; height: 8px; overflow: hidden; }
+  .lbar-fill { height: 100%; border-radius: 3px; }
+
+  /* ── City table ─────────────────────────────────── */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .data-table th {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--stone); padding: 10px 12px; border-bottom: 1px solid var(--border);
+    text-align: left;
+  }
+  .data-table th:not(:first-child) { text-align: right; }
+  .data-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--ink); }
+  .data-table td:not(:first-child) { text-align: right; color: var(--stone); }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:hover td { background: var(--mist); }
+
+  /* ── Badge ──────────────────────────────────────── */
+  .badge {
+    display: inline-block;
+    font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 3px 8px; border-radius: 20px;
+  }
+  .badge.green { background: var(--green-lt); color: var(--green); }
+  .badge.amber { background: var(--amber-lt); color: var(--amber); }
+  .badge.red   { background: var(--red-lt);   color: var(--red); }
+  .badge.blue  { background: var(--blue-lt);  color: var(--blue); }
+
+  /* ── Customer segment visual ────────────────────── */
+  .seg-visual {
+    display: flex;
+    gap: 0;
+    height: 48px;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 20px 0 12px;
+  }
+  .seg-block {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.9);
+    transition: flex 0.3s;
+  }
+
+  /* ── Camp cumulative chart legend ───────────────── */
+  .legend { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 12px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--stone); }
+  .legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+
+  /* ── Footer ─────────────────────────────────────── */
+  .footer {
+    background: var(--ink);
+    color: rgba(255,255,255,0.4);
+    text-align: center;
+    padding: 32px 64px;
+    font-size: 12px;
+    margin-top: 80px;
+  }
+  .footer strong { color: rgba(255,255,255,0.7); }
+
+  @media (max-width: 900px) {
+    .cover, .page, .nav { padding-left: 24px; padding-right: 24px; }
+    .cover-stats { grid-template-columns: 1fr 1fr; gap: 24px; }
+    .metric-grid { grid-template-columns: 1fr 1fr; }
+    .metric-grid-3 { grid-template-columns: 1fr 1fr; }
+    .two-col, .three-col, .insight-grid { grid-template-columns: 1fr; }
+    .nav { overflow-x: auto; }
+    .loyalty-row { grid-template-columns: 140px 60px 60px 60px 1fr; gap: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ COVER ══════════════════════════════════════════════════════════ -->
+<div class="cover">
+  <div style="max-width:1100px;margin:0 auto;">
+    <p class="cover-label">Markeim Arts Organization · Board Report</p>
+    <h1>Registration & Revenue Analysis<br><em style="font-style:italic;font-weight:400;font-size:0.72em;color:rgba(255,255,255,0.55);">January 2024 – May 2026</em></h1>
+    <p class="cover-sub">An analysis of 2,748 registration records covering program trends, customer loyalty, geography, and summer camp patterns — prepared for board discussion, May 2026.</p>
+    <div class="cover-stats">
+      <div class="cover-stat">
+        <div class="cover-stat-val">$366K</div>
+        <div class="cover-stat-label">Total revenue, all years</div>
+      </div>
+      <div class="cover-stat">
+        <div class="cover-stat-val">2,748</div>
+        <div class="cover-stat-label">Total registrations</div>
+      </div>
+      <div class="cover-stat">
+        <div class="cover-stat-val">1,372</div>
+        <div class="cover-stat-label">Unique customers</div>
+      </div>
+      <div class="cover-stat">
+        <div class="cover-stat-val">70+</div>
+        <div class="cover-stat-label">Towns represented</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ NAV ════════════════════════════════════════════════════════════ -->
+<nav class="nav">
+  <a href="#overview">Overview</a>
+  <a href="#programs">Programs</a>
+  <a href="#customers">Customers</a>
+  <a href="#geography">Geography</a>
+  <a href="#camps">Summer Camp</a>
+  <a href="#loyalty">Loyalty by Type</a>
+</nav>
+
+<div class="page">
+
+<!-- ══ SECTION 1: OVERVIEW ════════════════════════════════════════════ -->
+<div class="section" id="overview">
+  <p class="section-eyebrow">Section 1</p>
+  <h2 class="section-title">Overview &amp; Growth Trends</h2>
+  <p class="section-intro">Markeim has grown meaningfully over the past two and a half years, with revenue rising 18% from 2024 to 2025 and the first five months of 2026 already outpacing the same period in either prior year. The catalog of programs has expanded, enrollment has climbed, and the organization is serving more customers than ever — though new customer acquisition has begun to slow, making retention an increasingly important focus.</p>
+
+  <div class="metric-grid">
+    <div class="metric-card accent">
+      <div class="mc-label">2024 Revenue</div>
+      <div class="mc-val">$123K</div>
+      <div class="mc-sub">898 registrations · 617 new customers</div>
+    </div>
+    <div class="metric-card accent">
+      <div class="mc-label">2025 Revenue</div>
+      <div class="mc-val">$145K</div>
+      <div class="mc-sub">1,062 registrations · +18% vs. 2024</div>
+    </div>
+    <div class="metric-card accent">
+      <div class="mc-label">2026 YTD (Jan–May)</div>
+      <div class="mc-val">$98K</div>
+      <div class="mc-sub">788 registrations · on pace for $235K+</div>
+    </div>
+    <div class="metric-card">
+      <div class="mc-label">Unique classes offered</div>
+      <div class="mc-val">170 → 231</div>
+      <div class="mc-sub">2024 to 2025; catalog expanded 36%</div>
+    </div>
+  </div>
+
+  <div class="chart-card">
+    <div class="chart-title">Monthly revenue — January 2024 through May 2026</div>
+    <div class="chart-note">Shaded bands separate calendar years. Notable surge in early 2026.</div>
+    <div class="chart-wrap" style="height:220px;">
+      <canvas id="monthRevChart" role="img" aria-label="Monthly revenue line chart Jan 2024 to May 2026"></canvas>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="chart-card" style="margin-bottom:0">
+      <div class="chart-title">Monthly registrations</div>
+      <div class="chart-note">Enrollment volume by month</div>
+      <div class="chart-wrap" style="height:180px;">
+        <canvas id="monthRegChart" role="img" aria-label="Monthly registration count chart"></canvas>
+      </div>
+    </div>
+    <div class="chart-card" style="margin-bottom:0">
+      <div class="chart-title">New customers acquired per year</div>
+      <div class="chart-note">First-time registrants only</div>
+      <div class="chart-wrap" style="height:180px;">
+        <canvas id="newCustChart" role="img" aria-label="New customers bar chart by year"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="narrative">
+    <p><strong>Revenue is growing faster than enrollment.</strong> Registrations grew 18% from 2024 to 2025, but revenue grew at the same rate — meaning per-registration revenue has held steady around $136. January through April 2026 were the four strongest months in the entire dataset, suggesting the organization is entering a new performance tier.</p>
+    <p><strong>New customer acquisition is slowing.</strong> Markeim attracted 617 first-time customers in 2024, 460 in 2025 — a 25% decline. The 2026 pace of 295 through May is roughly consistent with 2025 annualized, not a continued drop. This pattern is common in growing organizations: the easiest customers to reach come first. The strategic implication is that retention of existing customers becomes increasingly important as the easy-acquisition phase matures.</p>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══ SECTION 2: PROGRAMS ════════════════════════════════════════════ -->
+<div class="section" id="programs">
+  <p class="section-eyebrow">Section 2</p>
+  <h2 class="section-title">Program Mix &amp; Revenue by Category</h2>
+  <p class="section-intro">Markeim operates across eight distinct program types, ranging from summer camps and adult pottery to wellness classes and kids' arts workshops. Camps and Clay Studio have been the consistent twin engines of revenue. The most striking trend over the past two years is the rise of Kids programming — which nearly doubled in revenue from 2024 to 2025 and continues to grow in 2026.</p>
+
+  <div class="two-col">
+    <div class="chart-card" style="margin-bottom:0">
+      <div class="chart-title">Total revenue by program type (all years)</div>
+      <div class="chart-note">Jan 2024 – May 2026 combined</div>
+      <div class="chart-wrap" style="height:280px;">
+        <canvas id="programChart" role="img" aria-label="Horizontal bar chart of revenue by program type"></canvas>
+      </div>
+    </div>
+    <div class="chart-card" style="margin-bottom:0">
+      <div class="chart-title">Program mix shift — revenue share by year</div>
+      <div class="chart-note">Stacked view showing how the composition has changed</div>
+      <div id="stackedBarsContainer" style="padding-top:8px;"></div>
+    </div>
+  </div>
+
+  <div class="narrative">
+    <p><strong>Kids programs are the fastest-growing segment.</strong> Kids Arts &amp; Crafts nearly doubled from $12K (2024) to $22K (2025) and is already at $20K through May 2026. Kids Clay Studio grew from $3.8K to $10.7K to $13.8K — a 267% increase over two years. Together, the two kids program lines now rival Adult Clay Studio in revenue and have surpassed Wellness and Adult Arts &amp; Crafts. This trajectory reflects a deliberate broadening of the program calendar toward family audiences.</p>
+    <p><strong>Adult Arts &amp; Crafts has pulled back.</strong> After generating $14.4K in 2024, it fell to $8.4K in 2025 and $6.5K through May 2026. This category operates as an event-driven workshop business more than a recurring class program, and its decline may reflect a shift in programming priority or audience rather than a structural problem.</p>
+  </div>
+
+  <div class="insight-grid">
+    <div class="insight blue">
+      <div class="insight-title">Camps — $100K total · $237 avg ticket</div>
+      <div class="insight-body">The single largest revenue category. Summer camp accounts for roughly 70% of all camp revenue; the remaining 30% comes from spring break, school's-out, fall break, and holiday camps — a diversified calendar that generates year-round income.</div>
+    </div>
+    <div class="insight teal">
+      <div class="insight-title">Clay Studio — $86K total · $226 avg ticket</div>
+      <div class="insight-body">The adult pottery program is the heart of Markeim's identity and its most loyal customer base. The Clay Studio → Open Studio progression is the clearest "membership pipeline" in the organization, with 10% of Clay Studio students upgrading to Open Studio.</div>
+    </div>
+    <div class="insight green">
+      <div class="insight-title">Kids Arts &amp; Crafts — $53K total · $89 avg ticket</div>
+      <div class="insight-body">The largest program by registration count (601 registrations). Lower ticket prices mean many families need to be served to generate comparable revenue, but the breadth of this program creates the most new customer relationships of any category.</div>
+    </div>
+    <div class="insight amber">
+      <div class="insight-title">Wellness — $31K total · $68 avg ticket</div>
+      <div class="insight-body">Yoga, Pilates, and Tai Chi attract a loyal, recurring audience with ~33% annual retention — the highest of any class program. Despite the low per-registration price, these customers reliably return term after term, providing a stable revenue floor.</div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══ SECTION 3: CUSTOMERS ═══════════════════════════════════════════ -->
+<div class="section" id="customers">
+  <p class="section-eyebrow">Section 3</p>
+  <h2 class="section-title">Customer Base &amp; Loyalty</h2>
+  <p class="section-intro">Of 1,372 unique customers in the dataset, 64% came exactly once. That's not unusual for a community arts center — many customers discover Markeim through a one-time workshop or event. But the 13% of customers with four or more visits generate 42% of all revenue, making the retention of that loyal core the most important driver of financial sustainability.</p>
+
+  <div class="metric-grid">
+    <div class="metric-card">
+      <div class="mc-label">1-time customers</div>
+      <div class="mc-val">878</div>
+      <div class="mc-sub">64% of all customers · 31% of revenue</div>
+    </div>
+    <div class="metric-card">
+      <div class="mc-label">2–3 visit customers</div>
+      <div class="mc-val">322</div>
+      <div class="mc-sub">23.5% of customers · 26% of revenue</div>
+    </div>
+    <div class="metric-card">
+      <div class="mc-label">4–7 visit customers</div>
+      <div class="mc-val">124</div>
+      <div class="mc-sub">9% of customers · 24% of revenue</div>
+    </div>
+    <div class="metric-card">
+      <div class="mc-label">8+ visit customers</div>
+      <div class="mc-val">48</div>
+      <div class="mc-sub">3.5% of customers · 19% of revenue</div>
+    </div>
+  </div>
+
+  <div class="chart-card">
+    <div class="chart-title">Revenue concentration — customers vs. revenue by loyalty segment</div>
+    <div class="chart-note">The top 12% of customers (4+ visits) generate 42% of total revenue</div>
+    <div class="seg-visual" id="segVisual"></div>
+    <div style="font-size:11px;color:var(--stone);display:flex;gap:16px;flex-wrap:wrap;margin-top:4px;" id="segLegend"></div>
+  </div>
+
+  <div class="two-col">
+    <div class="chart-card" style="margin-bottom:0">
+      <div class="chart-title">Year-over-year retention rate</div>
+      <div class="chart-note">% of customers who returned the following year</div>
+      <div class="chart-wrap" style="height:200px;">
+        <canvas id="retentionOverallChart" role="img" aria-label="Retention rate bar chart by year transition"></canvas>
+      </div>
+    </div>
+    <div class="chart-card" style="margin-bottom:0">
+      <div class="chart-title">Most loyal customers</div>
+      <div class="chart-note">By total registrations, Jan 2024 – May 2026</div>
+      <table class="data-table">
+        <thead>
+          <tr><th>Name</th><th>Visits</th><th>Classes</th><th>Revenue</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Lindsay Grimes</td><td>22</td><td>10</td><td>$1,732</td></tr>
+          <tr><td>Stephanie Murray</td><td>17</td><td>16</td><td>$3,158</td></tr>
+          <tr><td>Cortney Cohen</td><td>17</td><td>10</td><td>$2,940</td></tr>
+          <tr><td>Katie Kelly</td><td>17</td><td>13</td><td>$1,680</td></tr>
+          <tr><td>Kristen Freeman</td><td>18</td><td>12</td><td>$1,695</td></tr>
+          <tr><td>Zach Wall</td><td>16</td><td>16</td><td>$2,545</td></tr>
+          <tr><td>Theresa Kane-Bross</td><td>15</td><td>11</td><td>$971</td></tr>
+          <tr><td>Maria Christopher</td><td>14</td><td>14</td><td>$693</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="narrative">
+    <p><strong>Annual retention is running at about 30%.</strong> Of the 617 customers who registered in 2024, 185 (30%) also registered in 2025. Of 2025's 645 active customers, 189 (29.3%) are already showing up in 2026. A consistent ~30% retention means that in any given year, Markeim needs to replace 70% of its customer base with new faces. That's a significant ongoing acquisition burden — and it makes every percentage point of retention improvement financially meaningful.</p>
+    <p><strong>89 customers have been active all three years.</strong> This small group — just 6.5% of the total customer base — represents Markeim's most committed community. They average significantly higher spend and engagement across multiple program types.</p>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══ SECTION 4: GEOGRAPHY ════════════════════════════════════════════ -->
+<div class="section" id="geography">
+  <p class="section-eyebrow">Section 4</p>
+  <h2 class="section-title">Geographic Reach</h2>
+  <p class="section-intro">Markeim draws customers from over 70 distinct communities across South Jersey and beyond. The concentration in Haddonfield is striking — a single zip code (08033) accounts for 57% of all registrations and $209K of total revenue. The surrounding five-mile ring of communities brings the total to roughly 77%, leaving 23% from more distant or emerging markets.</p>
+
+  <div class="metric-grid">
+    <div class="metric-card accent">
+      <div class="mc-label">Haddonfield (08033)</div>
+      <div class="mc-val">57%</div>
+      <div class="mc-sub">of all registrations · $214K revenue</div>
+    </div>
+    <div class="metric-card">
+      <div class="mc-label">Cherry Hill</div>
+      <div class="mc-val">10%</div>
+      <div class="mc-sub">Second market · 149 unique customers</div>
+    </div>
+    <div class="metric-card">
+      <div class="mc-label">5-mile ring total</div>
+      <div class="mc-val">~77%</div>
+      <div class="mc-sub">Haddonfield + 4 neighboring towns</div>
+    </div>
+    <div class="metric-card">
+      <div class="mc-label">Communities reached</div>
+      <div class="mc-val">70+</div>
+      <div class="mc-sub">Across NJ and 12 other states</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="chart-card" style="margin-bottom:0">
+      <div class="chart-title">Top towns by registrations</div>
+      <div class="chart-note">NJ customers only</div>
+      <div class="chart-wrap" style="height:260px;">
+        <canvas id="cityChart" role="img" aria-label="Horizontal bar chart of registrations by town"></canvas>
+      </div>
+    </div>
+    <div class="chart-card" style="margin-bottom:0">
+      <div class="chart-title">New customers by town, year over year</div>
+      <div class="chart-note">First-time registrants; 2026 is Jan–May only</div>
+      <div class="chart-wrap" style="height:260px;">
+        <canvas id="cityGrowthChart" role="img" aria-label="Grouped bar chart of new customers by town per year"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="narrative">
+    <p><strong>Haddonfield concentration is both a strength and a risk.</strong> The depth of engagement from 08033 demonstrates that Markeim has genuinely become a pillar of that community — 736 unique customers, $214K in revenue, deep loyalty. But the flip side is that any demographic shift, economic pressure, or competitive entrant in Haddonfield would have an outsized impact on the organization. Geographic diversification is a meaningful long-term strategic consideration.</p>
+    <p><strong>What each town comes for differs significantly.</strong> Haddon Township residents skew heavily toward wellness (Tai Chi, Pilates, Yoga) — Markeim functions more like a fitness studio for them. Cherry Hill is the most balanced market, with meaningful participation across clay, wellness, and kids programs. Pennsauken's registrations are almost entirely clay supplies and firing services — a small cluster of working potters who use Markeim as a supply resource.</p>
+  </div>
+
+  <div class="chart-card">
+    <div class="chart-title">Top communities by registration volume and revenue</div>
+    <div class="chart-note">All years combined · NJ customers</div>
+    <table class="data-table">
+      <thead>
+        <tr><th>Town</th><th>Registrations</th><th>Customers</th><th>Revenue</th><th>Share</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Haddonfield</strong></td><td>1,572</td><td>736</td><td>$213,916</td><td><span class="badge blue">57.2%</span></td></tr>
+        <tr><td>Cherry Hill</td><td>277</td><td>149</td><td>$34,474</td><td>10.1%</td></tr>
+        <tr><td>Haddon Heights</td><td>102</td><td>40</td><td>$18,744</td><td>3.7%</td></tr>
+        <tr><td>Haddon Township</td><td>101</td><td>47</td><td>$9,726</td><td>3.7%</td></tr>
+        <tr><td>Collingswood</td><td>51</td><td>34</td><td>$7,157</td><td>1.9%</td></tr>
+        <tr><td>Audubon</td><td>44</td><td>19</td><td>$6,546</td><td>1.6%</td></tr>
+        <tr><td>Mount Laurel</td><td>44</td><td>28</td><td>$6,928</td><td>1.6%</td></tr>
+        <tr><td>Pennsauken</td><td>32</td><td>6</td><td>$4,327</td><td>1.2%</td></tr>
+        <tr><td>Voorhees</td><td>31</td><td>22</td><td>$2,684</td><td>1.1%</td></tr>
+        <tr><td>Moorestown</td><td>28</td><td>17</td><td>$5,524</td><td>1.0%</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══ SECTION 5: SUMMER CAMP ══════════════════════════════════════════ -->
+<div class="section" id="camps">
+  <p class="section-eyebrow">Section 5</p>
+  <h2 class="section-title">Summer Camp Analysis</h2>
+  <p class="section-intro">Summer camp is Markeim's single largest revenue item — $81K across three summers. Revenue has grown each year despite declining family enrollment, driven by rising per-registration prices. A particularly encouraging trend: families are registering significantly earlier each year, reducing last-minute uncertainty and improving planning capacity.</p>
+
+  <div class="metric-grid metric-grid-3">
+    <div class="metric-card">
+      <div class="mc-label">2024 — 8 weeks offered</div>
+      <div class="mc-val">$27,218</div>
+      <div class="mc-sub">79 families · $383 avg · 22 late registrations</div>
+    </div>
+    <div class="metric-card">
+      <div class="mc-label">2025 — 8 weeks offered</div>
+      <div class="mc-val">$29,275</div>
+      <div class="mc-sub">65 families · $457 avg · 10 late registrations</div>
+    </div>
+    <div class="metric-card accent">
+      <div class="mc-label">2026 — 10 weeks offered (through May 20)</div>
+      <div class="mc-val">$24,750</div>
+      <div class="mc-sub">60 registrations · $413 avg · camp begins late June</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="chart-card" style="margin-bottom:0">
+      <div class="chart-title">When families register — monthly breakdown</div>
+      <div class="chart-note">Camp begins late June each year. The 2026 bar shows registrations through May 20 — approximately one month before camp starts.</div>
+      <div class="chart-wrap" style="height:200px;">
+        <canvas id="campTimingChart" role="img" aria-label="Camp registration timing by month grouped by year"></canvas>
+      </div>
+    </div>
+    <div class="chart-card" style="margin-bottom:0">
+      <div class="chart-title">Cumulative registrations by month (% of final total)</div>
+      <div class="chart-note">Percentages shown as share of each year's final (or projected) total. 2026 solid line = actual registrations through May 20; dotted = projected based on prior-year pace.</div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#1C1917;"></div>2024</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#8B4A2B;"></div>2025</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#1D6B6B;"></div>2026 (actual)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:transparent;border:1px dashed #1D6B6B;"></div>2026 (projected)</div>
+      </div>
+      <div class="chart-wrap" style="height:170px;">
+        <canvas id="campCumulChart" role="img" aria-label="Cumulative camp registration percentage by month for each year"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="narrative">
+    <p><strong>Late registrations have been declining — a real improvement.</strong> In 2024, 22 families — nearly 25% of all summer camp registrations — signed up after camp had already started. This creates genuine operational difficulty: staffing, supply planning, and capacity management all depend on knowing enrollment in advance. By 2025, late registrations fell to 10 (14% of total). 2026 data does not yet include the late-registration window, as camp begins late June — but the trend is clearly improving.</p>
+    <p><strong>2026 projections: strongest summer camp year on record.</strong> With 60 registrations and $24,750 secured as of May 20 — roughly one month before camp starts — the trajectory is strong. Based on prior-year registration pace (2024 was ~49% complete by May 20; 2025 was ~73%), 2026 is estimated to be approximately 61% complete. That implies a projected total of <strong>80–100 registrations and $38,000–$42,000 in summer camp revenue</strong> — well above either prior year. The 10-week schedule (vs. 8 in prior years) provides meaningful additional upside.</p>
+    <p><strong>Fewer families returning, more registrations per outreach.</strong> Overall family counts have trended down (89 in 2024, 73 in 2025), but per-registration revenue has risen sharply ($306 → $401 → $413 through May 20). Revenue is growing even as the pool of returning families narrows — which means both price increases and the expanded 10-week offering are doing meaningful work. Monitoring enrollment volume alongside revenue is important to detect a ceiling early.</p>
+  </div>
+
+  <div class="insight-grid">
+    <div class="insight blue">
+      <div class="insight-title">Week 1 is always the most popular</div>
+      <div class="insight-body">In both 2025 and 2026, the first week of camp draws the most registrations. Families planning summer early claim the first available slot. Marketing emphasis on Week 1 opening is well-placed.</div>
+    </div>
+    <div class="insight teal">
+      <div class="insight-title">Late summer holds up</div>
+      <div class="insight-body">Weeks 7–9 (August) in 2025 generated 26 registrations — nearly matching the front half of summer. Late summer camp is a real market, not an afterthought.</div>
+    </div>
+    <div class="insight green">
+      <div class="insight-title">Fall Break camp launched successfully</div>
+      <div class="insight-body">Introduced in 2025, Fall Break camp generated $2,800 in its debut year — a strong start for a new offering with minimal precedent to learn from.</div>
+    </div>
+    <div class="insight amber">
+      <div class="insight-title">School's Out camp is declining</div>
+      <div class="insight-body">Revenue from School's Out days fell from $3,465 (2024) to $1,650 (2025). Worth monitoring to understand whether this reflects timing, promotion, or audience shift. Spring 2026 data is partial and not directly comparable.</div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ══ SECTION 6: LOYALTY BY TYPE ═════════════════════════════════════ -->
+<div class="section" id="loyalty">
+  <p class="section-eyebrow">Section 6</p>
+  <h2 class="section-title">Customer Loyalty by Program Type</h2>
+  <p class="section-intro">Not all programs create the same kind of customer relationship. Open Studio functions like a membership — half of its customers return, and 40% are back year after year. Wellness classes retain about a third of participants annually. At the other end, Adult Arts &amp; Crafts is almost entirely a one-time event business. Understanding these differences informs where to invest in retention efforts and where to accept high churn as a feature of the format.</p>
+
+  <div class="two-col">
+    <div class="chart-card" style="margin-bottom:0">
+      <div class="chart-title">Repeat rate by program type</div>
+      <div class="chart-note">% of customers who registered more than once in that program</div>
+      <div class="chart-wrap" style="height:260px;">
+        <canvas id="repeatRateChart" role="img" aria-label="Horizontal bar chart of repeat rates by program type"></canvas>
+      </div>
+    </div>
+    <div class="chart-card" style="margin-bottom:0">
+      <div class="chart-title">Year-over-year retention by program type</div>
+      <div class="chart-note">2024→2025 vs. 2025→2026</div>
+      <div class="chart-wrap" style="height:260px;">
+        <canvas id="retentionByTypeChart" role="img" aria-label="Grouped bar chart of annual retention by program type"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-card">
+    <div class="chart-title">Program loyalty summary</div>
+    <div class="chart-note">Sorted by repeat rate — how often customers come back to the same program type</div>
+    <div class="loyalty-row header">
+      <span>Program</span><span style="text-align:right">Repeat rate</span><span style="text-align:right">Multi-year</span><span style="text-align:right">Avg/customer</span><span>Retention bar</span>
+    </div>
+    <div class="loyalty-row">
+      <span class="loyalty-name">Open Studio</span>
+      <span class="loyalty-num"><span class="badge green">50%</span></span>
+      <span class="loyalty-num">38%</span>
+      <span class="loyalty-num">$426</span>
+      <div class="lbar-bg"><div class="lbar-fill" style="width:50%;background:#1D6B6B;"></div></div>
+    </div>
+    <div class="loyalty-row">
+      <span class="loyalty-name">Wellness</span>
+      <span class="loyalty-num"><span class="badge green">43%</span></span>
+      <span class="loyalty-num">24%</span>
+      <span class="loyalty-num">$163</span>
+      <div class="lbar-bg"><div class="lbar-fill" style="width:43%;background:#B45309;"></div></div>
+    </div>
+    <div class="loyalty-row">
+      <span class="loyalty-name">Camps</span>
+      <span class="loyalty-num"><span class="badge blue">33%</span></span>
+      <span class="loyalty-num">21%</span>
+      <span class="loyalty-num">$378</span>
+      <div class="lbar-bg"><div class="lbar-fill" style="width:33%;background:#1E4DA1;"></div></div>
+    </div>
+    <div class="loyalty-row">
+      <span class="loyalty-name">Kids Arts &amp; Crafts</span>
+      <span class="loyalty-num">28%</span>
+      <span class="loyalty-num">15%</span>
+      <span class="loyalty-num">$129</span>
+      <div class="lbar-bg"><div class="lbar-fill" style="width:28%;background:#2D6A4F;"></div></div>
+    </div>
+    <div class="loyalty-row">
+      <span class="loyalty-name">Clay Studio</span>
+      <span class="loyalty-num">20%</span>
+      <span class="loyalty-num">12%</span>
+      <span class="loyalty-num">$328</span>
+      <div class="lbar-bg"><div class="lbar-fill" style="width:20%;background:#5B3A8A;"></div></div>
+    </div>
+    <div class="loyalty-row">
+      <span class="loyalty-name">Kids Clay Studio</span>
+      <span class="loyalty-num">19%</span>
+      <span class="loyalty-num">11%</span>
+      <span class="loyalty-num">$168</span>
+      <div class="lbar-bg"><div class="lbar-fill" style="width:19%;background:#1D6B6B;"></div></div>
+    </div>
+    <div class="loyalty-row" style="border-bottom:none">
+      <span class="loyalty-name">Adult Arts &amp; Crafts</span>
+      <span class="loyalty-num"><span class="badge red">10%</span></span>
+      <span class="loyalty-num">5%</span>
+      <span class="loyalty-num">$133</span>
+      <div class="lbar-bg"><div class="lbar-fill" style="width:10%;background:#9B2335;"></div></div>
+    </div>
+  </div>
+
+  <div class="narrative">
+    <p><strong>The pottery ecosystem is Markeim's most valuable long-term relationship.</strong> Clay Studio students who progress to Open Studio membership average $426/year and return at 40%+ annually — nearly three times the overall retention rate. Ten percent of Clay Studio customers make this upgrade. The pathway is real, documented, and worth cultivating deliberately through programming, community-building, and explicit invitation to move up.</p>
+    <p><strong>Camps are the best front door for family engagement.</strong> Twenty-five percent of camp families also sign up for Kids Arts &amp; Crafts, and 11% add Kids Clay Studio. No other entry point converts to cross-program participation at that rate. A family that discovers Markeim through summer camp and then enrolls in kids classes is worth significantly more than their camp fee alone — and the data shows that a quarter of camp families make exactly that journey.</p>
+    <p><strong>Kids Clay Studio is a growth story in progress.</strong> Year-over-year retention improved from 15.8% to 21.4% — a 35% improvement in a single year. As the program matures and families establish routines, this cohort is on track to develop the same deep loyalty the adult clay program has built over time.</p>
+  </div>
+
+  <div class="insight-grid">
+    <div class="insight teal">
+      <div class="insight-title">Open Studio → Clay Studio: the core pipeline</div>
+      <div class="insight-body">52% of Open Studio customers also participate in Clay Studio. This is the clearest progression path in the organization: students start in Clay Studio, deepen their practice, and graduate into the Open Studio membership model. Nurturing this pipeline is one of the highest-value things Markeim can do.</div>
+    </div>
+    <div class="insight blue">
+      <div class="insight-title">Wellness customers are loyal but siloed</div>
+      <div class="insight-body">The wellness audience retains at ~33% annually but almost never crosses into art programming. They are a distinct audience who come to Markeim for fitness, not arts. Marketing and programming for this group likely needs to be distinct from the art-focused audience.</div>
+    </div>
+    <div class="insight amber">
+      <div class="insight-title">Adult Arts &amp; Crafts: event business, not class program</div>
+      <div class="insight-body">With a 10% repeat rate and under 7% annual retention, this category doesn't behave like a class program. It's a workshop/event series. That's a perfectly viable model — but it requires constant fresh programming to sustain revenue, and shouldn't be expected to build a returning customer base.</div>
+    </div>
+    <div class="insight green">
+      <div class="insight-title">Kids Clay improving steadily</div>
+      <div class="insight-body">Retention jumped from 15.8% to 21.4% year-over-year. With 30% of its customers also doing Kids Arts, this cohort is becoming the kids' equivalent of the adult clay ecosystem — a deeply engaged, multi-program family relationship.</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end .page -->
+
+<!-- ══ FOOTER ═════════════════════════════════════════════════════════ -->
+<div class="footer">
+  <strong>Markeim Arts Organization</strong> · Board Report · Prepared May 2026<br>
+  Data covers 2,748 registration records, January 2024 – May 2026. Analysis generated from registration export. Individual customer data not included in this report.
+</div>
+
+<!-- ══ CHARTS ══════════════════════════════════════════════════════════ -->
+<script>
+const CLAY   = '#8B4A2B';
+const CLAY2  = '#C4845A';
+const INK    = '#1C1917';
+const STONE  = '#57534E';
+const BORDER = '#E7E0D8';
+const TEAL   = '#1D6B6B';
+const AMBER  = '#B45309';
+const BLUE   = '#1E4DA1';
+const GREEN  = '#2D6A4F';
+const PURPLE = '#5B3A8A';
+const RED    = '#9B2335';
+const MIST   = '#F7F4F0';
+
+const baseOpts = (yFmt) => ({
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: { legend: { display: false } },
+  scales: {
+    x: { grid: { display: false }, ticks: { font: { size: 10, family: "'DM Sans', sans-serif" }, color: STONE } },
+    y: { grid: { color: BORDER }, ticks: { font: { size: 10, family: "'DM Sans', sans-serif" }, color: STONE, callback: yFmt || (v => v) } }
+  }
+});
+
+// Monthly revenue
+const mLabels = ['Jan 24','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec 24',
+                 'Jan 25','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec 25',
+                 'Jan 26','Feb','Mar','Apr','May 26'];
+const mRev = [8088,9600,11583,10187,14413,11415,6587,6870,13036,12560,3035,15945,10425,20909,14492,15618,10371,9083,8809,9016,17555,10520,8184,10007,20195,17664,21567,29363,9244];
+const mRegs = [77,64,89,66,70,45,30,54,94,152,45,112,126,146,91,98,44,59,54,60,131,69,101,83,180,132,195,186,95];
+
+new Chart(document.getElementById('monthRevChart'), {
+  type: 'line',
+  data: { labels: mLabels, datasets: [{
+    data: mRev, borderColor: CLAY, backgroundColor: 'rgba(139,74,43,0.08)',
+    fill: true, tension: 0.35, pointRadius: 0, borderWidth: 2.5
+  }]},
+  options: { ...baseOpts(v => '$' + (v/1000).toFixed(0) + 'K'),
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => '$' + Math.round(c.raw).toLocaleString() } } },
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 9 }, color: STONE, maxTicksLimit: 12, maxRotation: 30 } },
+      y: { grid: { color: BORDER }, ticks: { font: { size: 10 }, color: STONE, callback: v => '$' + (v/1000).toFixed(0) + 'K' } }
+    }
+  }
+});
+
+new Chart(document.getElementById('monthRegChart'), {
+  type: 'bar',
+  data: { labels: mLabels, datasets: [{
+    data: mRegs, backgroundColor: mLabels.map((_, i) => i < 12 ? 'rgba(28,25,23,0.55)' : i < 24 ? 'rgba(28,25,23,0.75)' : INK),
+    borderRadius: 2
+  }]},
+  options: { ...baseOpts(),
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 8 }, color: STONE, maxTicksLimit: 10, maxRotation: 30 } },
+      y: { grid: { color: BORDER }, ticks: { font: { size: 10 }, color: STONE } }
+    }
+  }
+});
+
+new Chart(document.getElementById('newCustChart'), {
+  type: 'bar',
+  data: {
+    labels: ['2024','2025','2026 YTD'],
+    datasets: [{ data: [617,460,295], backgroundColor: [INK, CLAY, CLAY2], borderRadius: 4 }]
+  },
+  options: { ...baseOpts() }
+});
+
+// Program revenue chart
+new Chart(document.getElementById('programChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Camps','Clay Studio','Kids Arts','Wellness','Adult Arts','Kids Clay','Open Studio'],
+    datasets: [{ data: [100197,85540,53213,30991,29346,28241,21298],
+      backgroundColor: [BLUE, PURPLE, GREEN, AMBER, CLAY, TEAL, INK], borderRadius: 3 }]
+  },
+  options: {
+    indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => '$' + Math.round(c.raw).toLocaleString() } } },
+    scales: {
+      x: { grid: { color: BORDER }, ticks: { callback: v => '$' + (v/1000).toFixed(0) + 'K', font: { size: 10 }, color: STONE } },
+      y: { grid: { display: false }, ticks: { font: { size: 11 }, color: INK } }
+    }
+  }
+});
+
+// Stacked bars
+const stackedData = {
+  '2024': { Camps:35742, Clay:33318, KidsArts:11976, Wellness:12542, AdultArts:14406, KidsClay:3755, OpenStudio:8345 },
+  '2025': { Camps:38165, Clay:33883, KidsArts:21687, Wellness:13708, AdultArts:8447, KidsClay:10681, OpenStudio:9518 },
+  '2026 (YTD)': { Camps:27450, Clay:18340, KidsArts:19550, Wellness:4741, AdultArts:6494, KidsClay:13805, OpenStudio:3435 }
+};
+const stackColors = { Camps:BLUE, Clay:PURPLE, KidsArts:GREEN, Wellness:AMBER, AdultArts:CLAY, KidsClay:TEAL, OpenStudio:INK };
+const stackLabels = { Camps:'Camps', Clay:'Clay Studio', KidsArts:'Kids Arts', Wellness:'Wellness', AdultArts:'Adult Arts', KidsClay:'Kids Clay', OpenStudio:'Open Studio' };
+const sbCont = document.getElementById('stackedBarsContainer');
+Object.entries(stackedData).forEach(([yr, cats]) => {
+  const total = Object.values(cats).reduce((a,b)=>a+b,0);
+  const wrapper = document.createElement('div');
+  wrapper.style.cssText = 'display:flex;align-items:center;gap:10px;margin-bottom:10px;';
+  const lbl = document.createElement('span');
+  lbl.style.cssText = 'font-size:12px;color:'+STONE+';width:80px;flex-shrink:0;';
+  lbl.textContent = yr;
+  wrapper.appendChild(lbl);
+  const bar = document.createElement('div');
+  bar.style.cssText = 'flex:1;display:flex;border-radius:4px;overflow:hidden;height:24px;';
+  Object.entries(cats).forEach(([k,v]) => {
+    const pct = v/total*100;
+    const seg = document.createElement('div');
+    seg.style.cssText = `width:${pct}%;background:${stackColors[k]};display:flex;align-items:center;justify-content:center;`;
+    seg.title = stackLabels[k] + ': $' + Math.round(v).toLocaleString() + ' (' + pct.toFixed(0) + '%)';
+    if(pct > 10) { seg.style.fontSize = '9px'; seg.style.color = 'rgba(255,255,255,0.85)'; seg.style.fontWeight = '500'; seg.textContent = pct.toFixed(0)+'%'; }
+    bar.appendChild(seg);
+  });
+  wrapper.appendChild(bar);
+  const tot = document.createElement('span');
+  tot.style.cssText = 'font-size:11px;color:'+STONE+';width:44px;text-align:right;flex-shrink:0;';
+  tot.textContent = '$' + Math.round(total/1000) + 'K';
+  wrapper.appendChild(tot);
+  sbCont.appendChild(wrapper);
+});
+
+// Segment visual
+const segs = [
+  { label: '1-time', pct: 31.4, color: '#D3D1C7' },
+  { label: '2–3 visits', pct: 26.1, color: STONE },
+  { label: '4–7 visits', pct: 23.5, color: CLAY },
+  { label: '8–15 visits', pct: 14.8, color: INK },
+  { label: '16+', pct: 4.2, color: '#000' }
+];
+const sv = document.getElementById('segVisual');
+const sl = document.getElementById('segLegend');
+segs.forEach(s => {
+  const d = document.createElement('div');
+  d.className = 'seg-block';
+  d.style.cssText = `flex:${s.pct};background:${s.color};`;
+  d.title = s.label + ': ' + s.pct + '% of revenue';
+  if(s.pct > 8) { d.style.fontSize = '10px'; d.style.fontWeight = '600'; d.textContent = s.pct + '%'; }
+  sv.appendChild(d);
+  const li = document.createElement('span');
+  li.style.cssText = 'display:flex;align-items:center;gap:5px;font-size:11px;color:'+STONE+';';
+  li.innerHTML = `<span style="width:10px;height:10px;border-radius:2px;background:${s.color};display:inline-block;"></span>${s.label}`;
+  sl.appendChild(li);
+});
+
+// Overall retention
+new Chart(document.getElementById('retentionOverallChart'), {
+  type: 'bar',
+  data: {
+    labels: ['2024→2025','2025→2026'],
+    datasets: [{
+      data: [30.0, 29.3],
+      backgroundColor: [CLAY, CLAY2], borderRadius: 6
+    }]
+  },
+  options: { ...baseOpts(v => v + '%'),
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 12 }, color: INK } },
+      y: { grid: { color: BORDER }, ticks: { callback: v => v+'%', font: { size: 10 }, color: STONE }, max: 50 }
+    },
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => c.raw + '% returned' } } }
+  }
+});
+
+// City chart
+new Chart(document.getElementById('cityChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Haddonfield','Cherry Hill','Haddon Heights','Haddon Twp','Collingswood','Audubon','Mount Laurel','Pennsauken','Voorhees','Moorestown'],
+    datasets: [{ data: [1572,277,102,101,51,44,44,32,31,28],
+      backgroundColor: [CLAY,INK,STONE,STONE,STONE,STONE,STONE,STONE,STONE,STONE], borderRadius: 3 }]
+  },
+  options: {
+    indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { color: BORDER }, ticks: { font: { size: 10 }, color: STONE } },
+      y: { grid: { display: false }, ticks: { font: { size: 10 }, color: INK } }
+    }
+  }
+});
+
+// City growth
+new Chart(document.getElementById('cityGrowthChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Haddonfield','Cherry Hill','Haddon Twp','Haddon Hts','Mount Laurel','Collingswood'],
+    datasets: [
+      { label: '2024', data: [330,63,21,16,17,13], backgroundColor: INK, borderRadius: 2 },
+      { label: '2025', data: [244,48,16,15,7,13], backgroundColor: CLAY, borderRadius: 2 },
+      { label: '2026 YTD', data: [150,36,10,9,3,8], backgroundColor: CLAY2, borderRadius: 2 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 9 }, color: STONE, maxRotation: 20 } },
+      y: { grid: { color: BORDER }, ticks: { font: { size: 10 }, color: STONE } }
+    }
+  }
+});
+
+// Camp timing
+new Chart(document.getElementById('campTimingChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Feb','Mar','Apr','May','Jun','Jul'],
+    datasets: [
+      { label: '2024', data: [0,15,12,23,22,17], backgroundColor: INK, borderRadius: 2 },
+      { label: '2025', data: [13,17,14,12,8,9], backgroundColor: CLAY, borderRadius: 2 },
+      { label: '2026 (through May 20)', data: [12,20,19,9,0,0], backgroundColor: CLAY2, borderRadius: 2 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 11 }, color: STONE } },
+      y: { grid: { color: BORDER }, ticks: { font: { size: 10 }, color: STONE } }
+    }
+  }
+});
+
+// Camp cumulative
+new Chart(document.getElementById('campCumulChart'), {
+  type: 'line',
+  data: {
+    labels: ['Feb','Mar','Apr','May','Jun','Jul'],
+    datasets: [
+      { label: '2024', data: [null,17,30,56,81,100], borderColor: INK, backgroundColor:'rgba(28,25,23,0.05)', fill:true, tension:0, pointRadius:4, borderWidth:2 },
+      { label: '2025', data: [18,41,60,77,88,100], borderColor: CLAY, backgroundColor:'rgba(139,74,43,0.05)', fill:true, tension:0, pointRadius:4, borderWidth:2 },
+      { label: '2026 (actual)', data: [12,33,52,61,null,null], borderColor: TEAL, backgroundColor:'rgba(29,107,107,0.05)', fill:true, tension:0, pointRadius:5, borderWidth:2.5 },
+      { label: '2026 (projected)', data: [null,null,null,61,77,100], borderColor: TEAL, backgroundColor:'rgba(29,107,107,0.0)', fill:false, tension:0, pointRadius:3, borderWidth:1.5, borderDash:[4,4] }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + c.raw + '%' } } },
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 11 }, color: STONE } },
+      y: { min:0, max:100, grid: { color: BORDER }, ticks: { callback: v => v+'%', font: { size: 10 }, color: STONE } }
+    }
+  }
+});
+
+// Repeat rate chart
+const progLabels = ['Open Studio','Wellness','Camps','Kids Arts','Clay Studio','Kids Clay','Adult Arts'];
+new Chart(document.getElementById('repeatRateChart'), {
+  type: 'bar',
+  data: {
+    labels: progLabels,
+    datasets: [{ data: [50.0,43.2,32.8,27.8,20.3,19.0,10.0],
+      backgroundColor: [INK, AMBER, BLUE, GREEN, PURPLE, TEAL, RED], borderRadius: 3 }]
+  },
+  options: {
+    indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => c.raw + '% repeat rate' } } },
+    scales: {
+      x: { grid: { color: BORDER }, ticks: { callback: v => v+'%', font: { size: 10 }, color: STONE }, max: 60 },
+      y: { grid: { display: false }, ticks: { font: { size: 10 }, color: INK } }
+    }
+  }
+});
+
+// Retention by type
+new Chart(document.getElementById('retentionByTypeChart'), {
+  type: 'bar',
+  data: {
+    labels: progLabels,
+    datasets: [
+      { label: '2024→2025', data: [39.3,33.3,24.3,17.5,14.0,15.8,6.9], backgroundColor: INK, borderRadius: 2 },
+      { label: '2025→2026', data: [41.4,32.1,19.7,19.3,16.3,21.4,5.3], backgroundColor: CLAY2, borderRadius: 2 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => c.dataset.label + ': ' + c.raw + '%' } } },
+    scales: {
+      x: { grid: { display: false }, ticks: { font: { size: 8 }, color: STONE, maxRotation: 25 } },
+      y: { grid: { color: BORDER }, ticks: { callback: v => v+'%', font: { size: 10 }, color: STONE } }
+    }
+  }
+});
+</script>
+</body>
+</html>
